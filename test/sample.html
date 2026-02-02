@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<!-- Sample file – open this in the Extension Development Host to test HTML decorations. -->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width">
+  <title>EmojiCode HTML Test</title>
+  <link rel="stylesheet" href="styles.css">
+  <base href="/">
+  <style>
+    /* Tag-like text inside <style> should NOT be decorated: */
+    body { margin: 0; }
+    div.container { display: flex; }
+  </style>
+  <script defer src="app.js"></script>
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════════════
+       Semantic sections: nav, header, footer, main, aside
+       ═══════════════════════════════════════════════════ -->
+
+  <header>
+    <nav>
+      <a href="/" class="logo">Home</a>
+      <a href="/about" target="_blank" rel="noopener">About</a>
+    </nav>
+  </header>
+
+  <main>
+
+    <!-- ── Article with headings and text-level elements ──── -->
+
+    <article>
+      <h1>Welcome to EmojiCode</h1>
+      <p>This is a <strong>test</strong> page with <em>emphasis</em>
+         and a <mark>highlighted</mark> word.</p>
+      <p><small>Side note</small> — with <sub>subscript</sub>
+         and <sup>superscript</sup>.</p>
+      <p>Text with <del>deleted</del> and <ins>inserted</ins> content.</p>
+
+      <h2>Unordered List</h2>
+      <ul>
+        <li>Emoji decorations for tag names</li>
+        <li>Emoji decorations for attribute names</li>
+        <li>Emoji decorations for void elements</li>
+      </ul>
+
+      <h3>Ordered List</h3>
+      <ol>
+        <li>First item</li>
+        <li>Second item</li>
+      </ol>
+
+      <blockquote>
+        <p>A wise quote about readable code.</p>
+      </blockquote>
+
+      <pre><code>console.log("preformatted code block");</code></pre>
+
+      <figure>
+        <img src="photo.jpg" alt="A sample photo" width="600" height="400" loading="lazy">
+        <figcaption>A beautiful landscape photo</figcaption>
+      </figure>
+
+      <details>
+        <summary>Click to expand</summary>
+        <p>Hidden content revealed.</p>
+      </details>
+    </article>
+
+    <!-- ── Aside (sidebar) ────────────────────────────────── -->
+
+    <aside>
+      <h4>Sidebar</h4>
+      <p>Related content goes here.</p>
+    </aside>
+
+    <!-- ── Forms with various input types ─────────────────── -->
+
+    <section>
+      <h2>Contact Form</h2>
+      <form action="/submit" method="post">
+        <fieldset>
+          <legend>Personal Info</legend>
+
+          <label for="name">Name</label>
+          <input type="text" id="name" name="fullname" placeholder="Enter your name" required>
+
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" required autofocus>
+
+          <textarea name="message" placeholder="Your message"></textarea>
+
+          <select name="topic">
+            <option value="general">General</option>
+            <option value="support">Support</option>
+          </select>
+
+          <output name="result">0</output>
+          <progress value="70" max="100"></progress>
+          <meter value="0.6"></meter>
+
+          <button type="submit" disabled>Send</button>
+        </fieldset>
+      </form>
+    </section>
+
+    <!-- ── Media elements ─────────────────────────────────── -->
+
+    <section>
+      <h2>Media</h2>
+      <video src="video.mp4" width="640" height="360">
+        <source src="video.webm" type="video/webm">
+        <track src="captions.vtt" type="text/vtt">
+      </video>
+      <audio src="audio.mp3"></audio>
+
+      <picture>
+        <source src="image.webp" type="image/webp">
+        <img src="image.jpg" alt="Fallback image">
+      </picture>
+
+      <canvas width="300" height="150"></canvas>
+      <iframe src="https://example.com" width="600" height="400" loading="lazy"></iframe>
+    </section>
+
+    <!-- ── Tables ─────────────────────────────────────────── -->
+
+    <section>
+      <h2>Data Table</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Tag</th>
+            <th>Emoji</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>div</td>
+            <td>package</td>
+          </tr>
+          <tr>
+            <td>img</td>
+            <td>framed picture</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td>Total</td>
+            <td>79 mappings</td>
+          </tr>
+        </tfoot>
+      </table>
+    </section>
+
+    <!-- ── Miscellaneous elements ─────────────────────────── -->
+
+    <section>
+      <h5>Map &amp; Area</h5>
+      <map name="infographic">
+        <area href="/section1" alt="Section 1">
+        <area href="/section2" alt="Section 2">
+      </map>
+
+      <h6>Other Elements</h6>
+      <p>Line<br>break and thematic break below:</p>
+      <hr>
+      <p>Word<wbr>break opportunity.</p>
+
+      <dialog>
+        <p>Dialog content</p>
+        <button>Close</button>
+      </dialog>
+
+      <template>
+        <div class="card">
+          <h3>Template Card</h3>
+          <p>Cloned from template.</p>
+        </div>
+      </template>
+
+      <div>
+        <slot name="content"></slot>
+      </div>
+
+      <datalist id="browsers">
+        <option value="Chrome">
+        <option value="Firefox">
+      </datalist>
+    </section>
+
+  </main>
+
+  <footer>
+    <p>&copy; 2025 EmojiCode</p>
+  </footer>
+
+  <!-- Tags inside comments should NOT be decorated:
+       <div class="hidden"> <img src="test.png"> </div>
+  -->
+
+  <script>
+    // Tags inside <script> should NOT be decorated as HTML:
+    const html = "<div class='test'>content</div>";
+    document.querySelector('div').innerHTML = html;
+  </script>
+
+</body>
+</html>
