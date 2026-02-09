@@ -2,6 +2,7 @@
 
 const vscode = require('vscode');
 const { KeywordDecorator } = require('./decorator');
+const { openSettingsPanel } = require('./settingsPanel');
 
 /** @type {KeywordDecorator | undefined} */
 let decorator;
@@ -24,6 +25,18 @@ function activate(context) {
   context.subscriptions.push(
     vscode.commands.registerCommand('emojiCode.toggle', () => {
       decorator.toggle();
+    }),
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand('emojiCode.openSettings', () => {
+      openSettingsPanel(context, () => {
+        // Callback when settings change from the panel
+        decorator.reloadConfig();
+        if (vscode.window.activeTextEditor) {
+          decorator.updateEditor(vscode.window.activeTextEditor);
+        }
+      });
     }),
   );
 

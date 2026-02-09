@@ -27,6 +27,10 @@
       {
         "command": "emojiCode.toggle",
         "title": "Emoji-Code: Toggle"
+      },
+      {
+        "command": "emojiCode.openSettings",
+        "title": "Emoji-Code: Configure HTML Emojis"
       }
     ],
     "configuration": {
@@ -72,123 +76,575 @@
           "default": true,
           "description": "Master toggle: show emojis for HTML attribute names."
         },
-
-        "emojiCode.htmlTag.html":       { "type": "boolean", "default": true, "description": "🌐 <html> – root document element" },
-        "emojiCode.htmlTag.head":       { "type": "boolean", "default": true, "description": "🧠 <head> – document metadata container" },
-        "emojiCode.htmlTag.body":       { "type": "boolean", "default": true, "description": "🦴 <body> – document body" },
-        "emojiCode.htmlTag.div":        { "type": "boolean", "default": true, "description": "📦 <div> – generic block container" },
-        "emojiCode.htmlTag.span":       { "type": "boolean", "default": true, "description": "🔖 <span> – generic inline container" },
-        "emojiCode.htmlTag.p":          { "type": "boolean", "default": true, "description": "📄 <p> – paragraph" },
-        "emojiCode.htmlTag.a":          { "type": "boolean", "default": true, "description": "🔗 <a> – anchor / hyperlink" },
-        "emojiCode.htmlTag.h1":         { "type": "boolean", "default": true, "description": "1️⃣ <h1> – heading level 1" },
-        "emojiCode.htmlTag.h2":         { "type": "boolean", "default": true, "description": "2️⃣ <h2> – heading level 2" },
-        "emojiCode.htmlTag.h3":         { "type": "boolean", "default": true, "description": "3️⃣ <h3> – heading level 3" },
-        "emojiCode.htmlTag.h4":         { "type": "boolean", "default": true, "description": "4️⃣ <h4> – heading level 4" },
-        "emojiCode.htmlTag.h5":         { "type": "boolean", "default": true, "description": "5️⃣ <h5> – heading level 5" },
-        "emojiCode.htmlTag.h6":         { "type": "boolean", "default": true, "description": "6️⃣ <h6> – heading level 6" },
-        "emojiCode.htmlTag.ul":         { "type": "boolean", "default": true, "description": "📝 <ul> – unordered list" },
-        "emojiCode.htmlTag.ol":         { "type": "boolean", "default": true, "description": "🔢 <ol> – ordered list" },
-        "emojiCode.htmlTag.li":         { "type": "boolean", "default": true, "description": "▪️ <li> – list item" },
-        "emojiCode.htmlTag.table":      { "type": "boolean", "default": true, "description": "📊 <table> – data table" },
-        "emojiCode.htmlTag.tr":         { "type": "boolean", "default": true, "description": "➡️ <tr> – table row" },
-        "emojiCode.htmlTag.td":         { "type": "boolean", "default": true, "description": "📎 <td> – table data cell" },
-        "emojiCode.htmlTag.th":         { "type": "boolean", "default": true, "description": "🏷️ <th> – table header cell" },
-        "emojiCode.htmlTag.thead":      { "type": "boolean", "default": true, "description": "🔝 <thead> – table head group" },
-        "emojiCode.htmlTag.tbody":      { "type": "boolean", "default": true, "description": "📋 <tbody> – table body group" },
-        "emojiCode.htmlTag.tfoot":      { "type": "boolean", "default": true, "description": "🔚 <tfoot> – table foot group" },
-        "emojiCode.htmlTag.form":       { "type": "boolean", "default": true, "description": "📑 <form> – input form" },
-        "emojiCode.htmlTag.button":     { "type": "boolean", "default": true, "description": "🔘 <button> – clickable button" },
-        "emojiCode.htmlTag.select":     { "type": "boolean", "default": true, "description": "📂 <select> – dropdown select" },
-        "emojiCode.htmlTag.option":     { "type": "boolean", "default": true, "description": "☑️ <option> – select option" },
-        "emojiCode.htmlTag.textarea":   { "type": "boolean", "default": true, "description": "✏️ <textarea> – multiline text input" },
-        "emojiCode.htmlTag.label":      { "type": "boolean", "default": true, "description": "🪧 <label> – form control label" },
-        "emojiCode.htmlTag.nav":        { "type": "boolean", "default": true, "description": "🧭 <nav> – navigation section" },
-        "emojiCode.htmlTag.header":     { "type": "boolean", "default": true, "description": "📰 <header> – page header" },
-        "emojiCode.htmlTag.footer":     { "type": "boolean", "default": true, "description": "👟 <footer> – page footer" },
-        "emojiCode.htmlTag.main":       { "type": "boolean", "default": true, "description": "🏠 <main> – main content area" },
-        "emojiCode.htmlTag.section":    { "type": "boolean", "default": true, "description": "📐 <section> – thematic section" },
-        "emojiCode.htmlTag.article":    { "type": "boolean", "default": true, "description": "📓 <article> – self-contained article" },
-        "emojiCode.htmlTag.aside":      { "type": "boolean", "default": true, "description": "📌 <aside> – tangential content" },
-        "emojiCode.htmlTag.script":     { "type": "boolean", "default": true, "description": "⚡ <script> – executable script" },
-        "emojiCode.htmlTag.style":      { "type": "boolean", "default": true, "description": "🎨 <style> – embedded stylesheet" },
-        "emojiCode.htmlTag.title":      { "type": "boolean", "default": true, "description": "👑 <title> – document title" },
-        "emojiCode.htmlTag.video":      { "type": "boolean", "default": true, "description": "🎬 <video> – video player" },
-        "emojiCode.htmlTag.audio":      { "type": "boolean", "default": true, "description": "🔊 <audio> – audio player" },
-        "emojiCode.htmlTag.canvas":     { "type": "boolean", "default": true, "description": "🖌️ <canvas> – drawing surface" },
-        "emojiCode.htmlTag.iframe":     { "type": "boolean", "default": true, "description": "🪟 <iframe> – nested browsing context" },
-        "emojiCode.htmlTag.picture":    { "type": "boolean", "default": true, "description": "📸 <picture> – responsive image container" },
-        "emojiCode.htmlTag.pre":        { "type": "boolean", "default": true, "description": "📟 <pre> – preformatted text" },
-        "emojiCode.htmlTag.code":       { "type": "boolean", "default": true, "description": "💻 <code> – code fragment" },
-        "emojiCode.htmlTag.strong":     { "type": "boolean", "default": true, "description": "💪 <strong> – strong importance" },
-        "emojiCode.htmlTag.em":         { "type": "boolean", "default": true, "description": "✍️ <em> – stress emphasis" },
-        "emojiCode.htmlTag.blockquote": { "type": "boolean", "default": true, "description": "🗨️ <blockquote> – extended quotation" },
-        "emojiCode.htmlTag.mark":       { "type": "boolean", "default": true, "description": "🖍️ <mark> – highlighted text" },
-        "emojiCode.htmlTag.del":        { "type": "boolean", "default": true, "description": "❌ <del> – deleted text" },
-        "emojiCode.htmlTag.ins":        { "type": "boolean", "default": true, "description": "➕ <ins> – inserted text" },
-        "emojiCode.htmlTag.small":      { "type": "boolean", "default": true, "description": "🔹 <small> – side comment" },
-        "emojiCode.htmlTag.sub":        { "type": "boolean", "default": true, "description": "⬇️ <sub> – subscript" },
-        "emojiCode.htmlTag.sup":        { "type": "boolean", "default": true, "description": "⬆️ <sup> – superscript" },
-        "emojiCode.htmlTag.figure":     { "type": "boolean", "default": true, "description": "🎞️ <figure> – figure with optional caption" },
-        "emojiCode.htmlTag.figcaption": { "type": "boolean", "default": true, "description": "💬 <figcaption> – figure caption" },
-        "emojiCode.htmlTag.details":    { "type": "boolean", "default": true, "description": "🔍 <details> – disclosure widget" },
-        "emojiCode.htmlTag.summary":    { "type": "boolean", "default": true, "description": "📖 <summary> – disclosure summary" },
-        "emojiCode.htmlTag.dialog":     { "type": "boolean", "default": true, "description": "💭 <dialog> – dialog box" },
-        "emojiCode.htmlTag.template":   { "type": "boolean", "default": true, "description": "🧩 <template> – content template" },
-        "emojiCode.htmlTag.slot":       { "type": "boolean", "default": true, "description": "🔌 <slot> – shadow DOM slot" },
-        "emojiCode.htmlTag.fieldset":   { "type": "boolean", "default": true, "description": "🔲 <fieldset> – field grouping" },
-        "emojiCode.htmlTag.legend":     { "type": "boolean", "default": true, "description": "🏆 <legend> – fieldset caption" },
-        "emojiCode.htmlTag.output":     { "type": "boolean", "default": true, "description": "📤 <output> – calculation result" },
-        "emojiCode.htmlTag.progress":   { "type": "boolean", "default": true, "description": "⏳ <progress> – progress indicator" },
-        "emojiCode.htmlTag.meter":      { "type": "boolean", "default": true, "description": "📏 <meter> – scalar gauge" },
-        "emojiCode.htmlTag.datalist":   { "type": "boolean", "default": true, "description": "📃 <datalist> – predefined options" },
-        "emojiCode.htmlTag.map":        { "type": "boolean", "default": true, "description": "🗺️ <map> – image map" },
-
-        "emojiCode.htmlVoid.img":       { "type": "boolean", "default": true, "description": "🖼️ <img> – image" },
-        "emojiCode.htmlVoid.input":     { "type": "boolean", "default": true, "description": "⌨️ <input> – form input" },
-        "emojiCode.htmlVoid.br":        { "type": "boolean", "default": true, "description": "↩️ <br> – line break" },
-        "emojiCode.htmlVoid.hr":        { "type": "boolean", "default": true, "description": "➖ <hr> – horizontal rule" },
-        "emojiCode.htmlVoid.meta":      { "type": "boolean", "default": true, "description": "ℹ️ <meta> – document metadata" },
-        "emojiCode.htmlVoid.link":      { "type": "boolean", "default": true, "description": "⛓️ <link> – external resource link" },
-        "emojiCode.htmlVoid.source":    { "type": "boolean", "default": true, "description": "📡 <source> – media source" },
-        "emojiCode.htmlVoid.embed":     { "type": "boolean", "default": true, "description": "📼 <embed> – embedded content" },
-        "emojiCode.htmlVoid.area":      { "type": "boolean", "default": true, "description": "📍 <area> – image map clickable area" },
-        "emojiCode.htmlVoid.track":     { "type": "boolean", "default": true, "description": "🎵 <track> – text track" },
-        "emojiCode.htmlVoid.wbr":       { "type": "boolean", "default": true, "description": "✂️ <wbr> – word break opportunity" },
-        "emojiCode.htmlVoid.col":       { "type": "boolean", "default": true, "description": "🗄️ <col> – table column" },
-        "emojiCode.htmlVoid.base":      { "type": "boolean", "default": true, "description": "⚓ <base> – base URL" },
-
-        "emojiCode.htmlAttr.class":       { "type": "boolean", "default": true, "description": "🏛️ class – CSS class name" },
-        "emojiCode.htmlAttr.id":          { "type": "boolean", "default": true, "description": "🆔 id – unique identifier" },
-        "emojiCode.htmlAttr.href":        { "type": "boolean", "default": true, "description": "🌍 href – hyperlink reference" },
-        "emojiCode.htmlAttr.src":         { "type": "boolean", "default": true, "description": "📥 src – source URL" },
-        "emojiCode.htmlAttr.alt":         { "type": "boolean", "default": true, "description": "🗣️ alt – alternative text" },
-        "emojiCode.htmlAttr.style":       { "type": "boolean", "default": true, "description": "🎭 style – inline CSS styles" },
-        "emojiCode.htmlAttr.type":        { "type": "boolean", "default": true, "description": "🔤 type – input / mime type" },
-        "emojiCode.htmlAttr.name":        { "type": "boolean", "default": true, "description": "📛 name – element name" },
-        "emojiCode.htmlAttr.value":       { "type": "boolean", "default": true, "description": "💎 value – element value" },
-        "emojiCode.htmlAttr.placeholder": { "type": "boolean", "default": true, "description": "💡 placeholder – placeholder hint" },
-        "emojiCode.htmlAttr.action":      { "type": "boolean", "default": true, "description": "🎯 action – form submission URL" },
-        "emojiCode.htmlAttr.method":      { "type": "boolean", "default": true, "description": "📮 method – HTTP method" },
-        "emojiCode.htmlAttr.target":      { "type": "boolean", "default": true, "description": "🏹 target – link target" },
-        "emojiCode.htmlAttr.rel":         { "type": "boolean", "default": true, "description": "🤝 rel – link relationship" },
-        "emojiCode.htmlAttr.width":       { "type": "boolean", "default": true, "description": "↔️ width – element width" },
-        "emojiCode.htmlAttr.height":      { "type": "boolean", "default": true, "description": "↕️ height – element height" },
-        "emojiCode.htmlAttr.disabled":    { "type": "boolean", "default": true, "description": "🚫 disabled – disabled state" },
-        "emojiCode.htmlAttr.required":    { "type": "boolean", "default": true, "description": "❗ required – required field" },
-        "emojiCode.htmlAttr.checked":     { "type": "boolean", "default": true, "description": "✅ checked – checked state" },
-        "emojiCode.htmlAttr.readonly":    { "type": "boolean", "default": true, "description": "🔒 readonly – read-only field" },
-        "emojiCode.htmlAttr.hidden":      { "type": "boolean", "default": true, "description": "👻 hidden – hidden element" },
-        "emojiCode.htmlAttr.autofocus":   { "type": "boolean", "default": true, "description": "🔦 autofocus – automatic focus" },
-        "emojiCode.htmlAttr.defer":       { "type": "boolean", "default": true, "description": "⏱️ defer – deferred script loading" },
-        "emojiCode.htmlAttr.async":       { "type": "boolean", "default": true, "description": "🔄 async – asynchronous loading" },
-        "emojiCode.htmlAttr.charset":     { "type": "boolean", "default": true, "description": "🔠 charset – character encoding" },
-        "emojiCode.htmlAttr.lang":        { "type": "boolean", "default": true, "description": "🌎 lang – language code" },
-        "emojiCode.htmlAttr.role":        { "type": "boolean", "default": true, "description": "🎪 role – ARIA role" },
-        "emojiCode.htmlAttr.tabindex":    { "type": "boolean", "default": true, "description": "#️⃣ tabindex – tab order index" },
-        "emojiCode.htmlAttr.for":         { "type": "boolean", "default": true, "description": "🔁 for – associated control id" },
-        "emojiCode.htmlAttr.loading":     { "type": "boolean", "default": true, "description": "⏰ loading – lazy / eager loading" },
-        "emojiCode.htmlAttr.content":     { "type": "boolean", "default": true, "description": "📜 content – meta content value" }
+        "emojiCode.htmlTag.html": {
+          "type": "boolean",
+          "default": true,
+          "description": "🌐 <html> – root document element"
+        },
+        "emojiCode.htmlTag.head": {
+          "type": "boolean",
+          "default": true,
+          "description": "🧠 <head> – document metadata container"
+        },
+        "emojiCode.htmlTag.body": {
+          "type": "boolean",
+          "default": true,
+          "description": "🦴 <body> – document body"
+        },
+        "emojiCode.htmlTag.div": {
+          "type": "boolean",
+          "default": true,
+          "description": "📦 <div> – generic block container"
+        },
+        "emojiCode.htmlTag.span": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔖 <span> – generic inline container"
+        },
+        "emojiCode.htmlTag.p": {
+          "type": "boolean",
+          "default": true,
+          "description": "📄 <p> – paragraph"
+        },
+        "emojiCode.htmlTag.a": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔗 <a> – anchor / hyperlink"
+        },
+        "emojiCode.htmlTag.h1": {
+          "type": "boolean",
+          "default": true,
+          "description": "1️⃣ <h1> – heading level 1"
+        },
+        "emojiCode.htmlTag.h2": {
+          "type": "boolean",
+          "default": true,
+          "description": "2️⃣ <h2> – heading level 2"
+        },
+        "emojiCode.htmlTag.h3": {
+          "type": "boolean",
+          "default": true,
+          "description": "3️⃣ <h3> – heading level 3"
+        },
+        "emojiCode.htmlTag.h4": {
+          "type": "boolean",
+          "default": true,
+          "description": "4️⃣ <h4> – heading level 4"
+        },
+        "emojiCode.htmlTag.h5": {
+          "type": "boolean",
+          "default": true,
+          "description": "5️⃣ <h5> – heading level 5"
+        },
+        "emojiCode.htmlTag.h6": {
+          "type": "boolean",
+          "default": true,
+          "description": "6️⃣ <h6> – heading level 6"
+        },
+        "emojiCode.htmlTag.ul": {
+          "type": "boolean",
+          "default": true,
+          "description": "📝 <ul> – unordered list"
+        },
+        "emojiCode.htmlTag.ol": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔢 <ol> – ordered list"
+        },
+        "emojiCode.htmlTag.li": {
+          "type": "boolean",
+          "default": true,
+          "description": "▪️ <li> – list item"
+        },
+        "emojiCode.htmlTag.table": {
+          "type": "boolean",
+          "default": true,
+          "description": "📊 <table> – data table"
+        },
+        "emojiCode.htmlTag.tr": {
+          "type": "boolean",
+          "default": true,
+          "description": "➡️ <tr> – table row"
+        },
+        "emojiCode.htmlTag.td": {
+          "type": "boolean",
+          "default": true,
+          "description": "📎 <td> – table data cell"
+        },
+        "emojiCode.htmlTag.th": {
+          "type": "boolean",
+          "default": true,
+          "description": "🏷️ <th> – table header cell"
+        },
+        "emojiCode.htmlTag.thead": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔝 <thead> – table head group"
+        },
+        "emojiCode.htmlTag.tbody": {
+          "type": "boolean",
+          "default": true,
+          "description": "📋 <tbody> – table body group"
+        },
+        "emojiCode.htmlTag.tfoot": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔚 <tfoot> – table foot group"
+        },
+        "emojiCode.htmlTag.form": {
+          "type": "boolean",
+          "default": true,
+          "description": "📑 <form> – input form"
+        },
+        "emojiCode.htmlTag.button": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔘 <button> – clickable button"
+        },
+        "emojiCode.htmlTag.select": {
+          "type": "boolean",
+          "default": true,
+          "description": "📂 <select> – dropdown select"
+        },
+        "emojiCode.htmlTag.option": {
+          "type": "boolean",
+          "default": true,
+          "description": "☑️ <option> – select option"
+        },
+        "emojiCode.htmlTag.textarea": {
+          "type": "boolean",
+          "default": true,
+          "description": "✏️ <textarea> – multiline text input"
+        },
+        "emojiCode.htmlTag.label": {
+          "type": "boolean",
+          "default": true,
+          "description": "🪧 <label> – form control label"
+        },
+        "emojiCode.htmlTag.nav": {
+          "type": "boolean",
+          "default": true,
+          "description": "🧭 <nav> – navigation section"
+        },
+        "emojiCode.htmlTag.header": {
+          "type": "boolean",
+          "default": true,
+          "description": "📰 <header> – page header"
+        },
+        "emojiCode.htmlTag.footer": {
+          "type": "boolean",
+          "default": true,
+          "description": "👟 <footer> – page footer"
+        },
+        "emojiCode.htmlTag.main": {
+          "type": "boolean",
+          "default": true,
+          "description": "🏠 <main> – main content area"
+        },
+        "emojiCode.htmlTag.section": {
+          "type": "boolean",
+          "default": true,
+          "description": "📐 <section> – thematic section"
+        },
+        "emojiCode.htmlTag.article": {
+          "type": "boolean",
+          "default": true,
+          "description": "📓 <article> – self-contained article"
+        },
+        "emojiCode.htmlTag.aside": {
+          "type": "boolean",
+          "default": true,
+          "description": "📌 <aside> – tangential content"
+        },
+        "emojiCode.htmlTag.script": {
+          "type": "boolean",
+          "default": true,
+          "description": "⚡ <script> – executable script"
+        },
+        "emojiCode.htmlTag.style": {
+          "type": "boolean",
+          "default": true,
+          "description": "🎨 <style> – embedded stylesheet"
+        },
+        "emojiCode.htmlTag.title": {
+          "type": "boolean",
+          "default": true,
+          "description": "👑 <title> – document title"
+        },
+        "emojiCode.htmlTag.video": {
+          "type": "boolean",
+          "default": true,
+          "description": "🎬 <video> – video player"
+        },
+        "emojiCode.htmlTag.audio": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔊 <audio> – audio player"
+        },
+        "emojiCode.htmlTag.canvas": {
+          "type": "boolean",
+          "default": true,
+          "description": "🖌️ <canvas> – drawing surface"
+        },
+        "emojiCode.htmlTag.iframe": {
+          "type": "boolean",
+          "default": true,
+          "description": "🪟 <iframe> – nested browsing context"
+        },
+        "emojiCode.htmlTag.picture": {
+          "type": "boolean",
+          "default": true,
+          "description": "📸 <picture> – responsive image container"
+        },
+        "emojiCode.htmlTag.pre": {
+          "type": "boolean",
+          "default": true,
+          "description": "📟 <pre> – preformatted text"
+        },
+        "emojiCode.htmlTag.code": {
+          "type": "boolean",
+          "default": true,
+          "description": "💻 <code> – code fragment"
+        },
+        "emojiCode.htmlTag.strong": {
+          "type": "boolean",
+          "default": true,
+          "description": "💪 <strong> – strong importance"
+        },
+        "emojiCode.htmlTag.em": {
+          "type": "boolean",
+          "default": true,
+          "description": "✍️ <em> – stress emphasis"
+        },
+        "emojiCode.htmlTag.blockquote": {
+          "type": "boolean",
+          "default": true,
+          "description": "🗨️ <blockquote> – extended quotation"
+        },
+        "emojiCode.htmlTag.mark": {
+          "type": "boolean",
+          "default": true,
+          "description": "🖍️ <mark> – highlighted text"
+        },
+        "emojiCode.htmlTag.del": {
+          "type": "boolean",
+          "default": true,
+          "description": "❌ <del> – deleted text"
+        },
+        "emojiCode.htmlTag.ins": {
+          "type": "boolean",
+          "default": true,
+          "description": "➕ <ins> – inserted text"
+        },
+        "emojiCode.htmlTag.small": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔹 <small> – side comment"
+        },
+        "emojiCode.htmlTag.sub": {
+          "type": "boolean",
+          "default": true,
+          "description": "⬇️ <sub> – subscript"
+        },
+        "emojiCode.htmlTag.sup": {
+          "type": "boolean",
+          "default": true,
+          "description": "⬆️ <sup> – superscript"
+        },
+        "emojiCode.htmlTag.figure": {
+          "type": "boolean",
+          "default": true,
+          "description": "🎞️ <figure> – figure with optional caption"
+        },
+        "emojiCode.htmlTag.figcaption": {
+          "type": "boolean",
+          "default": true,
+          "description": "💬 <figcaption> – figure caption"
+        },
+        "emojiCode.htmlTag.details": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔍 <details> – disclosure widget"
+        },
+        "emojiCode.htmlTag.summary": {
+          "type": "boolean",
+          "default": true,
+          "description": "📖 <summary> – disclosure summary"
+        },
+        "emojiCode.htmlTag.dialog": {
+          "type": "boolean",
+          "default": true,
+          "description": "💭 <dialog> – dialog box"
+        },
+        "emojiCode.htmlTag.template": {
+          "type": "boolean",
+          "default": true,
+          "description": "🧩 <template> – content template"
+        },
+        "emojiCode.htmlTag.slot": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔌 <slot> – shadow DOM slot"
+        },
+        "emojiCode.htmlTag.fieldset": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔲 <fieldset> – field grouping"
+        },
+        "emojiCode.htmlTag.legend": {
+          "type": "boolean",
+          "default": true,
+          "description": "🏆 <legend> – fieldset caption"
+        },
+        "emojiCode.htmlTag.output": {
+          "type": "boolean",
+          "default": true,
+          "description": "📤 <output> – calculation result"
+        },
+        "emojiCode.htmlTag.progress": {
+          "type": "boolean",
+          "default": true,
+          "description": "⏳ <progress> – progress indicator"
+        },
+        "emojiCode.htmlTag.meter": {
+          "type": "boolean",
+          "default": true,
+          "description": "📏 <meter> – scalar gauge"
+        },
+        "emojiCode.htmlTag.datalist": {
+          "type": "boolean",
+          "default": true,
+          "description": "📃 <datalist> – predefined options"
+        },
+        "emojiCode.htmlTag.map": {
+          "type": "boolean",
+          "default": true,
+          "description": "🗺️ <map> – image map"
+        },
+        "emojiCode.htmlVoid.img": {
+          "type": "boolean",
+          "default": true,
+          "description": "🖼️ <img> – image"
+        },
+        "emojiCode.htmlVoid.input": {
+          "type": "boolean",
+          "default": true,
+          "description": "⌨️ <input> – form input"
+        },
+        "emojiCode.htmlVoid.br": {
+          "type": "boolean",
+          "default": true,
+          "description": "↩️ <br> – line break"
+        },
+        "emojiCode.htmlVoid.hr": {
+          "type": "boolean",
+          "default": true,
+          "description": "➖ <hr> – horizontal rule"
+        },
+        "emojiCode.htmlVoid.meta": {
+          "type": "boolean",
+          "default": true,
+          "description": "ℹ️ <meta> – document metadata"
+        },
+        "emojiCode.htmlVoid.link": {
+          "type": "boolean",
+          "default": true,
+          "description": "⛓️ <link> – external resource link"
+        },
+        "emojiCode.htmlVoid.source": {
+          "type": "boolean",
+          "default": true,
+          "description": "📡 <source> – media source"
+        },
+        "emojiCode.htmlVoid.embed": {
+          "type": "boolean",
+          "default": true,
+          "description": "📼 <embed> – embedded content"
+        },
+        "emojiCode.htmlVoid.area": {
+          "type": "boolean",
+          "default": true,
+          "description": "📍 <area> – image map clickable area"
+        },
+        "emojiCode.htmlVoid.track": {
+          "type": "boolean",
+          "default": true,
+          "description": "🎵 <track> – text track"
+        },
+        "emojiCode.htmlVoid.wbr": {
+          "type": "boolean",
+          "default": true,
+          "description": "✂️ <wbr> – word break opportunity"
+        },
+        "emojiCode.htmlVoid.col": {
+          "type": "boolean",
+          "default": true,
+          "description": "🗄️ <col> – table column"
+        },
+        "emojiCode.htmlVoid.base": {
+          "type": "boolean",
+          "default": true,
+          "description": "⚓ <base> – base URL"
+        },
+        "emojiCode.htmlAttr.class": {
+          "type": "boolean",
+          "default": true,
+          "description": "🏛️ class – CSS class name"
+        },
+        "emojiCode.htmlAttr.id": {
+          "type": "boolean",
+          "default": true,
+          "description": "🆔 id – unique identifier"
+        },
+        "emojiCode.htmlAttr.href": {
+          "type": "boolean",
+          "default": true,
+          "description": "🌍 href – hyperlink reference"
+        },
+        "emojiCode.htmlAttr.src": {
+          "type": "boolean",
+          "default": true,
+          "description": "📥 src – source URL"
+        },
+        "emojiCode.htmlAttr.alt": {
+          "type": "boolean",
+          "default": true,
+          "description": "🗣️ alt – alternative text"
+        },
+        "emojiCode.htmlAttr.style": {
+          "type": "boolean",
+          "default": true,
+          "description": "🎭 style – inline CSS styles"
+        },
+        "emojiCode.htmlAttr.type": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔤 type – input / mime type"
+        },
+        "emojiCode.htmlAttr.name": {
+          "type": "boolean",
+          "default": true,
+          "description": "📛 name – element name"
+        },
+        "emojiCode.htmlAttr.value": {
+          "type": "boolean",
+          "default": true,
+          "description": "💎 value – element value"
+        },
+        "emojiCode.htmlAttr.placeholder": {
+          "type": "boolean",
+          "default": true,
+          "description": "💡 placeholder – placeholder hint"
+        },
+        "emojiCode.htmlAttr.action": {
+          "type": "boolean",
+          "default": true,
+          "description": "🎯 action – form submission URL"
+        },
+        "emojiCode.htmlAttr.method": {
+          "type": "boolean",
+          "default": true,
+          "description": "📮 method – HTTP method"
+        },
+        "emojiCode.htmlAttr.target": {
+          "type": "boolean",
+          "default": true,
+          "description": "🏹 target – link target"
+        },
+        "emojiCode.htmlAttr.rel": {
+          "type": "boolean",
+          "default": true,
+          "description": "🤝 rel – link relationship"
+        },
+        "emojiCode.htmlAttr.width": {
+          "type": "boolean",
+          "default": true,
+          "description": "↔️ width – element width"
+        },
+        "emojiCode.htmlAttr.height": {
+          "type": "boolean",
+          "default": true,
+          "description": "↕️ height – element height"
+        },
+        "emojiCode.htmlAttr.disabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "🚫 disabled – disabled state"
+        },
+        "emojiCode.htmlAttr.required": {
+          "type": "boolean",
+          "default": true,
+          "description": "❗ required – required field"
+        },
+        "emojiCode.htmlAttr.checked": {
+          "type": "boolean",
+          "default": true,
+          "description": "✅ checked – checked state"
+        },
+        "emojiCode.htmlAttr.readonly": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔒 readonly – read-only field"
+        },
+        "emojiCode.htmlAttr.hidden": {
+          "type": "boolean",
+          "default": true,
+          "description": "👻 hidden – hidden element"
+        },
+        "emojiCode.htmlAttr.autofocus": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔦 autofocus – automatic focus"
+        },
+        "emojiCode.htmlAttr.defer": {
+          "type": "boolean",
+          "default": true,
+          "description": "⏱️ defer – deferred script loading"
+        },
+        "emojiCode.htmlAttr.async": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔄 async – asynchronous loading"
+        },
+        "emojiCode.htmlAttr.charset": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔠 charset – character encoding"
+        },
+        "emojiCode.htmlAttr.lang": {
+          "type": "boolean",
+          "default": true,
+          "description": "🌎 lang – language code"
+        },
+        "emojiCode.htmlAttr.role": {
+          "type": "boolean",
+          "default": true,
+          "description": "🎪 role – ARIA role"
+        },
+        "emojiCode.htmlAttr.tabindex": {
+          "type": "boolean",
+          "default": true,
+          "description": "#️⃣ tabindex – tab order index"
+        },
+        "emojiCode.htmlAttr.for": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔁 for – associated control id"
+        },
+        "emojiCode.htmlAttr.loading": {
+          "type": "boolean",
+          "default": true,
+          "description": "⏰ loading – lazy / eager loading"
+        },
+        "emojiCode.htmlAttr.content": {
+          "type": "boolean",
+          "default": true,
+          "description": "📜 content – meta content value"
+        }
       }
     }
+  },
+  "devDependencies": {
+    "@vscode/vsce": "^3.7.1"
   }
 }

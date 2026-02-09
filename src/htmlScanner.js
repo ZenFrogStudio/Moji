@@ -131,7 +131,14 @@ function scanHtmlTokens(document) {
 
     const tagName = text.substring(nameStart, i).toLowerCase();
 
-    // Determine category
+    // ── Closing tags – skip entirely (no emoji on </tag>) ──────────────────
+    if (isClosing) {
+      while (i < len && text[i] !== '>') i++;
+      if (i < len) i++;
+      continue;
+    }
+
+    // ── Opening tags only – emit tag name match ───────────────────────────
     const isVoid     = HTML_VOID_EMOJI_MAP.hasOwnProperty(tagName);
     const isKnownTag = HTML_TAG_EMOJI_MAP.hasOwnProperty(tagName);
 
@@ -143,13 +150,6 @@ function scanHtmlTokens(document) {
           document.positionAt(i),
         ),
       });
-    }
-
-    // ── Closing tags have no attributes – skip to '>' ─────────────────────
-    if (isClosing) {
-      while (i < len && text[i] !== '>') i++;
-      if (i < len) i++;
-      continue;
     }
 
     // ── Opening tag – scan attributes ─────────────────────────────────────
