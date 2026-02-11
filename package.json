@@ -1,8 +1,8 @@
 {
   "name": "Emoji-Code",
   "displayName": "Emoji-Code",
-  "description": "Adds emojis to your coding experience for enhanced memorability and ease of comprehension.",
-  "version": "0.2.0",
+  "description": "Adds emojis to your coding experience for enhanced memorability and comprehension.",
+  "version": "0.3.0",
   "publisher": "your-publisher-id",
   "license": "MIT",
   "repository": {
@@ -19,7 +19,10 @@
   "activationEvents": [
     "onLanguage:javascript",
     "onLanguage:javascriptreact",
-    "onLanguage:html"
+    "onLanguage:html",
+    "onLanguage:css",
+    "onLanguage:scss",
+    "onLanguage:less"
   ],
   "main": "./src/extension.js",
   "contributes": {
@@ -30,9 +33,17 @@
       },
       {
         "command": "emojiCode.openSettings",
-        "title": "Emoji-Code: Configure HTML Emojis"
+        "title": "Customize"
       }
     ],
+    "menus": {
+      "extension/context": [
+        {
+          "command": "emojiCode.openSettings",
+          "group": "navigation"
+        }
+      ]
+    },
     "configuration": {
       "title": "Emoji-Code",
       "properties": {
@@ -75,6 +86,186 @@
           "type": "boolean",
           "default": true,
           "description": "Master toggle: show emojis for HTML attribute names."
+        },
+        "emojiCode.javascriptKeywords": {
+          "type": "boolean",
+          "default": true,
+          "description": "Master toggle: show emojis for JavaScript keywords."
+        },
+        "emojiCode.jsKeyword.await": {
+          "type": "boolean",
+          "default": true,
+          "description": "⏳ await – waiting for a promise"
+        },
+        "emojiCode.jsKeyword.break": {
+          "type": "boolean",
+          "default": true,
+          "description": "🛑 break – exit loop / switch"
+        },
+        "emojiCode.jsKeyword.case": {
+          "type": "boolean",
+          "default": true,
+          "description": "📋 case – pattern match branch"
+        },
+        "emojiCode.jsKeyword.catch": {
+          "type": "boolean",
+          "default": true,
+          "description": "🥅 catch – catch thrown errors"
+        },
+        "emojiCode.jsKeyword.class": {
+          "type": "boolean",
+          "default": true,
+          "description": "🏛️ class – class declaration"
+        },
+        "emojiCode.jsKeyword.const": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔒 const – immutable binding"
+        },
+        "emojiCode.jsKeyword.continue": {
+          "type": "boolean",
+          "default": true,
+          "description": "⏭️ continue – next iteration"
+        },
+        "emojiCode.jsKeyword.debugger": {
+          "type": "boolean",
+          "default": true,
+          "description": "🐛 debugger – breakpoint"
+        },
+        "emojiCode.jsKeyword.default": {
+          "type": "boolean",
+          "default": true,
+          "description": "📌 default – fallback branch"
+        },
+        "emojiCode.jsKeyword.delete": {
+          "type": "boolean",
+          "default": true,
+          "description": "🗑️ delete – remove property"
+        },
+        "emojiCode.jsKeyword.do": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔄 do – do-while loop"
+        },
+        "emojiCode.jsKeyword.else": {
+          "type": "boolean",
+          "default": true,
+          "description": "↪️ else – alternative branch"
+        },
+        "emojiCode.jsKeyword.enum": {
+          "type": "boolean",
+          "default": true,
+          "description": "📊 enum – enumeration (reserved)"
+        },
+        "emojiCode.jsKeyword.export": {
+          "type": "boolean",
+          "default": true,
+          "description": "📦 export – module export"
+        },
+        "emojiCode.jsKeyword.extends": {
+          "type": "boolean",
+          "default": true,
+          "description": "🧬 extends – inheritance"
+        },
+        "emojiCode.jsKeyword.finally": {
+          "type": "boolean",
+          "default": true,
+          "description": "🏁 finally – guaranteed cleanup"
+        },
+        "emojiCode.jsKeyword.for": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔁 for – for loop"
+        },
+        "emojiCode.jsKeyword.function": {
+          "type": "boolean",
+          "default": true,
+          "description": "⚡ function – function declaration"
+        },
+        "emojiCode.jsKeyword.if": {
+          "type": "boolean",
+          "default": true,
+          "description": "❓ if – conditional"
+        },
+        "emojiCode.jsKeyword.import": {
+          "type": "boolean",
+          "default": true,
+          "description": "📥 import – module import"
+        },
+        "emojiCode.jsKeyword.in": {
+          "type": "boolean",
+          "default": true,
+          "description": "📍 in – property membership"
+        },
+        "emojiCode.jsKeyword.instanceof": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔎 instanceof – prototype check"
+        },
+        "emojiCode.jsKeyword.new": {
+          "type": "boolean",
+          "default": true,
+          "description": "✨ new – instance creation"
+        },
+        "emojiCode.jsKeyword.return": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔙 return – return value"
+        },
+        "emojiCode.jsKeyword.super": {
+          "type": "boolean",
+          "default": true,
+          "description": "🦸 super – parent class ref"
+        },
+        "emojiCode.jsKeyword.switch": {
+          "type": "boolean",
+          "default": true,
+          "description": "🎚️ switch – multi-branch"
+        },
+        "emojiCode.jsKeyword.this": {
+          "type": "boolean",
+          "default": true,
+          "description": "👆 this – current context"
+        },
+        "emojiCode.jsKeyword.throw": {
+          "type": "boolean",
+          "default": true,
+          "description": "💥 throw – throw error"
+        },
+        "emojiCode.jsKeyword.try": {
+          "type": "boolean",
+          "default": true,
+          "description": "🤞 try – attempt block"
+        },
+        "emojiCode.jsKeyword.typeof": {
+          "type": "boolean",
+          "default": true,
+          "description": "🏷️ typeof – type check"
+        },
+        "emojiCode.jsKeyword.var": {
+          "type": "boolean",
+          "default": true,
+          "description": "📝 var – variable (legacy)"
+        },
+        "emojiCode.jsKeyword.void": {
+          "type": "boolean",
+          "default": true,
+          "description": "🕳️ void – discard value"
+        },
+        "emojiCode.jsKeyword.while": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔂 while – while loop"
+        },
+        "emojiCode.jsKeyword.with": {
+          "type": "boolean",
+          "default": true,
+          "description": "🤝 with – with statement"
+        },
+        "emojiCode.jsKeyword.yield": {
+          "type": "boolean",
+          "default": true,
+          "description": "🌾 yield – generator yield"
         },
         "emojiCode.htmlTag.html": {
           "type": "boolean",
@@ -640,6 +831,196 @@
           "type": "boolean",
           "default": true,
           "description": "📜 content – meta content value"
+        },
+        "emojiCode.cssAtRules": {
+          "type": "boolean",
+          "default": true,
+          "description": "Master toggle: show emojis for CSS at-rules (@media, @keyframes, etc.)"
+        },
+        "emojiCode.cssLayout": {
+          "type": "boolean",
+          "default": true,
+          "description": "Master toggle: show emojis for CSS layout properties."
+        },
+        "emojiCode.cssBox": {
+          "type": "boolean",
+          "default": true,
+          "description": "Master toggle: show emojis for CSS box model properties."
+        },
+        "emojiCode.cssVisual": {
+          "type": "boolean",
+          "default": true,
+          "description": "Master toggle: show emojis for CSS visual properties."
+        },
+        "emojiCode.cssPseudo": {
+          "type": "boolean",
+          "default": true,
+          "description": "Master toggle: show emojis for CSS pseudo-classes."
+        },
+        "emojiCode.cssValues": {
+          "type": "boolean",
+          "default": true,
+          "description": "Master toggle: show emojis for CSS important values."
+        },
+        "emojiCode.cssAtRule.media": {
+          "type": "boolean",
+          "default": true,
+          "description": "📺 @media – media queries"
+        },
+        "emojiCode.cssAtRule.keyframes": {
+          "type": "boolean",
+          "default": true,
+          "description": "🎬 @keyframes – animation keyframes"
+        },
+        "emojiCode.cssAtRule.import": {
+          "type": "boolean",
+          "default": true,
+          "description": "📥 @import – import stylesheet"
+        },
+        "emojiCode.cssAtRule.font-face": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔤 @font-face – custom fonts"
+        },
+        "emojiCode.cssAtRule.supports": {
+          "type": "boolean",
+          "default": true,
+          "description": "✅ @supports – feature detection"
+        },
+        "emojiCode.cssLayout.display": {
+          "type": "boolean",
+          "default": true,
+          "description": "🖥️ display – display mode"
+        },
+        "emojiCode.cssLayout.flex": {
+          "type": "boolean",
+          "default": true,
+          "description": "📦 flex – flexbox"
+        },
+        "emojiCode.cssLayout.grid": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔲 grid – grid layout"
+        },
+        "emojiCode.cssLayout.position": {
+          "type": "boolean",
+          "default": true,
+          "description": "📍 position – positioning"
+        },
+        "emojiCode.cssLayout.float": {
+          "type": "boolean",
+          "default": true,
+          "description": "🎈 float – float"
+        },
+        "emojiCode.cssBox.margin": {
+          "type": "boolean",
+          "default": true,
+          "description": "⬜ margin – outer spacing"
+        },
+        "emojiCode.cssBox.padding": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔳 padding – inner spacing"
+        },
+        "emojiCode.cssBox.border": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔲 border – border"
+        },
+        "emojiCode.cssBox.width": {
+          "type": "boolean",
+          "default": true,
+          "description": "↔️ width – width"
+        },
+        "emojiCode.cssBox.height": {
+          "type": "boolean",
+          "default": true,
+          "description": "↕️ height – height"
+        },
+        "emojiCode.cssVisual.background": {
+          "type": "boolean",
+          "default": true,
+          "description": "🖼️ background – background"
+        },
+        "emojiCode.cssVisual.color": {
+          "type": "boolean",
+          "default": true,
+          "description": "🎨 color – color"
+        },
+        "emojiCode.cssVisual.opacity": {
+          "type": "boolean",
+          "default": true,
+          "description": "👻 opacity – transparency"
+        },
+        "emojiCode.cssVisual.transform": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔄 transform – transform"
+        },
+        "emojiCode.cssVisual.animation": {
+          "type": "boolean",
+          "default": true,
+          "description": "🎬 animation – animation"
+        },
+        "emojiCode.cssVisual.transition": {
+          "type": "boolean",
+          "default": true,
+          "description": "⏳ transition – transition"
+        },
+        "emojiCode.cssVisual.visibility": {
+          "type": "boolean",
+          "default": true,
+          "description": "👁️ visibility – visibility"
+        },
+        "emojiCode.cssVisual.cursor": {
+          "type": "boolean",
+          "default": true,
+          "description": "👆 cursor – cursor"
+        },
+        "emojiCode.cssPseudo.hover": {
+          "type": "boolean",
+          "default": true,
+          "description": "🖱️ :hover – mouse hover"
+        },
+        "emojiCode.cssPseudo.focus": {
+          "type": "boolean",
+          "default": true,
+          "description": "🎯 :focus – focus state"
+        },
+        "emojiCode.cssPseudo.active": {
+          "type": "boolean",
+          "default": true,
+          "description": "⚡ :active – active/click state"
+        },
+        "emojiCode.cssPseudo.first-child": {
+          "type": "boolean",
+          "default": true,
+          "description": "👒 :first-child – first child"
+        },
+        "emojiCode.cssPseudo.last-child": {
+          "type": "boolean",
+          "default": true,
+          "description": "👴 :last-child – last child"
+        },
+        "emojiCode.cssValue.important": {
+          "type": "boolean",
+          "default": true,
+          "description": "❗ !important – important override"
+        },
+        "emojiCode.cssValue.none": {
+          "type": "boolean",
+          "default": true,
+          "description": "🚫 none – none value"
+        },
+        "emojiCode.cssValue.auto": {
+          "type": "boolean",
+          "default": true,
+          "description": "🤖 auto – auto value"
+        },
+        "emojiCode.cssValue.inherit": {
+          "type": "boolean",
+          "default": true,
+          "description": "👪 inherit – inherit value"
         }
       }
     }

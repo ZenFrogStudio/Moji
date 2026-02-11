@@ -7,13 +7,23 @@
 const vscode = require('vscode');
 const { KEYWORD_EMOJI_MAP } = require('./keywordMap');
 const { HTML_TAG_EMOJI_MAP, HTML_VOID_EMOJI_MAP, HTML_ATTR_EMOJI_MAP } = require('./htmlKeywordMap');
+const {
+  CSS_ATRULE_EMOJI_MAP,
+  CSS_LAYOUT_EMOJI_MAP,
+  CSS_BOX_EMOJI_MAP,
+  CSS_VISUAL_EMOJI_MAP,
+  CSS_PSEUDO_EMOJI_MAP,
+  CSS_VALUE_EMOJI_MAP,
+} = require('./cssKeywordMap');
 const { scanKeywords } = require('./scanner');
 const { scanHtmlTokens } = require('./htmlScanner');
+const { scanCssTokens } = require('./cssScanner');
 
 const JS_LANGUAGES = new Set(['javascript', 'javascriptreact']);
 const HTML_LANGUAGES = new Set(['html']);
+const CSS_LANGUAGES = new Set(['css', 'scss', 'less']);
 
-const SUPPORTED_LANGUAGES = new Set([...JS_LANGUAGES, ...HTML_LANGUAGES]);
+const SUPPORTED_LANGUAGES = new Set([...JS_LANGUAGES, ...HTML_LANGUAGES, ...CSS_LANGUAGES]);
 
 class KeywordDecorator {
   constructor() {
@@ -63,8 +73,11 @@ class KeywordDecorator {
     };
 
     // ── JavaScript keywords ─────────────────────────────────────────────
-    for (const [keyword, emoji] of Object.entries(KEYWORD_EMOJI_MAP)) {
-      addDecoration(keyword, emoji);
+    if (config.get('javascriptKeywords', true)) {
+      const jsCfg = vscode.workspace.getConfiguration('emojiCode.jsKeyword');
+      for (const [keyword, emoji] of Object.entries(KEYWORD_EMOJI_MAP)) {
+        if (jsCfg.get(keyword, true)) addDecoration(keyword, emoji);
+      }
     }
 
     // ── HTML categories (master toggle + individual per-token toggles) ──
@@ -86,6 +99,49 @@ class KeywordDecorator {
       const attrCfg = vscode.workspace.getConfiguration('emojiCode.htmlAttr');
       for (const [attr, emoji] of Object.entries(HTML_ATTR_EMOJI_MAP)) {
         if (attrCfg.get(attr, true)) addDecoration(`attr:${attr}`, emoji);
+      }
+    }
+
+    // ── CSS categories ───────────────────────────────────────────────────
+    if (config.get('cssAtRules', true)) {
+      const atRuleCfg = vscode.workspace.getConfiguration('emojiCode.cssAtRule');
+      for (const [rule, emoji] of Object.entries(CSS_ATRULE_EMOJI_MAP)) {
+        if (atRuleCfg.get(rule, true)) addDecoration(`cssAtRule:${rule}`, emoji);
+      }
+    }
+
+    if (config.get('cssLayout', true)) {
+      const layoutCfg = vscode.workspace.getConfiguration('emojiCode.cssLayout');
+      for (const [prop, emoji] of Object.entries(CSS_LAYOUT_EMOJI_MAP)) {
+        if (layoutCfg.get(prop, true)) addDecoration(`cssLayout:${prop}`, emoji);
+      }
+    }
+
+    if (config.get('cssBox', true)) {
+      const boxCfg = vscode.workspace.getConfiguration('emojiCode.cssBox');
+      for (const [prop, emoji] of Object.entries(CSS_BOX_EMOJI_MAP)) {
+        if (boxCfg.get(prop, true)) addDecoration(`cssBox:${prop}`, emoji);
+      }
+    }
+
+    if (config.get('cssVisual', true)) {
+      const visualCfg = vscode.workspace.getConfiguration('emojiCode.cssVisual');
+      for (const [prop, emoji] of Object.entries(CSS_VISUAL_EMOJI_MAP)) {
+        if (visualCfg.get(prop, true)) addDecoration(`cssVisual:${prop}`, emoji);
+      }
+    }
+
+    if (config.get('cssPseudo', true)) {
+      const pseudoCfg = vscode.workspace.getConfiguration('emojiCode.cssPseudo');
+      for (const [pseudo, emoji] of Object.entries(CSS_PSEUDO_EMOJI_MAP)) {
+        if (pseudoCfg.get(pseudo, true)) addDecoration(`cssPseudo:${pseudo}`, emoji);
+      }
+    }
+
+    if (config.get('cssValues', true)) {
+      const valueCfg = vscode.workspace.getConfiguration('emojiCode.cssValue');
+      for (const [value, emoji] of Object.entries(CSS_VALUE_EMOJI_MAP)) {
+        if (valueCfg.get(value, true)) addDecoration(`cssValue:${value}`, emoji);
       }
     }
   }
@@ -112,9 +168,14 @@ class KeywordDecorator {
 
     // Scan for keyword matches using the appropriate scanner.
     const langId = editor.document.languageId;
-    const matches = HTML_LANGUAGES.has(langId)
-      ? scanHtmlTokens(editor.document)
-      : scanKeywords(editor.document);
+    let matches;
+    if (HTML_LANGUAGES.has(langId)) {
+      matches = scanHtmlTokens(editor.document);
+    } else if (CSS_LANGUAGES.has(langId)) {
+      matches = scanCssTokens(editor.document);
+    } else {
+      matches = scanKeywords(editor.document);
+    }
 
     // Group matches by keyword.
     /** @type {Map<string, vscode.DecorationOptions[]>} */

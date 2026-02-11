@@ -1,0 +1,15 @@
+# Exclude development and unnecessary files from the VSIX package
+.vscode/
+.claude/
+.git/
+.gitignore
+node_modules/
+test/
+*.vsix
+nul
+
+# Exclude large source image files (keep only the final icon)
+src/img/*.clip
+src/img/EmojiCodePro.png
+src/img/Emoticon_Smile_Face.png
+src/img/Emoticon_Smile_Face_v4.png

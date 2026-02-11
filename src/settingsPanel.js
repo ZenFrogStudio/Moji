@@ -1,9 +1,20 @@
-// Custom webview panel for configuring HTML emoji settings with a tabbed interface.
+// Custom webview panel for configuring Emoji-Code settings with a language-based tabbed interface.
+// Uses server-side rendering - all interactions handled via postMessage, no client-side DOM manipulation.
 
 const vscode = require('vscode');
+const { KEYWORD_EMOJI_MAP } = require('./keywordMap');
 const { HTML_TAG_EMOJI_MAP, HTML_VOID_EMOJI_MAP, HTML_ATTR_EMOJI_MAP } = require('./htmlKeywordMap');
+const {
+  CSS_ATRULE_EMOJI_MAP,
+  CSS_LAYOUT_EMOJI_MAP,
+  CSS_BOX_EMOJI_MAP,
+  CSS_VISUAL_EMOJI_MAP,
+  CSS_PSEUDO_EMOJI_MAP,
+  CSS_VALUE_EMOJI_MAP,
+} = require('./cssKeywordMap');
 
 let currentPanel = undefined;
+let currentTab = 'javascript'; // Track active tab server-side
 
 /**
  * Opens (or focuses) the Emoji-Code settings panel.
@@ -15,9 +26,10 @@ function openSettingsPanel(context, onSettingsChanged) {
     ? vscode.window.activeTextEditor.viewColumn
     : undefined;
 
-  // If panel already exists, reveal it
+  // If panel already exists, reveal it AND refresh content
   if (currentPanel) {
     currentPanel.reveal(column);
+    currentPanel.webview.html = getWebviewContent();
     return;
   }
 
@@ -37,39 +49,63 @@ function openSettingsPanel(context, onSettingsChanged) {
   // Handle messages from the webview
   currentPanel.webview.onDidReceiveMessage(
     async (message) => {
-      if (message.command === 'toggleSetting') {
+      if (message.command === 'switchTab') {
+        currentTab = message.tab;
+        currentPanel.webview.html = getWebviewContent();
+      } else if (message.command === 'toggleSetting') {
         const config = vscode.workspace.getConfiguration();
         await config.update(message.key, message.value, vscode.ConfigurationTarget.Global);
         if (onSettingsChanged) onSettingsChanged();
+        // Re-render to show updated state
+        currentPanel.webview.html = getWebviewContent();
       } else if (message.command === 'toggleAll') {
         const config = vscode.workspace.getConfiguration();
         const { category, value } = message;
 
         let map, prefix;
-        if (category === 'tags') {
+        if (category === 'javascript') {
+          map = KEYWORD_EMOJI_MAP;
+          prefix = 'emojiCode.jsKeyword';
+        } else if (category === 'tags') {
           map = HTML_TAG_EMOJI_MAP;
           prefix = 'emojiCode.htmlTag';
         } else if (category === 'void') {
           map = HTML_VOID_EMOJI_MAP;
           prefix = 'emojiCode.htmlVoid';
-        } else {
+        } else if (category === 'attr') {
           map = HTML_ATTR_EMOJI_MAP;
           prefix = 'emojiCode.htmlAttr';
+        } else if (category === 'cssAtRule') {
+          map = CSS_ATRULE_EMOJI_MAP;
+          prefix = 'emojiCode.cssAtRule';
+        } else if (category === 'cssLayout') {
+          map = CSS_LAYOUT_EMOJI_MAP;
+          prefix = 'emojiCode.cssLayout';
+        } else if (category === 'cssBox') {
+          map = CSS_BOX_EMOJI_MAP;
+          prefix = 'emojiCode.cssBox';
+        } else if (category === 'cssVisual') {
+          map = CSS_VISUAL_EMOJI_MAP;
+          prefix = 'emojiCode.cssVisual';
+        } else if (category === 'cssPseudo') {
+          map = CSS_PSEUDO_EMOJI_MAP;
+          prefix = 'emojiCode.cssPseudo';
+        } else if (category === 'cssValue') {
+          map = CSS_VALUE_EMOJI_MAP;
+          prefix = 'emojiCode.cssValue';
+        } else {
+          return; // Unknown category
         }
 
-        for (const key of Object.keys(map)) {
-          await config.update(`${prefix}.${key}`, value, vscode.ConfigurationTarget.Global);
-        }
-        if (onSettingsChanged) onSettingsChanged();
-
-        // Refresh the panel to show updated state
-        currentPanel.webview.html = getWebviewContent();
-      } else if (message.command === 'getSettings') {
-        // Send current settings to webview
-        currentPanel.webview.postMessage({
-          command: 'settingsData',
-          settings: getCurrentSettings(),
+        // Batch all updates in parallel (don't await - let it run in background)
+        Promise.all(
+          Object.keys(map).map(key =>
+            config.update(`${prefix}.${key}`, value, vscode.ConfigurationTarget.Global)
+          )
+        ).then(() => {
+          if (onSettingsChanged) onSettingsChanged();
         });
+        // Don't re-render - client updates UI instantly
       }
     },
     undefined,
@@ -87,25 +123,49 @@ function openSettingsPanel(context, onSettingsChanged) {
 }
 
 /**
- * Get current settings state for all HTML emojis.
+ * Get current settings state for all emojis.
  */
 function getCurrentSettings() {
+  const mainCfg = vscode.workspace.getConfiguration('emojiCode');
+  const jsCfg = vscode.workspace.getConfiguration('emojiCode.jsKeyword');
   const tagCfg = vscode.workspace.getConfiguration('emojiCode.htmlTag');
   const voidCfg = vscode.workspace.getConfiguration('emojiCode.htmlVoid');
   const attrCfg = vscode.workspace.getConfiguration('emojiCode.htmlAttr');
-  const mainCfg = vscode.workspace.getConfiguration('emojiCode');
+  const cssAtRuleCfg = vscode.workspace.getConfiguration('emojiCode.cssAtRule');
+  const cssLayoutCfg = vscode.workspace.getConfiguration('emojiCode.cssLayout');
+  const cssBoxCfg = vscode.workspace.getConfiguration('emojiCode.cssBox');
+  const cssVisualCfg = vscode.workspace.getConfiguration('emojiCode.cssVisual');
+  const cssPseudoCfg = vscode.workspace.getConfiguration('emojiCode.cssPseudo');
+  const cssValueCfg = vscode.workspace.getConfiguration('emojiCode.cssValue');
 
   const settings = {
     masterToggles: {
+      javascriptKeywords: mainCfg.get('javascriptKeywords', true),
       htmlTags: mainCfg.get('htmlTags', true),
       htmlVoidElements: mainCfg.get('htmlVoidElements', true),
       htmlAttributes: mainCfg.get('htmlAttributes', true),
+      cssAtRules: mainCfg.get('cssAtRules', true),
+      cssLayout: mainCfg.get('cssLayout', true),
+      cssBox: mainCfg.get('cssBox', true),
+      cssVisual: mainCfg.get('cssVisual', true),
+      cssPseudo: mainCfg.get('cssPseudo', true),
+      cssValues: mainCfg.get('cssValues', true),
     },
+    javascript: {},
     tags: {},
     void: {},
     attr: {},
+    cssAtRule: {},
+    cssLayout: {},
+    cssBox: {},
+    cssVisual: {},
+    cssPseudo: {},
+    cssValue: {},
   };
 
+  for (const key of Object.keys(KEYWORD_EMOJI_MAP)) {
+    settings.javascript[key] = jsCfg.get(key, true);
+  }
   for (const key of Object.keys(HTML_TAG_EMOJI_MAP)) {
     settings.tags[key] = tagCfg.get(key, true);
   }
@@ -114,6 +174,24 @@ function getCurrentSettings() {
   }
   for (const key of Object.keys(HTML_ATTR_EMOJI_MAP)) {
     settings.attr[key] = attrCfg.get(key, true);
+  }
+  for (const key of Object.keys(CSS_ATRULE_EMOJI_MAP)) {
+    settings.cssAtRule[key] = cssAtRuleCfg.get(key, true);
+  }
+  for (const key of Object.keys(CSS_LAYOUT_EMOJI_MAP)) {
+    settings.cssLayout[key] = cssLayoutCfg.get(key, true);
+  }
+  for (const key of Object.keys(CSS_BOX_EMOJI_MAP)) {
+    settings.cssBox[key] = cssBoxCfg.get(key, true);
+  }
+  for (const key of Object.keys(CSS_VISUAL_EMOJI_MAP)) {
+    settings.cssVisual[key] = cssVisualCfg.get(key, true);
+  }
+  for (const key of Object.keys(CSS_PSEUDO_EMOJI_MAP)) {
+    settings.cssPseudo[key] = cssPseudoCfg.get(key, true);
+  }
+  for (const key of Object.keys(CSS_VALUE_EMOJI_MAP)) {
+    settings.cssValue[key] = cssValueCfg.get(key, true);
   }
 
   return settings;
@@ -126,17 +204,66 @@ function getWebviewContent() {
   const settings = getCurrentSettings();
 
   // Build checkbox lists for each category
+  const jsItems = Object.entries(KEYWORD_EMOJI_MAP)
+    .map(([key, emoji]) => createCheckboxItem('javascript', key, emoji, key, settings.javascript[key]))
+    .join('');
+
   const tagItems = Object.entries(HTML_TAG_EMOJI_MAP)
-    .map(([key, emoji]) => createCheckboxItem('tags', key, emoji, `<${key}>`, settings.tags[key]))
+    .map(([key, emoji]) => createCheckboxItem('tags', key, emoji, `&lt;${key}&gt;`, settings.tags[key]))
     .join('');
 
   const voidItems = Object.entries(HTML_VOID_EMOJI_MAP)
-    .map(([key, emoji]) => createCheckboxItem('void', key, emoji, `<${key}>`, settings.void[key]))
+    .map(([key, emoji]) => createCheckboxItem('void', key, emoji, `&lt;${key}&gt;`, settings.void[key]))
     .join('');
 
   const attrItems = Object.entries(HTML_ATTR_EMOJI_MAP)
     .map(([key, emoji]) => createCheckboxItem('attr', key, emoji, key, settings.attr[key]))
     .join('');
+
+  // CSS items
+  const cssAtRuleItems = Object.entries(CSS_ATRULE_EMOJI_MAP)
+    .map(([key, emoji]) => createCheckboxItem('cssAtRule', key, emoji, `@${key}`, settings.cssAtRule[key]))
+    .join('');
+
+  const cssLayoutItems = Object.entries(CSS_LAYOUT_EMOJI_MAP)
+    .map(([key, emoji]) => createCheckboxItem('cssLayout', key, emoji, key, settings.cssLayout[key]))
+    .join('');
+
+  const cssBoxItems = Object.entries(CSS_BOX_EMOJI_MAP)
+    .map(([key, emoji]) => createCheckboxItem('cssBox', key, emoji, key, settings.cssBox[key]))
+    .join('');
+
+  const cssVisualItems = Object.entries(CSS_VISUAL_EMOJI_MAP)
+    .map(([key, emoji]) => createCheckboxItem('cssVisual', key, emoji, key, settings.cssVisual[key]))
+    .join('');
+
+  const cssPseudoItems = Object.entries(CSS_PSEUDO_EMOJI_MAP)
+    .map(([key, emoji]) => createCheckboxItem('cssPseudo', key, emoji, `:${key}`, settings.cssPseudo[key]))
+    .join('');
+
+  const cssValueItems = Object.entries(CSS_VALUE_EMOJI_MAP)
+    .map(([key, emoji]) => createCheckboxItem('cssValue', key, emoji, key === 'important' ? '!important' : key, settings.cssValue[key]))
+    .join('');
+
+  const jsCount = Object.keys(KEYWORD_EMOJI_MAP).length;
+  const tagCount = Object.keys(HTML_TAG_EMOJI_MAP).length;
+  const voidCount = Object.keys(HTML_VOID_EMOJI_MAP).length;
+  const attrCount = Object.keys(HTML_ATTR_EMOJI_MAP).length;
+  const cssAtRuleCount = Object.keys(CSS_ATRULE_EMOJI_MAP).length;
+  const cssLayoutCount = Object.keys(CSS_LAYOUT_EMOJI_MAP).length;
+  const cssBoxCount = Object.keys(CSS_BOX_EMOJI_MAP).length;
+  const cssVisualCount = Object.keys(CSS_VISUAL_EMOJI_MAP).length;
+  const cssPseudoCount = Object.keys(CSS_PSEUDO_EMOJI_MAP).length;
+  const cssValueCount = Object.keys(CSS_VALUE_EMOJI_MAP).length;
+  const cssTotal = cssAtRuleCount + cssLayoutCount + cssBoxCount + cssVisualCount + cssPseudoCount + cssValueCount;
+
+  // Determine which tab content to show (server-side)
+  const jsTabActive = currentTab === 'javascript' ? 'active' : '';
+  const htmlTabActive = currentTab === 'html' ? 'active' : '';
+  const cssTabActive = currentTab === 'css' ? 'active' : '';
+  const jsContentActive = currentTab === 'javascript' ? 'active' : '';
+  const htmlContentActive = currentTab === 'html' ? 'active' : '';
+  const cssContentActive = currentTab === 'css' ? 'active' : '';
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -161,9 +288,7 @@ function getWebviewContent() {
       --focus-border: var(--vscode-focusBorder);
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       font-family: var(--vscode-font-family);
@@ -197,9 +322,7 @@ function getWebviewContent() {
       transition: all 0.2s;
     }
 
-    .tab:hover {
-      background: var(--tab-active-bg);
-    }
+    .tab:hover { background: var(--tab-active-bg); }
 
     .tab.active {
       background: var(--tab-active-bg);
@@ -207,13 +330,13 @@ function getWebviewContent() {
       border-bottom-color: var(--focus-border);
     }
 
-    .tab-content {
-      display: none;
+    .tab.disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
     }
 
-    .tab-content.active {
-      display: block;
-    }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
 
     .master-toggle {
       display: flex;
@@ -233,7 +356,7 @@ function getWebviewContent() {
     .bulk-actions {
       display: flex;
       gap: 10px;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
     }
 
     .bulk-btn {
@@ -246,13 +369,11 @@ function getWebviewContent() {
       font-size: 0.9em;
     }
 
-    .bulk-btn:hover {
-      background: var(--button-hover-bg);
-    }
+    .bulk-btn:hover { background: var(--button-hover-bg); }
 
     .emoji-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
       gap: 8px;
     }
 
@@ -267,9 +388,7 @@ function getWebviewContent() {
       transition: background 0.15s;
     }
 
-    .emoji-item:hover {
-      background: var(--tab-active-bg);
-    }
+    .emoji-item:hover { background: var(--tab-active-bg); }
 
     .emoji-item input[type="checkbox"] {
       width: 18px;
@@ -290,178 +409,233 @@ function getWebviewContent() {
       font-size: 0.95em;
     }
 
-    .emoji-item.disabled {
-      opacity: 0.5;
-    }
-
     .count {
       font-size: 0.85em;
       color: var(--tab-inactive-fg);
       margin-left: 8px;
     }
 
-    .search-box {
-      width: 100%;
-      padding: 8px 12px;
-      margin-bottom: 15px;
-      background: var(--checkbox-bg);
-      border: 1px solid var(--checkbox-border);
-      border-radius: 4px;
-      color: var(--fg-color);
-      font-size: 1em;
+    .section {
+      margin-bottom: 20px;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 15px;
     }
 
-    .search-box:focus {
-      outline: none;
-      border-color: var(--focus-border);
+    .section-title {
+      font-weight: 500;
+      margin-bottom: 15px;
+      font-size: 1.1em;
     }
   </style>
 </head>
 <body>
-  <h1>Emoji-Code HTML Settings</h1>
+  <h1>Emoji-Code Settings</h1>
 
   <div class="tabs">
-    <button class="tab active" data-tab="tags">
-      Tags <span class="count">(${Object.keys(HTML_TAG_EMOJI_MAP).length})</span>
+    <button class="tab ${jsTabActive}" onclick="switchTab('javascript')" type="button">
+      JavaScript <span class="count">(${jsCount})</span>
     </button>
-    <button class="tab" data-tab="void">
-      Void Elements <span class="count">(${Object.keys(HTML_VOID_EMOJI_MAP).length})</span>
+    <button class="tab ${htmlTabActive}" onclick="switchTab('html')" type="button">
+      HTML <span class="count">(${tagCount + voidCount + attrCount})</span>
     </button>
-    <button class="tab" data-tab="attr">
-      Attributes <span class="count">(${Object.keys(HTML_ATTR_EMOJI_MAP).length})</span>
+    <button class="tab ${cssTabActive}" onclick="switchTab('css')" type="button">
+      CSS <span class="count">(${cssTotal})</span>
     </button>
   </div>
 
-  <!-- Tags Tab -->
-  <div id="tags" class="tab-content active">
+  <!-- JavaScript Tab -->
+  <div id="javascript" class="tab-content ${jsContentActive}">
     <div class="master-toggle">
-      <input type="checkbox" id="master-tags" ${settings.masterToggles.htmlTags ? 'checked' : ''}>
-      <label for="master-tags">Enable all tag emojis</label>
+      <input type="checkbox" id="master-javascript" ${settings.masterToggles.javascriptKeywords ? 'checked' : ''}
+        onchange="toggleSetting('emojiCode.javascriptKeywords', this.checked)">
+      <label for="master-javascript">Enable JavaScript keyword emojis</label>
     </div>
-    <input type="text" class="search-box" placeholder="Search tags..." data-target="tags">
     <div class="bulk-actions">
-      <button class="bulk-btn" data-action="all" data-category="tags">Select All</button>
-      <button class="bulk-btn" data-action="none" data-category="tags">Deselect All</button>
+      <button class="bulk-btn" onclick="toggleAll('javascript', true, this)" type="button">Select All</button>
+      <button class="bulk-btn" onclick="toggleAll('javascript', false, this)" type="button">Deselect All</button>
     </div>
-    <div class="emoji-grid" id="tags-grid">
-      ${tagItems}
+    <div class="emoji-grid">${jsItems}</div>
+  </div>
+
+  <!-- HTML Tab -->
+  <div id="html" class="tab-content ${htmlContentActive}">
+    <!-- Tags Section -->
+    <div class="section">
+      <div class="section-title">Tags <span class="count">(${tagCount})</span></div>
+      <div class="master-toggle">
+        <input type="checkbox" id="master-tags" ${settings.masterToggles.htmlTags ? 'checked' : ''}
+          onchange="toggleSetting('emojiCode.htmlTags', this.checked)">
+        <label for="master-tags">Enable tag emojis</label>
+      </div>
+      <div class="bulk-actions">
+        <button class="bulk-btn" onclick="toggleAll('tags', true, this)" type="button">Select All</button>
+        <button class="bulk-btn" onclick="toggleAll('tags', false, this)" type="button">Deselect All</button>
+      </div>
+      <div class="emoji-grid">${tagItems}</div>
+    </div>
+
+    <!-- Void Elements Section -->
+    <div class="section">
+      <div class="section-title">Void Elements <span class="count">(${voidCount})</span></div>
+      <div class="master-toggle">
+        <input type="checkbox" id="master-void" ${settings.masterToggles.htmlVoidElements ? 'checked' : ''}
+          onchange="toggleSetting('emojiCode.htmlVoidElements', this.checked)">
+        <label for="master-void">Enable void element emojis</label>
+      </div>
+      <div class="bulk-actions">
+        <button class="bulk-btn" onclick="toggleAll('void', true, this)" type="button">Select All</button>
+        <button class="bulk-btn" onclick="toggleAll('void', false, this)" type="button">Deselect All</button>
+      </div>
+      <div class="emoji-grid">${voidItems}</div>
+    </div>
+
+    <!-- Attributes Section -->
+    <div class="section">
+      <div class="section-title">Attributes <span class="count">(${attrCount})</span></div>
+      <div class="master-toggle">
+        <input type="checkbox" id="master-attr" ${settings.masterToggles.htmlAttributes ? 'checked' : ''}
+          onchange="toggleSetting('emojiCode.htmlAttributes', this.checked)">
+        <label for="master-attr">Enable attribute emojis</label>
+      </div>
+      <div class="bulk-actions">
+        <button class="bulk-btn" onclick="toggleAll('attr', true, this)" type="button">Select All</button>
+        <button class="bulk-btn" onclick="toggleAll('attr', false, this)" type="button">Deselect All</button>
+      </div>
+      <div class="emoji-grid">${attrItems}</div>
     </div>
   </div>
 
-  <!-- Void Elements Tab -->
-  <div id="void" class="tab-content">
-    <div class="master-toggle">
-      <input type="checkbox" id="master-void" ${settings.masterToggles.htmlVoidElements ? 'checked' : ''}>
-      <label for="master-void">Enable all void element emojis</label>
+  <!-- CSS Tab -->
+  <div id="css" class="tab-content ${cssContentActive}">
+    <!-- At-Rules Section -->
+    <div class="section">
+      <div class="section-title">At-Rules <span class="count">(${cssAtRuleCount})</span></div>
+      <div class="master-toggle">
+        <input type="checkbox" id="master-cssAtRule" ${settings.masterToggles.cssAtRules ? 'checked' : ''}
+          onchange="toggleSetting('emojiCode.cssAtRules', this.checked)">
+        <label for="master-cssAtRule">Enable at-rule emojis</label>
+      </div>
+      <div class="bulk-actions">
+        <button class="bulk-btn" onclick="toggleAll('cssAtRule', true, this)" type="button">Select All</button>
+        <button class="bulk-btn" onclick="toggleAll('cssAtRule', false, this)" type="button">Deselect All</button>
+      </div>
+      <div class="emoji-grid">${cssAtRuleItems}</div>
     </div>
-    <input type="text" class="search-box" placeholder="Search void elements..." data-target="void">
-    <div class="bulk-actions">
-      <button class="bulk-btn" data-action="all" data-category="void">Select All</button>
-      <button class="bulk-btn" data-action="none" data-category="void">Deselect All</button>
-    </div>
-    <div class="emoji-grid" id="void-grid">
-      ${voidItems}
-    </div>
-  </div>
 
-  <!-- Attributes Tab -->
-  <div id="attr" class="tab-content">
-    <div class="master-toggle">
-      <input type="checkbox" id="master-attr" ${settings.masterToggles.htmlAttributes ? 'checked' : ''}>
-      <label for="master-attr">Enable all attribute emojis</label>
+    <!-- Layout Section -->
+    <div class="section">
+      <div class="section-title">Layout Properties <span class="count">(${cssLayoutCount})</span></div>
+      <div class="master-toggle">
+        <input type="checkbox" id="master-cssLayout" ${settings.masterToggles.cssLayout ? 'checked' : ''}
+          onchange="toggleSetting('emojiCode.cssLayout', this.checked)">
+        <label for="master-cssLayout">Enable layout emojis</label>
+      </div>
+      <div class="bulk-actions">
+        <button class="bulk-btn" onclick="toggleAll('cssLayout', true, this)" type="button">Select All</button>
+        <button class="bulk-btn" onclick="toggleAll('cssLayout', false, this)" type="button">Deselect All</button>
+      </div>
+      <div class="emoji-grid">${cssLayoutItems}</div>
     </div>
-    <input type="text" class="search-box" placeholder="Search attributes..." data-target="attr">
-    <div class="bulk-actions">
-      <button class="bulk-btn" data-action="all" data-category="attr">Select All</button>
-      <button class="bulk-btn" data-action="none" data-category="attr">Deselect All</button>
+
+    <!-- Box Model Section -->
+    <div class="section">
+      <div class="section-title">Box Model <span class="count">(${cssBoxCount})</span></div>
+      <div class="master-toggle">
+        <input type="checkbox" id="master-cssBox" ${settings.masterToggles.cssBox ? 'checked' : ''}
+          onchange="toggleSetting('emojiCode.cssBox', this.checked)">
+        <label for="master-cssBox">Enable box model emojis</label>
+      </div>
+      <div class="bulk-actions">
+        <button class="bulk-btn" onclick="toggleAll('cssBox', true, this)" type="button">Select All</button>
+        <button class="bulk-btn" onclick="toggleAll('cssBox', false, this)" type="button">Deselect All</button>
+      </div>
+      <div class="emoji-grid">${cssBoxItems}</div>
     </div>
-    <div class="emoji-grid" id="attr-grid">
-      ${attrItems}
+
+    <!-- Visual Section -->
+    <div class="section">
+      <div class="section-title">Visual Properties <span class="count">(${cssVisualCount})</span></div>
+      <div class="master-toggle">
+        <input type="checkbox" id="master-cssVisual" ${settings.masterToggles.cssVisual ? 'checked' : ''}
+          onchange="toggleSetting('emojiCode.cssVisual', this.checked)">
+        <label for="master-cssVisual">Enable visual emojis</label>
+      </div>
+      <div class="bulk-actions">
+        <button class="bulk-btn" onclick="toggleAll('cssVisual', true, this)" type="button">Select All</button>
+        <button class="bulk-btn" onclick="toggleAll('cssVisual', false, this)" type="button">Deselect All</button>
+      </div>
+      <div class="emoji-grid">${cssVisualItems}</div>
+    </div>
+
+    <!-- Pseudo-classes Section -->
+    <div class="section">
+      <div class="section-title">Pseudo-classes <span class="count">(${cssPseudoCount})</span></div>
+      <div class="master-toggle">
+        <input type="checkbox" id="master-cssPseudo" ${settings.masterToggles.cssPseudo ? 'checked' : ''}
+          onchange="toggleSetting('emojiCode.cssPseudo', this.checked)">
+        <label for="master-cssPseudo">Enable pseudo-class emojis</label>
+      </div>
+      <div class="bulk-actions">
+        <button class="bulk-btn" onclick="toggleAll('cssPseudo', true, this)" type="button">Select All</button>
+        <button class="bulk-btn" onclick="toggleAll('cssPseudo', false, this)" type="button">Deselect All</button>
+      </div>
+      <div class="emoji-grid">${cssPseudoItems}</div>
+    </div>
+
+    <!-- Values Section -->
+    <div class="section">
+      <div class="section-title">Important Values <span class="count">(${cssValueCount})</span></div>
+      <div class="master-toggle">
+        <input type="checkbox" id="master-cssValue" ${settings.masterToggles.cssValues ? 'checked' : ''}
+          onchange="toggleSetting('emojiCode.cssValues', this.checked)">
+        <label for="master-cssValue">Enable value emojis</label>
+      </div>
+      <div class="bulk-actions">
+        <button class="bulk-btn" onclick="toggleAll('cssValue', true, this)" type="button">Select All</button>
+        <button class="bulk-btn" onclick="toggleAll('cssValue', false, this)" type="button">Deselect All</button>
+      </div>
+      <div class="emoji-grid">${cssValueItems}</div>
     </div>
   </div>
 
   <script>
     const vscode = acquireVsCodeApi();
 
-    // Tab switching
-    document.querySelectorAll('.tab').forEach(tab => {
-      tab.addEventListener('click', () => {
-        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-        tab.classList.add('active');
-        document.getElementById(tab.dataset.tab).classList.add('active');
-      });
-    });
+    function switchTab(tab) {
+      vscode.postMessage({ command: 'switchTab', tab: tab });
+    }
 
-    // Individual checkbox toggle
-    document.querySelectorAll('.emoji-item input[type="checkbox"]').forEach(checkbox => {
-      checkbox.addEventListener('change', (e) => {
-        const { category, key } = e.target.dataset;
-        let configKey;
-        if (category === 'tags') configKey = 'emojiCode.htmlTag.' + key;
-        else if (category === 'void') configKey = 'emojiCode.htmlVoid.' + key;
-        else configKey = 'emojiCode.htmlAttr.' + key;
+    function toggleSetting(key, value) {
+      vscode.postMessage({ command: 'toggleSetting', key: key, value: value });
+    }
 
-        vscode.postMessage({
-          command: 'toggleSetting',
-          key: configKey,
-          value: e.target.checked
-        });
-      });
-    });
+    function toggleAll(category, value, btn) {
+      // Instantly update UI - find checkboxes in the same section as the button
+      var section = btn.closest('.section') || btn.closest('.tab-content');
+      if (section) {
+        var checkboxes = section.querySelectorAll('.emoji-item input[type="checkbox"]');
+        checkboxes.forEach(function(cb) { cb.checked = value; });
+      }
+      // Save in background
+      vscode.postMessage({ command: 'toggleAll', category: category, value: value });
+    }
 
-    // Master toggles
-    document.getElementById('master-tags').addEventListener('change', (e) => {
-      vscode.postMessage({
-        command: 'toggleSetting',
-        key: 'emojiCode.htmlTags',
-        value: e.target.checked
-      });
-    });
-
-    document.getElementById('master-void').addEventListener('change', (e) => {
-      vscode.postMessage({
-        command: 'toggleSetting',
-        key: 'emojiCode.htmlVoidElements',
-        value: e.target.checked
-      });
-    });
-
-    document.getElementById('master-attr').addEventListener('change', (e) => {
-      vscode.postMessage({
-        command: 'toggleSetting',
-        key: 'emojiCode.htmlAttributes',
-        value: e.target.checked
-      });
-    });
-
-    // Bulk actions
-    document.querySelectorAll('.bulk-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const value = btn.dataset.action === 'all';
-        const category = btn.dataset.category;
-
-        vscode.postMessage({
-          command: 'toggleAll',
-          category: category,
-          value: value
-        });
-      });
-    });
-
-    // Search filtering
-    document.querySelectorAll('.search-box').forEach(input => {
-      input.addEventListener('input', (e) => {
-        const query = e.target.value.toLowerCase();
-        const gridId = e.target.dataset.target + '-grid';
-        const items = document.querySelectorAll('#' + gridId + ' .emoji-item');
-
-        items.forEach(item => {
-          const name = item.querySelector('.name').textContent.toLowerCase();
-          item.style.display = name.includes(query) ? 'flex' : 'none';
-        });
-      });
-    });
+    function toggleItem(category, key, checked) {
+      let configKey;
+      if (category === 'javascript') configKey = 'emojiCode.jsKeyword.' + key;
+      else if (category === 'tags') configKey = 'emojiCode.htmlTag.' + key;
+      else if (category === 'void') configKey = 'emojiCode.htmlVoid.' + key;
+      else if (category === 'attr') configKey = 'emojiCode.htmlAttr.' + key;
+      else if (category === 'cssAtRule') configKey = 'emojiCode.cssAtRule.' + key;
+      else if (category === 'cssLayout') configKey = 'emojiCode.cssLayout.' + key;
+      else if (category === 'cssBox') configKey = 'emojiCode.cssBox.' + key;
+      else if (category === 'cssVisual') configKey = 'emojiCode.cssVisual.' + key;
+      else if (category === 'cssPseudo') configKey = 'emojiCode.cssPseudo.' + key;
+      else if (category === 'cssValue') configKey = 'emojiCode.cssValue.' + key;
+      else return;
+      vscode.postMessage({ command: 'toggleSetting', key: configKey, value: checked });
+    }
   </script>
 </body>
 </html>`;
@@ -473,7 +647,7 @@ function getWebviewContent() {
 function createCheckboxItem(category, key, emoji, displayName, checked) {
   return `
     <label class="emoji-item">
-      <input type="checkbox" data-category="${category}" data-key="${key}" ${checked ? 'checked' : ''}>
+      <input type="checkbox" ${checked ? 'checked' : ''} onchange="toggleItem('${category}', '${key}', this.checked)">
       <span class="emoji">${emoji}</span>
       <span class="name">${displayName}</span>
     </label>
