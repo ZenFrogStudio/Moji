@@ -15,15 +15,36 @@ const {
   CSS_PSEUDO_EMOJI_MAP,
   CSS_VALUE_EMOJI_MAP,
 } = require('./cssKeywordMap');
+const { PYTHON_KEYWORD_EMOJI_MAP } = require('./pythonKeywordMap');
+const { C_KEYWORD_EMOJI_MAP } = require('./cKeywordMap');
+const { CPP_KEYWORD_EMOJI_MAP } = require('./cppKeywordMap');
+const { CSHARP_KEYWORD_EMOJI_MAP } = require('./csharpKeywordMap');
+const { SQL_KEYWORD_EMOJI_MAP } = require('./sqlKeywordMap');
+const { TYPESCRIPT_KEYWORD_EMOJI_MAP } = require('./typescriptKeywordMap');
+const { JAVA_KEYWORD_EMOJI_MAP } = require('./javaKeywordMap');
 const { scanKeywords } = require('./scanner');
 const { scanHtmlTokens } = require('./htmlScanner');
 const { scanCssTokens } = require('./cssScanner');
+const { scanPythonKeywords } = require('./pythonScanner');
+const { scanCKeywords } = require('./cScanner');
+const { scanCppKeywords } = require('./cppScanner');
+const { scanCsharpKeywords } = require('./csharpScanner');
+const { scanSqlKeywords } = require('./sqlScanner');
+const { scanTypescriptKeywords } = require('./typescriptScanner');
+const { scanJavaKeywords } = require('./javaScanner');
 
 const JS_LANGUAGES = new Set(['javascript', 'javascriptreact']);
 const HTML_LANGUAGES = new Set(['html']);
 const CSS_LANGUAGES = new Set(['css', 'scss', 'less']);
+const PYTHON_LANGUAGES = new Set(['python']);
+const C_LANGUAGES = new Set(['c']);
+const CPP_LANGUAGES = new Set(['cpp']);
+const CSHARP_LANGUAGES = new Set(['csharp']);
+const SQL_LANGUAGES = new Set(['sql', 'mysql', 'postgres', 'plpgsql']);
+const TS_LANGUAGES = new Set(['typescript', 'typescriptreact']);
+const JAVA_LANGUAGES = new Set(['java']);
 
-const SUPPORTED_LANGUAGES = new Set([...JS_LANGUAGES, ...HTML_LANGUAGES, ...CSS_LANGUAGES]);
+const SUPPORTED_LANGUAGES = new Set([...JS_LANGUAGES, ...HTML_LANGUAGES, ...CSS_LANGUAGES, ...PYTHON_LANGUAGES, ...C_LANGUAGES, ...CPP_LANGUAGES, ...CSHARP_LANGUAGES, ...SQL_LANGUAGES, ...TS_LANGUAGES, ...JAVA_LANGUAGES]);
 
 class KeywordDecorator {
   constructor() {
@@ -144,6 +165,62 @@ class KeywordDecorator {
         if (valueCfg.get(value, true)) addDecoration(`cssValue:${value}`, emoji);
       }
     }
+
+    // ── Python keywords ───────────────────────────────────────────────────
+    if (config.get('pythonKeywords', true)) {
+      const pyCfg = vscode.workspace.getConfiguration('emojiCode.pyKeyword');
+      for (const [keyword, emoji] of Object.entries(PYTHON_KEYWORD_EMOJI_MAP)) {
+        if (pyCfg.get(keyword, true)) addDecoration(`py:${keyword}`, emoji);
+      }
+    }
+
+    // ── C keywords ────────────────────────────────────────────────────────
+    if (config.get('cKeywords', true)) {
+      const cCfg = vscode.workspace.getConfiguration('emojiCode.cKeyword');
+      for (const [keyword, emoji] of Object.entries(C_KEYWORD_EMOJI_MAP)) {
+        if (cCfg.get(keyword, true)) addDecoration(`c:${keyword}`, emoji);
+      }
+    }
+
+    // ── C++ keywords ──────────────────────────────────────────────────────
+    if (config.get('cppKeywords', true)) {
+      const cppCfg = vscode.workspace.getConfiguration('emojiCode.cppKeyword');
+      for (const [keyword, emoji] of Object.entries(CPP_KEYWORD_EMOJI_MAP)) {
+        if (cppCfg.get(keyword, true)) addDecoration(`cpp:${keyword}`, emoji);
+      }
+    }
+
+    // ── C# keywords ───────────────────────────────────────────────────────
+    if (config.get('csharpKeywords', true)) {
+      const csharpCfg = vscode.workspace.getConfiguration('emojiCode.csharpKeyword');
+      for (const [keyword, emoji] of Object.entries(CSHARP_KEYWORD_EMOJI_MAP)) {
+        if (csharpCfg.get(keyword, true)) addDecoration(`csharp:${keyword}`, emoji);
+      }
+    }
+
+    // ── SQL keywords ─────────────────────────────────────────────────────
+    if (config.get('sqlKeywords', true)) {
+      const sqlCfg = vscode.workspace.getConfiguration('emojiCode.sqlKeyword');
+      for (const [keyword, emoji] of Object.entries(SQL_KEYWORD_EMOJI_MAP)) {
+        if (sqlCfg.get(keyword, true)) addDecoration(`sql:${keyword}`, emoji);
+      }
+    }
+
+    // ── TypeScript keywords ──────────────────────────────────────────────
+    if (config.get('typescriptKeywords', true)) {
+      const tsCfg = vscode.workspace.getConfiguration('emojiCode.tsKeyword');
+      for (const [keyword, emoji] of Object.entries(TYPESCRIPT_KEYWORD_EMOJI_MAP)) {
+        if (tsCfg.get(keyword, true)) addDecoration(`ts:${keyword}`, emoji);
+      }
+    }
+
+    // ── Java keywords ────────────────────────────────────────────────────
+    if (config.get('javaKeywords', true)) {
+      const javaCfg = vscode.workspace.getConfiguration('emojiCode.javaKeyword');
+      for (const [keyword, emoji] of Object.entries(JAVA_KEYWORD_EMOJI_MAP)) {
+        if (javaCfg.get(keyword, true)) addDecoration(`java:${keyword}`, emoji);
+      }
+    }
   }
 
   _disposeDecorationTypes() {
@@ -173,6 +250,34 @@ class KeywordDecorator {
       matches = scanHtmlTokens(editor.document);
     } else if (CSS_LANGUAGES.has(langId)) {
       matches = scanCssTokens(editor.document);
+    } else if (PYTHON_LANGUAGES.has(langId)) {
+      matches = scanPythonKeywords(editor.document);
+      // Prefix Python keywords with 'py:' to match decoration keys
+      matches = matches.map(m => ({ keyword: `py:${m.keyword}`, range: m.range }));
+    } else if (C_LANGUAGES.has(langId)) {
+      matches = scanCKeywords(editor.document);
+      // Prefix C keywords with 'c:' to match decoration keys
+      matches = matches.map(m => ({ keyword: `c:${m.keyword}`, range: m.range }));
+    } else if (CPP_LANGUAGES.has(langId)) {
+      matches = scanCppKeywords(editor.document);
+      // Prefix C++ keywords with 'cpp:' to match decoration keys
+      matches = matches.map(m => ({ keyword: `cpp:${m.keyword}`, range: m.range }));
+    } else if (CSHARP_LANGUAGES.has(langId)) {
+      matches = scanCsharpKeywords(editor.document);
+      // Prefix C# keywords with 'csharp:' to match decoration keys
+      matches = matches.map(m => ({ keyword: `csharp:${m.keyword}`, range: m.range }));
+    } else if (SQL_LANGUAGES.has(langId)) {
+      matches = scanSqlKeywords(editor.document);
+      // Prefix SQL keywords with 'sql:' to match decoration keys
+      matches = matches.map(m => ({ keyword: `sql:${m.keyword}`, range: m.range }));
+    } else if (TS_LANGUAGES.has(langId)) {
+      matches = scanTypescriptKeywords(editor.document);
+      // Prefix TypeScript keywords with 'ts:' to match decoration keys
+      matches = matches.map(m => ({ keyword: `ts:${m.keyword}`, range: m.range }));
+    } else if (JAVA_LANGUAGES.has(langId)) {
+      matches = scanJavaKeywords(editor.document);
+      // Prefix Java keywords with 'java:' to match decoration keys
+      matches = matches.map(m => ({ keyword: `java:${m.keyword}`, range: m.range }));
     } else {
       matches = scanKeywords(editor.document);
     }

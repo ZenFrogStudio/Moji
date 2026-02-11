@@ -12,6 +12,13 @@ const {
   CSS_PSEUDO_EMOJI_MAP,
   CSS_VALUE_EMOJI_MAP,
 } = require('./cssKeywordMap');
+const { PYTHON_KEYWORD_EMOJI_MAP } = require('./pythonKeywordMap');
+const { C_KEYWORD_EMOJI_MAP } = require('./cKeywordMap');
+const { CPP_KEYWORD_EMOJI_MAP } = require('./cppKeywordMap');
+const { CSHARP_KEYWORD_EMOJI_MAP } = require('./csharpKeywordMap');
+const { SQL_KEYWORD_EMOJI_MAP } = require('./sqlKeywordMap');
+const { TYPESCRIPT_KEYWORD_EMOJI_MAP } = require('./typescriptKeywordMap');
+const { JAVA_KEYWORD_EMOJI_MAP } = require('./javaKeywordMap');
 
 let currentPanel = undefined;
 let currentTab = 'javascript'; // Track active tab server-side
@@ -93,6 +100,27 @@ function openSettingsPanel(context, onSettingsChanged) {
         } else if (category === 'cssValue') {
           map = CSS_VALUE_EMOJI_MAP;
           prefix = 'emojiCode.cssValue';
+        } else if (category === 'python') {
+          map = PYTHON_KEYWORD_EMOJI_MAP;
+          prefix = 'emojiCode.pyKeyword';
+        } else if (category === 'c') {
+          map = C_KEYWORD_EMOJI_MAP;
+          prefix = 'emojiCode.cKeyword';
+        } else if (category === 'cpp') {
+          map = CPP_KEYWORD_EMOJI_MAP;
+          prefix = 'emojiCode.cppKeyword';
+        } else if (category === 'csharp') {
+          map = CSHARP_KEYWORD_EMOJI_MAP;
+          prefix = 'emojiCode.csharpKeyword';
+        } else if (category === 'sql') {
+          map = SQL_KEYWORD_EMOJI_MAP;
+          prefix = 'emojiCode.sqlKeyword';
+        } else if (category === 'typescript') {
+          map = TYPESCRIPT_KEYWORD_EMOJI_MAP;
+          prefix = 'emojiCode.tsKeyword';
+        } else if (category === 'java') {
+          map = JAVA_KEYWORD_EMOJI_MAP;
+          prefix = 'emojiCode.javaKeyword';
         } else {
           return; // Unknown category
         }
@@ -137,6 +165,13 @@ function getCurrentSettings() {
   const cssVisualCfg = vscode.workspace.getConfiguration('emojiCode.cssVisual');
   const cssPseudoCfg = vscode.workspace.getConfiguration('emojiCode.cssPseudo');
   const cssValueCfg = vscode.workspace.getConfiguration('emojiCode.cssValue');
+  const pyCfg = vscode.workspace.getConfiguration('emojiCode.pyKeyword');
+  const cCfg = vscode.workspace.getConfiguration('emojiCode.cKeyword');
+  const cppCfg = vscode.workspace.getConfiguration('emojiCode.cppKeyword');
+  const csharpCfg = vscode.workspace.getConfiguration('emojiCode.csharpKeyword');
+  const sqlCfg = vscode.workspace.getConfiguration('emojiCode.sqlKeyword');
+  const tsCfg = vscode.workspace.getConfiguration('emojiCode.tsKeyword');
+  const javaCfg = vscode.workspace.getConfiguration('emojiCode.javaKeyword');
 
   const settings = {
     masterToggles: {
@@ -150,6 +185,13 @@ function getCurrentSettings() {
       cssVisual: mainCfg.get('cssVisual', true),
       cssPseudo: mainCfg.get('cssPseudo', true),
       cssValues: mainCfg.get('cssValues', true),
+      pythonKeywords: mainCfg.get('pythonKeywords', true),
+      cKeywords: mainCfg.get('cKeywords', true),
+      cppKeywords: mainCfg.get('cppKeywords', true),
+      csharpKeywords: mainCfg.get('csharpKeywords', true),
+      sqlKeywords: mainCfg.get('sqlKeywords', true),
+      typescriptKeywords: mainCfg.get('typescriptKeywords', true),
+      javaKeywords: mainCfg.get('javaKeywords', true),
     },
     javascript: {},
     tags: {},
@@ -161,6 +203,13 @@ function getCurrentSettings() {
     cssVisual: {},
     cssPseudo: {},
     cssValue: {},
+    python: {},
+    c: {},
+    cpp: {},
+    csharp: {},
+    sql: {},
+    typescript: {},
+    java: {},
   };
 
   for (const key of Object.keys(KEYWORD_EMOJI_MAP)) {
@@ -192,6 +241,27 @@ function getCurrentSettings() {
   }
   for (const key of Object.keys(CSS_VALUE_EMOJI_MAP)) {
     settings.cssValue[key] = cssValueCfg.get(key, true);
+  }
+  for (const key of Object.keys(PYTHON_KEYWORD_EMOJI_MAP)) {
+    settings.python[key] = pyCfg.get(key, true);
+  }
+  for (const key of Object.keys(C_KEYWORD_EMOJI_MAP)) {
+    settings.c[key] = cCfg.get(key, true);
+  }
+  for (const key of Object.keys(CPP_KEYWORD_EMOJI_MAP)) {
+    settings.cpp[key] = cppCfg.get(key, true);
+  }
+  for (const key of Object.keys(CSHARP_KEYWORD_EMOJI_MAP)) {
+    settings.csharp[key] = csharpCfg.get(key, true);
+  }
+  for (const key of Object.keys(SQL_KEYWORD_EMOJI_MAP)) {
+    settings.sql[key] = sqlCfg.get(key, true);
+  }
+  for (const key of Object.keys(TYPESCRIPT_KEYWORD_EMOJI_MAP)) {
+    settings.typescript[key] = tsCfg.get(key, true);
+  }
+  for (const key of Object.keys(JAVA_KEYWORD_EMOJI_MAP)) {
+    settings.java[key] = javaCfg.get(key, true);
   }
 
   return settings;
@@ -245,7 +315,49 @@ function getWebviewContent() {
     .map(([key, emoji]) => createCheckboxItem('cssValue', key, emoji, key === 'important' ? '!important' : key, settings.cssValue[key]))
     .join('');
 
+  // Python items
+  const pythonItems = Object.entries(PYTHON_KEYWORD_EMOJI_MAP)
+    .map(([key, emoji]) => createCheckboxItem('python', key, emoji, key, settings.python[key]))
+    .join('');
+
+  // C items
+  const cItems = Object.entries(C_KEYWORD_EMOJI_MAP)
+    .map(([key, emoji]) => createCheckboxItem('c', key, emoji, key, settings.c[key]))
+    .join('');
+
+  // C++ items
+  const cppItems = Object.entries(CPP_KEYWORD_EMOJI_MAP)
+    .map(([key, emoji]) => createCheckboxItem('cpp', key, emoji, key, settings.cpp[key]))
+    .join('');
+
+  // C# items
+  const csharpItems = Object.entries(CSHARP_KEYWORD_EMOJI_MAP)
+    .map(([key, emoji]) => createCheckboxItem('csharp', key, emoji, key, settings.csharp[key]))
+    .join('');
+
+  // SQL items
+  const sqlItems = Object.entries(SQL_KEYWORD_EMOJI_MAP)
+    .map(([key, emoji]) => createCheckboxItem('sql', key, emoji, key, settings.sql[key]))
+    .join('');
+
+  // TypeScript items
+  const typescriptItems = Object.entries(TYPESCRIPT_KEYWORD_EMOJI_MAP)
+    .map(([key, emoji]) => createCheckboxItem('typescript', key, emoji, key, settings.typescript[key]))
+    .join('');
+
+  // Java items
+  const javaItems = Object.entries(JAVA_KEYWORD_EMOJI_MAP)
+    .map(([key, emoji]) => createCheckboxItem('java', key, emoji, key, settings.java[key]))
+    .join('');
+
   const jsCount = Object.keys(KEYWORD_EMOJI_MAP).length;
+  const pythonCount = Object.keys(PYTHON_KEYWORD_EMOJI_MAP).length;
+  const cCount = Object.keys(C_KEYWORD_EMOJI_MAP).length;
+  const cppCount = Object.keys(CPP_KEYWORD_EMOJI_MAP).length;
+  const csharpCount = Object.keys(CSHARP_KEYWORD_EMOJI_MAP).length;
+  const sqlCount = Object.keys(SQL_KEYWORD_EMOJI_MAP).length;
+  const typescriptCount = Object.keys(TYPESCRIPT_KEYWORD_EMOJI_MAP).length;
+  const javaCount = Object.keys(JAVA_KEYWORD_EMOJI_MAP).length;
   const tagCount = Object.keys(HTML_TAG_EMOJI_MAP).length;
   const voidCount = Object.keys(HTML_VOID_EMOJI_MAP).length;
   const attrCount = Object.keys(HTML_ATTR_EMOJI_MAP).length;
@@ -261,9 +373,23 @@ function getWebviewContent() {
   const jsTabActive = currentTab === 'javascript' ? 'active' : '';
   const htmlTabActive = currentTab === 'html' ? 'active' : '';
   const cssTabActive = currentTab === 'css' ? 'active' : '';
+  const pythonTabActive = currentTab === 'python' ? 'active' : '';
+  const cTabActive = currentTab === 'c' ? 'active' : '';
+  const cppTabActive = currentTab === 'cpp' ? 'active' : '';
+  const csharpTabActive = currentTab === 'csharp' ? 'active' : '';
+  const sqlTabActive = currentTab === 'sql' ? 'active' : '';
+  const typescriptTabActive = currentTab === 'typescript' ? 'active' : '';
+  const javaTabActive = currentTab === 'java' ? 'active' : '';
   const jsContentActive = currentTab === 'javascript' ? 'active' : '';
   const htmlContentActive = currentTab === 'html' ? 'active' : '';
   const cssContentActive = currentTab === 'css' ? 'active' : '';
+  const pythonContentActive = currentTab === 'python' ? 'active' : '';
+  const cContentActive = currentTab === 'c' ? 'active' : '';
+  const cppContentActive = currentTab === 'cpp' ? 'active' : '';
+  const csharpContentActive = currentTab === 'csharp' ? 'active' : '';
+  const sqlContentActive = currentTab === 'sql' ? 'active' : '';
+  const typescriptContentActive = currentTab === 'typescript' ? 'active' : '';
+  const javaContentActive = currentTab === 'java' ? 'active' : '';
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -442,6 +568,27 @@ function getWebviewContent() {
     <button class="tab ${cssTabActive}" onclick="switchTab('css')" type="button">
       CSS <span class="count">(${cssTotal})</span>
     </button>
+    <button class="tab ${pythonTabActive}" onclick="switchTab('python')" type="button">
+      Python <span class="count">(${pythonCount})</span>
+    </button>
+    <button class="tab ${cTabActive}" onclick="switchTab('c')" type="button">
+      C <span class="count">(${cCount})</span>
+    </button>
+    <button class="tab ${cppTabActive}" onclick="switchTab('cpp')" type="button">
+      C++ <span class="count">(${cppCount})</span>
+    </button>
+    <button class="tab ${csharpTabActive}" onclick="switchTab('csharp')" type="button">
+      C# <span class="count">(${csharpCount})</span>
+    </button>
+    <button class="tab ${sqlTabActive}" onclick="switchTab('sql')" type="button">
+      SQL <span class="count">(${sqlCount})</span>
+    </button>
+    <button class="tab ${typescriptTabActive}" onclick="switchTab('typescript')" type="button">
+      TypeScript <span class="count">(${typescriptCount})</span>
+    </button>
+    <button class="tab ${javaTabActive}" onclick="switchTab('java')" type="button">
+      Java <span class="count">(${javaCount})</span>
+    </button>
   </div>
 
   <!-- JavaScript Tab -->
@@ -599,6 +746,104 @@ function getWebviewContent() {
     </div>
   </div>
 
+  <!-- Python Tab -->
+  <div id="python" class="tab-content ${pythonContentActive}">
+    <div class="master-toggle">
+      <input type="checkbox" id="master-python" ${settings.masterToggles.pythonKeywords ? 'checked' : ''}
+        onchange="toggleSetting('emojiCode.pythonKeywords', this.checked)">
+      <label for="master-python">Enable Python keyword emojis</label>
+    </div>
+    <div class="bulk-actions">
+      <button class="bulk-btn" onclick="toggleAll('python', true, this)" type="button">Select All</button>
+      <button class="bulk-btn" onclick="toggleAll('python', false, this)" type="button">Deselect All</button>
+    </div>
+    <div class="emoji-grid">${pythonItems}</div>
+  </div>
+
+  <!-- C Tab -->
+  <div id="c" class="tab-content ${cContentActive}">
+    <div class="master-toggle">
+      <input type="checkbox" id="master-c" ${settings.masterToggles.cKeywords ? 'checked' : ''}
+        onchange="toggleSetting('emojiCode.cKeywords', this.checked)">
+      <label for="master-c">Enable C keyword emojis</label>
+    </div>
+    <div class="bulk-actions">
+      <button class="bulk-btn" onclick="toggleAll('c', true, this)" type="button">Select All</button>
+      <button class="bulk-btn" onclick="toggleAll('c', false, this)" type="button">Deselect All</button>
+    </div>
+    <div class="emoji-grid">${cItems}</div>
+  </div>
+
+  <!-- C++ Tab -->
+  <div id="cpp" class="tab-content ${cppContentActive}">
+    <div class="master-toggle">
+      <input type="checkbox" id="master-cpp" ${settings.masterToggles.cppKeywords ? 'checked' : ''}
+        onchange="toggleSetting('emojiCode.cppKeywords', this.checked)">
+      <label for="master-cpp">Enable C++ keyword emojis</label>
+    </div>
+    <div class="bulk-actions">
+      <button class="bulk-btn" onclick="toggleAll('cpp', true, this)" type="button">Select All</button>
+      <button class="bulk-btn" onclick="toggleAll('cpp', false, this)" type="button">Deselect All</button>
+    </div>
+    <div class="emoji-grid">${cppItems}</div>
+  </div>
+
+  <!-- C# Tab -->
+  <div id="csharp" class="tab-content ${csharpContentActive}">
+    <div class="master-toggle">
+      <input type="checkbox" id="master-csharp" ${settings.masterToggles.csharpKeywords ? 'checked' : ''}
+        onchange="toggleSetting('emojiCode.csharpKeywords', this.checked)">
+      <label for="master-csharp">Enable C# keyword emojis</label>
+    </div>
+    <div class="bulk-actions">
+      <button class="bulk-btn" onclick="toggleAll('csharp', true, this)" type="button">Select All</button>
+      <button class="bulk-btn" onclick="toggleAll('csharp', false, this)" type="button">Deselect All</button>
+    </div>
+    <div class="emoji-grid">${csharpItems}</div>
+  </div>
+
+  <!-- SQL Tab -->
+  <div id="sql" class="tab-content ${sqlContentActive}">
+    <div class="master-toggle">
+      <input type="checkbox" id="master-sql" ${settings.masterToggles.sqlKeywords ? 'checked' : ''}
+        onchange="toggleSetting('emojiCode.sqlKeywords', this.checked)">
+      <label for="master-sql">Enable SQL keyword emojis</label>
+    </div>
+    <div class="bulk-actions">
+      <button class="bulk-btn" onclick="toggleAll('sql', true, this)" type="button">Select All</button>
+      <button class="bulk-btn" onclick="toggleAll('sql', false, this)" type="button">Deselect All</button>
+    </div>
+    <div class="emoji-grid">${sqlItems}</div>
+  </div>
+
+  <!-- TypeScript Tab -->
+  <div id="typescript" class="tab-content ${typescriptContentActive}">
+    <div class="master-toggle">
+      <input type="checkbox" id="master-typescript" ${settings.masterToggles.typescriptKeywords ? 'checked' : ''}
+        onchange="toggleSetting('emojiCode.typescriptKeywords', this.checked)">
+      <label for="master-typescript">Enable TypeScript keyword emojis</label>
+    </div>
+    <div class="bulk-actions">
+      <button class="bulk-btn" onclick="toggleAll('typescript', true, this)" type="button">Select All</button>
+      <button class="bulk-btn" onclick="toggleAll('typescript', false, this)" type="button">Deselect All</button>
+    </div>
+    <div class="emoji-grid">${typescriptItems}</div>
+  </div>
+
+  <!-- Java Tab -->
+  <div id="java" class="tab-content ${javaContentActive}">
+    <div class="master-toggle">
+      <input type="checkbox" id="master-java" ${settings.masterToggles.javaKeywords ? 'checked' : ''}
+        onchange="toggleSetting('emojiCode.javaKeywords', this.checked)">
+      <label for="master-java">Enable Java keyword emojis</label>
+    </div>
+    <div class="bulk-actions">
+      <button class="bulk-btn" onclick="toggleAll('java', true, this)" type="button">Select All</button>
+      <button class="bulk-btn" onclick="toggleAll('java', false, this)" type="button">Deselect All</button>
+    </div>
+    <div class="emoji-grid">${javaItems}</div>
+  </div>
+
   <script>
     const vscode = acquireVsCodeApi();
 
@@ -633,6 +878,13 @@ function getWebviewContent() {
       else if (category === 'cssVisual') configKey = 'emojiCode.cssVisual.' + key;
       else if (category === 'cssPseudo') configKey = 'emojiCode.cssPseudo.' + key;
       else if (category === 'cssValue') configKey = 'emojiCode.cssValue.' + key;
+      else if (category === 'python') configKey = 'emojiCode.pyKeyword.' + key;
+      else if (category === 'c') configKey = 'emojiCode.cKeyword.' + key;
+      else if (category === 'cpp') configKey = 'emojiCode.cppKeyword.' + key;
+      else if (category === 'csharp') configKey = 'emojiCode.csharpKeyword.' + key;
+      else if (category === 'sql') configKey = 'emojiCode.sqlKeyword.' + key;
+      else if (category === 'typescript') configKey = 'emojiCode.tsKeyword.' + key;
+      else if (category === 'java') configKey = 'emojiCode.javaKeyword.' + key;
       else return;
       vscode.postMessage({ command: 'toggleSetting', key: configKey, value: checked });
     }

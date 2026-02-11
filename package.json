@@ -22,7 +22,18 @@
     "onLanguage:html",
     "onLanguage:css",
     "onLanguage:scss",
-    "onLanguage:less"
+    "onLanguage:less",
+    "onLanguage:python",
+    "onLanguage:c",
+    "onLanguage:cpp",
+    "onLanguage:csharp",
+    "onLanguage:sql",
+    "onLanguage:mysql",
+    "onLanguage:postgres",
+    "onLanguage:plpgsql",
+    "onLanguage:typescript",
+    "onLanguage:typescriptreact",
+    "onLanguage:java"
   ],
   "main": "./src/extension.js",
   "contributes": {
@@ -1021,6 +1032,2611 @@
           "type": "boolean",
           "default": true,
           "description": "👪 inherit – inherit value"
+        },
+        "emojiCode.pythonKeywords": {
+          "type": "boolean",
+          "default": true,
+          "description": "Master toggle: show emojis for Python keywords."
+        },
+        "emojiCode.pyKeyword.True": {
+          "type": "boolean",
+          "default": true,
+          "description": "✅ True – boolean true"
+        },
+        "emojiCode.pyKeyword.False": {
+          "type": "boolean",
+          "default": true,
+          "description": "❌ False – boolean false"
+        },
+        "emojiCode.pyKeyword.None": {
+          "type": "boolean",
+          "default": true,
+          "description": "🚫 None – null/nothing"
+        },
+        "emojiCode.pyKeyword.if": {
+          "type": "boolean",
+          "default": true,
+          "description": "❓ if – conditional"
+        },
+        "emojiCode.pyKeyword.elif": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔀 elif – else if branch"
+        },
+        "emojiCode.pyKeyword.else": {
+          "type": "boolean",
+          "default": true,
+          "description": "↪️ else – alternative branch"
+        },
+        "emojiCode.pyKeyword.for": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔁 for – for loop"
+        },
+        "emojiCode.pyKeyword.while": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔂 while – while loop"
+        },
+        "emojiCode.pyKeyword.break": {
+          "type": "boolean",
+          "default": true,
+          "description": "🛑 break – exit loop"
+        },
+        "emojiCode.pyKeyword.continue": {
+          "type": "boolean",
+          "default": true,
+          "description": "⏭️ continue – next iteration"
+        },
+        "emojiCode.pyKeyword.pass": {
+          "type": "boolean",
+          "default": true,
+          "description": "⏩ pass – placeholder/no-op"
+        },
+        "emojiCode.pyKeyword.match": {
+          "type": "boolean",
+          "default": true,
+          "description": "🎯 match – pattern matching"
+        },
+        "emojiCode.pyKeyword.case": {
+          "type": "boolean",
+          "default": true,
+          "description": "📋 case – match case branch"
+        },
+        "emojiCode.pyKeyword.def": {
+          "type": "boolean",
+          "default": true,
+          "description": "⚡ def – function definition"
+        },
+        "emojiCode.pyKeyword.return": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔙 return – return value"
+        },
+        "emojiCode.pyKeyword.yield": {
+          "type": "boolean",
+          "default": true,
+          "description": "🌾 yield – generator yield"
+        },
+        "emojiCode.pyKeyword.lambda": {
+          "type": "boolean",
+          "default": true,
+          "description": "λ lambda – anonymous function"
+        },
+        "emojiCode.pyKeyword.class": {
+          "type": "boolean",
+          "default": true,
+          "description": "🏛️ class – class declaration"
+        },
+        "emojiCode.pyKeyword.try": {
+          "type": "boolean",
+          "default": true,
+          "description": "🤞 try – attempt block"
+        },
+        "emojiCode.pyKeyword.except": {
+          "type": "boolean",
+          "default": true,
+          "description": "🥅 except – catch exception"
+        },
+        "emojiCode.pyKeyword.finally": {
+          "type": "boolean",
+          "default": true,
+          "description": "🏁 finally – guaranteed cleanup"
+        },
+        "emojiCode.pyKeyword.raise": {
+          "type": "boolean",
+          "default": true,
+          "description": "💥 raise – raise exception"
+        },
+        "emojiCode.pyKeyword.assert": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔍 assert – assertion check"
+        },
+        "emojiCode.pyKeyword.import": {
+          "type": "boolean",
+          "default": true,
+          "description": "📥 import – module import"
+        },
+        "emojiCode.pyKeyword.from": {
+          "type": "boolean",
+          "default": true,
+          "description": "📤 from – import source"
+        },
+        "emojiCode.pyKeyword.as": {
+          "type": "boolean",
+          "default": true,
+          "description": "🏷️ as – alias"
+        },
+        "emojiCode.pyKeyword.global": {
+          "type": "boolean",
+          "default": true,
+          "description": "🌐 global – global scope"
+        },
+        "emojiCode.pyKeyword.nonlocal": {
+          "type": "boolean",
+          "default": true,
+          "description": "📡 nonlocal – enclosing scope"
+        },
+        "emojiCode.pyKeyword.and": {
+          "type": "boolean",
+          "default": true,
+          "description": "🤝 and – logical and"
+        },
+        "emojiCode.pyKeyword.or": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔀 or – logical or"
+        },
+        "emojiCode.pyKeyword.not": {
+          "type": "boolean",
+          "default": true,
+          "description": "🚷 not – logical negation"
+        },
+        "emojiCode.pyKeyword.in": {
+          "type": "boolean",
+          "default": true,
+          "description": "📍 in – membership test"
+        },
+        "emojiCode.pyKeyword.is": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔗 is – identity test"
+        },
+        "emojiCode.pyKeyword.async": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔮 async – async definition"
+        },
+        "emojiCode.pyKeyword.await": {
+          "type": "boolean",
+          "default": true,
+          "description": "⏳ await – await coroutine"
+        },
+        "emojiCode.pyKeyword.with": {
+          "type": "boolean",
+          "default": true,
+          "description": "🎁 with – context manager"
+        },
+        "emojiCode.pyKeyword.del": {
+          "type": "boolean",
+          "default": true,
+          "description": "🗑️ del – delete reference"
+        },
+        "emojiCode.cKeywords": {
+          "type": "boolean",
+          "default": true,
+          "description": "Master toggle: show emojis for C keywords."
+        },
+        "emojiCode.cKeyword.if": {
+          "type": "boolean",
+          "default": true,
+          "description": "❓ if – conditional"
+        },
+        "emojiCode.cKeyword.else": {
+          "type": "boolean",
+          "default": true,
+          "description": "↪️ else – alternative branch"
+        },
+        "emojiCode.cKeyword.switch": {
+          "type": "boolean",
+          "default": true,
+          "description": "🎚️ switch – multi-branch"
+        },
+        "emojiCode.cKeyword.case": {
+          "type": "boolean",
+          "default": true,
+          "description": "📋 case – switch case branch"
+        },
+        "emojiCode.cKeyword.default": {
+          "type": "boolean",
+          "default": true,
+          "description": "📌 default – fallback branch"
+        },
+        "emojiCode.cKeyword.for": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔁 for – for loop"
+        },
+        "emojiCode.cKeyword.while": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔂 while – while loop"
+        },
+        "emojiCode.cKeyword.do": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔄 do – do-while loop"
+        },
+        "emojiCode.cKeyword.break": {
+          "type": "boolean",
+          "default": true,
+          "description": "🛑 break – exit loop/switch"
+        },
+        "emojiCode.cKeyword.continue": {
+          "type": "boolean",
+          "default": true,
+          "description": "⏭️ continue – next iteration"
+        },
+        "emojiCode.cKeyword.goto": {
+          "type": "boolean",
+          "default": true,
+          "description": "🚀 goto – unconditional jump"
+        },
+        "emojiCode.cKeyword.return": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔙 return – return value"
+        },
+        "emojiCode.cKeyword.int": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔢 int – integer type"
+        },
+        "emojiCode.cKeyword.char": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔤 char – character type"
+        },
+        "emojiCode.cKeyword.float": {
+          "type": "boolean",
+          "default": true,
+          "description": "🎈 float – floating point"
+        },
+        "emojiCode.cKeyword.double": {
+          "type": "boolean",
+          "default": true,
+          "description": "🎭 double – double precision"
+        },
+        "emojiCode.cKeyword.void": {
+          "type": "boolean",
+          "default": true,
+          "description": "🕳️ void – no type/value"
+        },
+        "emojiCode.cKeyword.short": {
+          "type": "boolean",
+          "default": true,
+          "description": "📏 short – short integer"
+        },
+        "emojiCode.cKeyword.long": {
+          "type": "boolean",
+          "default": true,
+          "description": "📐 long – long integer"
+        },
+        "emojiCode.cKeyword.signed": {
+          "type": "boolean",
+          "default": true,
+          "description": "➕ signed – signed type"
+        },
+        "emojiCode.cKeyword.unsigned": {
+          "type": "boolean",
+          "default": true,
+          "description": "➖ unsigned – unsigned type"
+        },
+        "emojiCode.cKeyword.const": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔒 const – constant/immutable"
+        },
+        "emojiCode.cKeyword.volatile": {
+          "type": "boolean",
+          "default": true,
+          "description": "⚠️ volatile – volatile memory"
+        },
+        "emojiCode.cKeyword.static": {
+          "type": "boolean",
+          "default": true,
+          "description": "🏛️ static – static storage"
+        },
+        "emojiCode.cKeyword.extern": {
+          "type": "boolean",
+          "default": true,
+          "description": "🌐 extern – external linkage"
+        },
+        "emojiCode.cKeyword.register": {
+          "type": "boolean",
+          "default": true,
+          "description": "⚡ register – register storage"
+        },
+        "emojiCode.cKeyword.auto": {
+          "type": "boolean",
+          "default": true,
+          "description": "🤖 auto – automatic storage"
+        },
+        "emojiCode.cKeyword.struct": {
+          "type": "boolean",
+          "default": true,
+          "description": "🏗️ struct – structure type"
+        },
+        "emojiCode.cKeyword.union": {
+          "type": "boolean",
+          "default": true,
+          "description": "🤝 union – union type"
+        },
+        "emojiCode.cKeyword.enum": {
+          "type": "boolean",
+          "default": true,
+          "description": "📊 enum – enumeration"
+        },
+        "emojiCode.cKeyword.typedef": {
+          "type": "boolean",
+          "default": true,
+          "description": "🏷️ typedef – type definition"
+        },
+        "emojiCode.cKeyword.sizeof": {
+          "type": "boolean",
+          "default": true,
+          "description": "📐 sizeof – size operator"
+        },
+        "emojiCode.cppKeywords": {
+          "type": "boolean",
+          "default": true,
+          "description": "Master toggle: show emojis for C++ keywords."
+        },
+        "emojiCode.cppKeyword.if": {
+          "type": "boolean",
+          "default": true,
+          "description": "❓ if – conditional"
+        },
+        "emojiCode.cppKeyword.else": {
+          "type": "boolean",
+          "default": true,
+          "description": "↪️ else – alternative branch"
+        },
+        "emojiCode.cppKeyword.switch": {
+          "type": "boolean",
+          "default": true,
+          "description": "🎚️ switch – multi-branch"
+        },
+        "emojiCode.cppKeyword.case": {
+          "type": "boolean",
+          "default": true,
+          "description": "📋 case – switch case branch"
+        },
+        "emojiCode.cppKeyword.default": {
+          "type": "boolean",
+          "default": true,
+          "description": "📌 default – fallback branch"
+        },
+        "emojiCode.cppKeyword.for": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔁 for – for loop"
+        },
+        "emojiCode.cppKeyword.while": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔂 while – while loop"
+        },
+        "emojiCode.cppKeyword.do": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔄 do – do-while loop"
+        },
+        "emojiCode.cppKeyword.break": {
+          "type": "boolean",
+          "default": true,
+          "description": "🛑 break – exit loop/switch"
+        },
+        "emojiCode.cppKeyword.continue": {
+          "type": "boolean",
+          "default": true,
+          "description": "⏭️ continue – next iteration"
+        },
+        "emojiCode.cppKeyword.goto": {
+          "type": "boolean",
+          "default": true,
+          "description": "🚀 goto – unconditional jump"
+        },
+        "emojiCode.cppKeyword.return": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔙 return – return value"
+        },
+        "emojiCode.cppKeyword.int": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔢 int – integer type"
+        },
+        "emojiCode.cppKeyword.char": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔤 char – character type"
+        },
+        "emojiCode.cppKeyword.float": {
+          "type": "boolean",
+          "default": true,
+          "description": "🎈 float – floating point"
+        },
+        "emojiCode.cppKeyword.double": {
+          "type": "boolean",
+          "default": true,
+          "description": "🎭 double – double precision"
+        },
+        "emojiCode.cppKeyword.void": {
+          "type": "boolean",
+          "default": true,
+          "description": "🕳️ void – no type/value"
+        },
+        "emojiCode.cppKeyword.short": {
+          "type": "boolean",
+          "default": true,
+          "description": "📏 short – short integer"
+        },
+        "emojiCode.cppKeyword.long": {
+          "type": "boolean",
+          "default": true,
+          "description": "📐 long – long integer"
+        },
+        "emojiCode.cppKeyword.signed": {
+          "type": "boolean",
+          "default": true,
+          "description": "➕ signed – signed type"
+        },
+        "emojiCode.cppKeyword.unsigned": {
+          "type": "boolean",
+          "default": true,
+          "description": "➖ unsigned – unsigned type"
+        },
+        "emojiCode.cppKeyword.bool": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔘 bool – boolean type"
+        },
+        "emojiCode.cppKeyword.true": {
+          "type": "boolean",
+          "default": true,
+          "description": "✅ true – boolean true"
+        },
+        "emojiCode.cppKeyword.false": {
+          "type": "boolean",
+          "default": true,
+          "description": "❌ false – boolean false"
+        },
+        "emojiCode.cppKeyword.nullptr": {
+          "type": "boolean",
+          "default": true,
+          "description": "🚫 nullptr – null pointer"
+        },
+        "emojiCode.cppKeyword.auto": {
+          "type": "boolean",
+          "default": true,
+          "description": "🤖 auto – type inference"
+        },
+        "emojiCode.cppKeyword.wchar_t": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔠 wchar_t – wide character"
+        },
+        "emojiCode.cppKeyword.char16_t": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔡 char16_t – UTF-16 character"
+        },
+        "emojiCode.cppKeyword.char32_t": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔣 char32_t – UTF-32 character"
+        },
+        "emojiCode.cppKeyword.const": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔒 const – constant/immutable"
+        },
+        "emojiCode.cppKeyword.volatile": {
+          "type": "boolean",
+          "default": true,
+          "description": "⚠️ volatile – volatile memory"
+        },
+        "emojiCode.cppKeyword.static": {
+          "type": "boolean",
+          "default": true,
+          "description": "🏛️ static – static storage"
+        },
+        "emojiCode.cppKeyword.extern": {
+          "type": "boolean",
+          "default": true,
+          "description": "🌐 extern – external linkage"
+        },
+        "emojiCode.cppKeyword.register": {
+          "type": "boolean",
+          "default": true,
+          "description": "⚡ register – register storage"
+        },
+        "emojiCode.cppKeyword.mutable": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔓 mutable – mutable member"
+        },
+        "emojiCode.cppKeyword.constexpr": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔐 constexpr – compile-time const"
+        },
+        "emojiCode.cppKeyword.consteval": {
+          "type": "boolean",
+          "default": true,
+          "description": "🗝️ consteval – immediate function"
+        },
+        "emojiCode.cppKeyword.constinit": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔑 constinit – constant init"
+        },
+        "emojiCode.cppKeyword.inline": {
+          "type": "boolean",
+          "default": true,
+          "description": "📎 inline – inline function"
+        },
+        "emojiCode.cppKeyword.class": {
+          "type": "boolean",
+          "default": true,
+          "description": "🏛️ class – class definition"
+        },
+        "emojiCode.cppKeyword.struct": {
+          "type": "boolean",
+          "default": true,
+          "description": "🏗️ struct – structure type"
+        },
+        "emojiCode.cppKeyword.union": {
+          "type": "boolean",
+          "default": true,
+          "description": "🤝 union – union type"
+        },
+        "emojiCode.cppKeyword.enum": {
+          "type": "boolean",
+          "default": true,
+          "description": "📊 enum – enumeration"
+        },
+        "emojiCode.cppKeyword.public": {
+          "type": "boolean",
+          "default": true,
+          "description": "🌍 public – public access"
+        },
+        "emojiCode.cppKeyword.private": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔐 private – private access"
+        },
+        "emojiCode.cppKeyword.protected": {
+          "type": "boolean",
+          "default": true,
+          "description": "🛡️ protected – protected access"
+        },
+        "emojiCode.cppKeyword.virtual": {
+          "type": "boolean",
+          "default": true,
+          "description": "👻 virtual – virtual function"
+        },
+        "emojiCode.cppKeyword.override": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔄 override – override method"
+        },
+        "emojiCode.cppKeyword.final": {
+          "type": "boolean",
+          "default": true,
+          "description": "🏁 final – prevent override"
+        },
+        "emojiCode.cppKeyword.friend": {
+          "type": "boolean",
+          "default": true,
+          "description": "🤗 friend – friend access"
+        },
+        "emojiCode.cppKeyword.this": {
+          "type": "boolean",
+          "default": true,
+          "description": "👆 this – current object"
+        },
+        "emojiCode.cppKeyword.explicit": {
+          "type": "boolean",
+          "default": true,
+          "description": "❗ explicit – explicit conversion"
+        },
+        "emojiCode.cppKeyword.template": {
+          "type": "boolean",
+          "default": true,
+          "description": "📝 template – template definition"
+        },
+        "emojiCode.cppKeyword.typename": {
+          "type": "boolean",
+          "default": true,
+          "description": "🏷️ typename – type parameter"
+        },
+        "emojiCode.cppKeyword.concept": {
+          "type": "boolean",
+          "default": true,
+          "description": "💡 concept – concept definition"
+        },
+        "emojiCode.cppKeyword.requires": {
+          "type": "boolean",
+          "default": true,
+          "description": "📋 requires – requires clause"
+        },
+        "emojiCode.cppKeyword.namespace": {
+          "type": "boolean",
+          "default": true,
+          "description": "📁 namespace – namespace"
+        },
+        "emojiCode.cppKeyword.using": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔗 using – using directive"
+        },
+        "emojiCode.cppKeyword.new": {
+          "type": "boolean",
+          "default": true,
+          "description": "✨ new – allocate memory"
+        },
+        "emojiCode.cppKeyword.delete": {
+          "type": "boolean",
+          "default": true,
+          "description": "🗑️ delete – deallocate memory"
+        },
+        "emojiCode.cppKeyword.sizeof": {
+          "type": "boolean",
+          "default": true,
+          "description": "📐 sizeof – size operator"
+        },
+        "emojiCode.cppKeyword.alignof": {
+          "type": "boolean",
+          "default": true,
+          "description": "📏 alignof – alignment"
+        },
+        "emojiCode.cppKeyword.alignas": {
+          "type": "boolean",
+          "default": true,
+          "description": "↔️ alignas – align specifier"
+        },
+        "emojiCode.cppKeyword.typedef": {
+          "type": "boolean",
+          "default": true,
+          "description": "🏷️ typedef – type alias"
+        },
+        "emojiCode.cppKeyword.try": {
+          "type": "boolean",
+          "default": true,
+          "description": "🤞 try – try block"
+        },
+        "emojiCode.cppKeyword.catch": {
+          "type": "boolean",
+          "default": true,
+          "description": "🥅 catch – catch exception"
+        },
+        "emojiCode.cppKeyword.throw": {
+          "type": "boolean",
+          "default": true,
+          "description": "💥 throw – throw exception"
+        },
+        "emojiCode.cppKeyword.noexcept": {
+          "type": "boolean",
+          "default": true,
+          "description": "🛡️ noexcept – no exceptions"
+        },
+        "emojiCode.cppKeyword.static_cast": {
+          "type": "boolean",
+          "default": true,
+          "description": "🎯 static_cast – static cast"
+        },
+        "emojiCode.cppKeyword.dynamic_cast": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔮 dynamic_cast – dynamic cast"
+        },
+        "emojiCode.cppKeyword.const_cast": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔓 const_cast – const cast"
+        },
+        "emojiCode.cppKeyword.reinterpret_cast": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔀 reinterpret_cast – reinterpret cast"
+        },
+        "emojiCode.cppKeyword.operator": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔧 operator – operator overload"
+        },
+        "emojiCode.cppKeyword.typeid": {
+          "type": "boolean",
+          "default": true,
+          "description": "🆔 typeid – type identification"
+        },
+        "emojiCode.cppKeyword.decltype": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔍 decltype – declared type"
+        },
+        "emojiCode.cppKeyword.asm": {
+          "type": "boolean",
+          "default": true,
+          "description": "⚙️ asm – inline assembly"
+        },
+        "emojiCode.cppKeyword.export": {
+          "type": "boolean",
+          "default": true,
+          "description": "📦 export – module export"
+        },
+        "emojiCode.cppKeyword.import": {
+          "type": "boolean",
+          "default": true,
+          "description": "📥 import – module import"
+        },
+        "emojiCode.cppKeyword.module": {
+          "type": "boolean",
+          "default": true,
+          "description": "🧩 module – module"
+        },
+        "emojiCode.cppKeyword.co_await": {
+          "type": "boolean",
+          "default": true,
+          "description": "⏳ co_await – coroutine await"
+        },
+        "emojiCode.cppKeyword.co_return": {
+          "type": "boolean",
+          "default": true,
+          "description": "↩️ co_return – coroutine return"
+        },
+        "emojiCode.cppKeyword.co_yield": {
+          "type": "boolean",
+          "default": true,
+          "description": "🌾 co_yield – coroutine yield"
+        },
+        "emojiCode.csharpKeywords": {
+          "type": "boolean",
+          "default": true,
+          "description": "Master toggle: show emojis for C# keywords."
+        },
+        "emojiCode.csharpKeyword.if": {
+          "type": "boolean",
+          "default": true,
+          "description": "❓ if – conditional"
+        },
+        "emojiCode.csharpKeyword.else": {
+          "type": "boolean",
+          "default": true,
+          "description": "↪️ else – alternative branch"
+        },
+        "emojiCode.csharpKeyword.switch": {
+          "type": "boolean",
+          "default": true,
+          "description": "🎚️ switch – multi-branch"
+        },
+        "emojiCode.csharpKeyword.case": {
+          "type": "boolean",
+          "default": true,
+          "description": "📋 case – switch case"
+        },
+        "emojiCode.csharpKeyword.default": {
+          "type": "boolean",
+          "default": true,
+          "description": "📌 default – default case"
+        },
+        "emojiCode.csharpKeyword.for": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔁 for – for loop"
+        },
+        "emojiCode.csharpKeyword.foreach": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔂 foreach – foreach loop"
+        },
+        "emojiCode.csharpKeyword.while": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔄 while – while loop"
+        },
+        "emojiCode.csharpKeyword.do": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔃 do – do-while loop"
+        },
+        "emojiCode.csharpKeyword.break": {
+          "type": "boolean",
+          "default": true,
+          "description": "🛑 break – exit loop"
+        },
+        "emojiCode.csharpKeyword.continue": {
+          "type": "boolean",
+          "default": true,
+          "description": "⏭️ continue – next iteration"
+        },
+        "emojiCode.csharpKeyword.goto": {
+          "type": "boolean",
+          "default": true,
+          "description": "🚀 goto – unconditional jump"
+        },
+        "emojiCode.csharpKeyword.return": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔙 return – return value"
+        },
+        "emojiCode.csharpKeyword.yield": {
+          "type": "boolean",
+          "default": true,
+          "description": "🌾 yield – yield return"
+        },
+        "emojiCode.csharpKeyword.when": {
+          "type": "boolean",
+          "default": true,
+          "description": "⏰ when – pattern guard"
+        },
+        "emojiCode.csharpKeyword.int": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔢 int – integer"
+        },
+        "emojiCode.csharpKeyword.long": {
+          "type": "boolean",
+          "default": true,
+          "description": "📐 long – long integer"
+        },
+        "emojiCode.csharpKeyword.short": {
+          "type": "boolean",
+          "default": true,
+          "description": "📏 short – short integer"
+        },
+        "emojiCode.csharpKeyword.byte": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔣 byte – byte"
+        },
+        "emojiCode.csharpKeyword.sbyte": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔤 sbyte – signed byte"
+        },
+        "emojiCode.csharpKeyword.uint": {
+          "type": "boolean",
+          "default": true,
+          "description": "➕ uint – unsigned int"
+        },
+        "emojiCode.csharpKeyword.ulong": {
+          "type": "boolean",
+          "default": true,
+          "description": "➖ ulong – unsigned long"
+        },
+        "emojiCode.csharpKeyword.ushort": {
+          "type": "boolean",
+          "default": true,
+          "description": "✖️ ushort – unsigned short"
+        },
+        "emojiCode.csharpKeyword.float": {
+          "type": "boolean",
+          "default": true,
+          "description": "🎈 float – floating point"
+        },
+        "emojiCode.csharpKeyword.double": {
+          "type": "boolean",
+          "default": true,
+          "description": "🎭 double – double precision"
+        },
+        "emojiCode.csharpKeyword.decimal": {
+          "type": "boolean",
+          "default": true,
+          "description": "💰 decimal – decimal"
+        },
+        "emojiCode.csharpKeyword.bool": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔘 bool – boolean"
+        },
+        "emojiCode.csharpKeyword.char": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔡 char – character"
+        },
+        "emojiCode.csharpKeyword.string": {
+          "type": "boolean",
+          "default": true,
+          "description": "📝 string – string type"
+        },
+        "emojiCode.csharpKeyword.object": {
+          "type": "boolean",
+          "default": true,
+          "description": "📦 object – object type"
+        },
+        "emojiCode.csharpKeyword.void": {
+          "type": "boolean",
+          "default": true,
+          "description": "🕳️ void – no return"
+        },
+        "emojiCode.csharpKeyword.var": {
+          "type": "boolean",
+          "default": true,
+          "description": "🏷️ var – implicit type"
+        },
+        "emojiCode.csharpKeyword.dynamic": {
+          "type": "boolean",
+          "default": true,
+          "description": "🌊 dynamic – dynamic type"
+        },
+        "emojiCode.csharpKeyword.true": {
+          "type": "boolean",
+          "default": true,
+          "description": "✅ true – true"
+        },
+        "emojiCode.csharpKeyword.false": {
+          "type": "boolean",
+          "default": true,
+          "description": "❌ false – false"
+        },
+        "emojiCode.csharpKeyword.null": {
+          "type": "boolean",
+          "default": true,
+          "description": "🚫 null – null value"
+        },
+        "emojiCode.csharpKeyword.public": {
+          "type": "boolean",
+          "default": true,
+          "description": "🌍 public – public access"
+        },
+        "emojiCode.csharpKeyword.private": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔐 private – private access"
+        },
+        "emojiCode.csharpKeyword.protected": {
+          "type": "boolean",
+          "default": true,
+          "description": "🛡️ protected – protected access"
+        },
+        "emojiCode.csharpKeyword.internal": {
+          "type": "boolean",
+          "default": true,
+          "description": "🏠 internal – internal access"
+        },
+        "emojiCode.csharpKeyword.static": {
+          "type": "boolean",
+          "default": true,
+          "description": "🏛️ static – static member"
+        },
+        "emojiCode.csharpKeyword.readonly": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔒 readonly – read only"
+        },
+        "emojiCode.csharpKeyword.const": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔏 const – constant"
+        },
+        "emojiCode.csharpKeyword.volatile": {
+          "type": "boolean",
+          "default": true,
+          "description": "⚠️ volatile – volatile"
+        },
+        "emojiCode.csharpKeyword.sealed": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔐 sealed – sealed class"
+        },
+        "emojiCode.csharpKeyword.abstract": {
+          "type": "boolean",
+          "default": true,
+          "description": "🎨 abstract – abstract"
+        },
+        "emojiCode.csharpKeyword.virtual": {
+          "type": "boolean",
+          "default": true,
+          "description": "👻 virtual – virtual method"
+        },
+        "emojiCode.csharpKeyword.override": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔄 override – override method"
+        },
+        "emojiCode.csharpKeyword.extern": {
+          "type": "boolean",
+          "default": true,
+          "description": "🌐 extern – external"
+        },
+        "emojiCode.csharpKeyword.unsafe": {
+          "type": "boolean",
+          "default": true,
+          "description": "☢️ unsafe – unsafe code"
+        },
+        "emojiCode.csharpKeyword.partial": {
+          "type": "boolean",
+          "default": true,
+          "description": "🧩 partial – partial class"
+        },
+        "emojiCode.csharpKeyword.class": {
+          "type": "boolean",
+          "default": true,
+          "description": "🏛️ class – class"
+        },
+        "emojiCode.csharpKeyword.struct": {
+          "type": "boolean",
+          "default": true,
+          "description": "🏗️ struct – struct"
+        },
+        "emojiCode.csharpKeyword.interface": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔌 interface – interface"
+        },
+        "emojiCode.csharpKeyword.enum": {
+          "type": "boolean",
+          "default": true,
+          "description": "📊 enum – enumeration"
+        },
+        "emojiCode.csharpKeyword.record": {
+          "type": "boolean",
+          "default": true,
+          "description": "📀 record – record type"
+        },
+        "emojiCode.csharpKeyword.delegate": {
+          "type": "boolean",
+          "default": true,
+          "description": "📨 delegate – delegate"
+        },
+        "emojiCode.csharpKeyword.event": {
+          "type": "boolean",
+          "default": true,
+          "description": "🎉 event – event"
+        },
+        "emojiCode.csharpKeyword.this": {
+          "type": "boolean",
+          "default": true,
+          "description": "👆 this – current instance"
+        },
+        "emojiCode.csharpKeyword.base": {
+          "type": "boolean",
+          "default": true,
+          "description": "👇 base – base class"
+        },
+        "emojiCode.csharpKeyword.new": {
+          "type": "boolean",
+          "default": true,
+          "description": "✨ new – new instance"
+        },
+        "emojiCode.csharpKeyword.try": {
+          "type": "boolean",
+          "default": true,
+          "description": "🤞 try – try block"
+        },
+        "emojiCode.csharpKeyword.catch": {
+          "type": "boolean",
+          "default": true,
+          "description": "🥅 catch – catch exception"
+        },
+        "emojiCode.csharpKeyword.finally": {
+          "type": "boolean",
+          "default": true,
+          "description": "🏁 finally – finally block"
+        },
+        "emojiCode.csharpKeyword.throw": {
+          "type": "boolean",
+          "default": true,
+          "description": "💥 throw – throw exception"
+        },
+        "emojiCode.csharpKeyword.async": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔮 async – async method"
+        },
+        "emojiCode.csharpKeyword.await": {
+          "type": "boolean",
+          "default": true,
+          "description": "⏳ await – await task"
+        },
+        "emojiCode.csharpKeyword.namespace": {
+          "type": "boolean",
+          "default": true,
+          "description": "📁 namespace – namespace"
+        },
+        "emojiCode.csharpKeyword.using": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔗 using – using directive"
+        },
+        "emojiCode.csharpKeyword.typeof": {
+          "type": "boolean",
+          "default": true,
+          "description": "🏷️ typeof – type of"
+        },
+        "emojiCode.csharpKeyword.sizeof": {
+          "type": "boolean",
+          "default": true,
+          "description": "📐 sizeof – size of"
+        },
+        "emojiCode.csharpKeyword.is": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔍 is – is type"
+        },
+        "emojiCode.csharpKeyword.as": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔀 as – as type"
+        },
+        "emojiCode.csharpKeyword.nameof": {
+          "type": "boolean",
+          "default": true,
+          "description": "📛 nameof – name of"
+        },
+        "emojiCode.csharpKeyword.ref": {
+          "type": "boolean",
+          "default": true,
+          "description": "📎 ref – reference"
+        },
+        "emojiCode.csharpKeyword.out": {
+          "type": "boolean",
+          "default": true,
+          "description": "📤 out – out parameter"
+        },
+        "emojiCode.csharpKeyword.in": {
+          "type": "boolean",
+          "default": true,
+          "description": "📥 in – in parameter"
+        },
+        "emojiCode.csharpKeyword.params": {
+          "type": "boolean",
+          "default": true,
+          "description": "📋 params – params array"
+        },
+        "emojiCode.csharpKeyword.stackalloc": {
+          "type": "boolean",
+          "default": true,
+          "description": "🗃️ stackalloc – stack allocate"
+        },
+        "emojiCode.csharpKeyword.fixed": {
+          "type": "boolean",
+          "default": true,
+          "description": "📍 fixed – fixed pointer"
+        },
+        "emojiCode.csharpKeyword.lock": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔒 lock – thread lock"
+        },
+        "emojiCode.csharpKeyword.checked": {
+          "type": "boolean",
+          "default": true,
+          "description": "✔️ checked – checked context"
+        },
+        "emojiCode.csharpKeyword.unchecked": {
+          "type": "boolean",
+          "default": true,
+          "description": "✖️ unchecked – unchecked context"
+        },
+        "emojiCode.csharpKeyword.from": {
+          "type": "boolean",
+          "default": true,
+          "description": "📤 from – LINQ from"
+        },
+        "emojiCode.csharpKeyword.where": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔎 where – LINQ where"
+        },
+        "emojiCode.csharpKeyword.select": {
+          "type": "boolean",
+          "default": true,
+          "description": "✅ select – LINQ select"
+        },
+        "emojiCode.csharpKeyword.orderby": {
+          "type": "boolean",
+          "default": true,
+          "description": "📶 orderby – LINQ order by"
+        },
+        "emojiCode.csharpKeyword.group": {
+          "type": "boolean",
+          "default": true,
+          "description": "👥 group – LINQ group"
+        },
+        "emojiCode.csharpKeyword.join": {
+          "type": "boolean",
+          "default": true,
+          "description": "🤝 join – LINQ join"
+        },
+        "emojiCode.csharpKeyword.let": {
+          "type": "boolean",
+          "default": true,
+          "description": "📝 let – LINQ let"
+        },
+        "emojiCode.csharpKeyword.into": {
+          "type": "boolean",
+          "default": true,
+          "description": "➡️ into – LINQ into"
+        },
+        "emojiCode.csharpKeyword.ascending": {
+          "type": "boolean",
+          "default": true,
+          "description": "⬆️ ascending – ascending order"
+        },
+        "emojiCode.csharpKeyword.descending": {
+          "type": "boolean",
+          "default": true,
+          "description": "⬇️ descending – descending order"
+        },
+        "emojiCode.csharpKeyword.on": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔛 on – join condition"
+        },
+        "emojiCode.csharpKeyword.equals": {
+          "type": "boolean",
+          "default": true,
+          "description": "⚖️ equals – equality"
+        },
+        "emojiCode.csharpKeyword.by": {
+          "type": "boolean",
+          "default": true,
+          "description": "📌 by – group by"
+        },
+        "emojiCode.csharpKeyword.get": {
+          "type": "boolean",
+          "default": true,
+          "description": "📖 get – getter"
+        },
+        "emojiCode.csharpKeyword.set": {
+          "type": "boolean",
+          "default": true,
+          "description": "📝 set – setter"
+        },
+        "emojiCode.csharpKeyword.init": {
+          "type": "boolean",
+          "default": true,
+          "description": "🎬 init – init-only setter"
+        },
+        "emojiCode.csharpKeyword.value": {
+          "type": "boolean",
+          "default": true,
+          "description": "💎 value – property value"
+        },
+        "emojiCode.csharpKeyword.add": {
+          "type": "boolean",
+          "default": true,
+          "description": "➕ add – event add"
+        },
+        "emojiCode.csharpKeyword.remove": {
+          "type": "boolean",
+          "default": true,
+          "description": "➖ remove – event remove"
+        },
+        "emojiCode.csharpKeyword.with": {
+          "type": "boolean",
+          "default": true,
+          "description": "🎁 with – with expression"
+        },
+        "emojiCode.csharpKeyword.required": {
+          "type": "boolean",
+          "default": true,
+          "description": "❗ required – required member"
+        },
+        "emojiCode.csharpKeyword.global": {
+          "type": "boolean",
+          "default": true,
+          "description": "🌐 global – global using"
+        },
+        "emojiCode.sqlKeywords": {
+          "type": "boolean",
+          "default": true,
+          "description": "Master toggle: show emojis for SQL keywords."
+        },
+        "emojiCode.sqlKeyword.SELECT": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔍 SELECT – select data"
+        },
+        "emojiCode.sqlKeyword.FROM": {
+          "type": "boolean",
+          "default": true,
+          "description": "📂 FROM – source table"
+        },
+        "emojiCode.sqlKeyword.WHERE": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔎 WHERE – filter condition"
+        },
+        "emojiCode.sqlKeyword.AND": {
+          "type": "boolean",
+          "default": true,
+          "description": "🤝 AND – logical and"
+        },
+        "emojiCode.sqlKeyword.OR": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔀 OR – logical or"
+        },
+        "emojiCode.sqlKeyword.NOT": {
+          "type": "boolean",
+          "default": true,
+          "description": "🚷 NOT – logical not"
+        },
+        "emojiCode.sqlKeyword.IN": {
+          "type": "boolean",
+          "default": true,
+          "description": "📥 IN – in set"
+        },
+        "emojiCode.sqlKeyword.BETWEEN": {
+          "type": "boolean",
+          "default": true,
+          "description": "↔️ BETWEEN – between range"
+        },
+        "emojiCode.sqlKeyword.LIKE": {
+          "type": "boolean",
+          "default": true,
+          "description": "🎭 LIKE – pattern match"
+        },
+        "emojiCode.sqlKeyword.IS": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔗 IS – is comparison"
+        },
+        "emojiCode.sqlKeyword.NULL": {
+          "type": "boolean",
+          "default": true,
+          "description": "🚫 NULL – null value"
+        },
+        "emojiCode.sqlKeyword.AS": {
+          "type": "boolean",
+          "default": true,
+          "description": "🏷️ AS – alias"
+        },
+        "emojiCode.sqlKeyword.DISTINCT": {
+          "type": "boolean",
+          "default": true,
+          "description": "✨ DISTINCT – unique values"
+        },
+        "emojiCode.sqlKeyword.ALL": {
+          "type": "boolean",
+          "default": true,
+          "description": "📦 ALL – all records"
+        },
+        "emojiCode.sqlKeyword.ANY": {
+          "type": "boolean",
+          "default": true,
+          "description": "🎲 ANY – any match"
+        },
+        "emojiCode.sqlKeyword.EXISTS": {
+          "type": "boolean",
+          "default": true,
+          "description": "✅ EXISTS – exists check"
+        },
+        "emojiCode.sqlKeyword.ORDER": {
+          "type": "boolean",
+          "default": true,
+          "description": "📶 ORDER – order results"
+        },
+        "emojiCode.sqlKeyword.BY": {
+          "type": "boolean",
+          "default": true,
+          "description": "📌 BY – by column"
+        },
+        "emojiCode.sqlKeyword.ASC": {
+          "type": "boolean",
+          "default": true,
+          "description": "⬆️ ASC – ascending"
+        },
+        "emojiCode.sqlKeyword.DESC": {
+          "type": "boolean",
+          "default": true,
+          "description": "⬇️ DESC – descending"
+        },
+        "emojiCode.sqlKeyword.GROUP": {
+          "type": "boolean",
+          "default": true,
+          "description": "👥 GROUP – group rows"
+        },
+        "emojiCode.sqlKeyword.HAVING": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔬 HAVING – group filter"
+        },
+        "emojiCode.sqlKeyword.LIMIT": {
+          "type": "boolean",
+          "default": true,
+          "description": "🛑 LIMIT – limit rows"
+        },
+        "emojiCode.sqlKeyword.OFFSET": {
+          "type": "boolean",
+          "default": true,
+          "description": "⏭️ OFFSET – skip rows"
+        },
+        "emojiCode.sqlKeyword.TOP": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔝 TOP – top n rows"
+        },
+        "emojiCode.sqlKeyword.JOIN": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔗 JOIN – join tables"
+        },
+        "emojiCode.sqlKeyword.INNER": {
+          "type": "boolean",
+          "default": true,
+          "description": "🎯 INNER – inner join"
+        },
+        "emojiCode.sqlKeyword.LEFT": {
+          "type": "boolean",
+          "default": true,
+          "description": "⬅️ LEFT – left join"
+        },
+        "emojiCode.sqlKeyword.RIGHT": {
+          "type": "boolean",
+          "default": true,
+          "description": "➡️ RIGHT – right join"
+        },
+        "emojiCode.sqlKeyword.FULL": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔄 FULL – full join"
+        },
+        "emojiCode.sqlKeyword.OUTER": {
+          "type": "boolean",
+          "default": true,
+          "description": "🌐 OUTER – outer join"
+        },
+        "emojiCode.sqlKeyword.CROSS": {
+          "type": "boolean",
+          "default": true,
+          "description": "✖️ CROSS – cross join"
+        },
+        "emojiCode.sqlKeyword.ON": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔛 ON – join condition"
+        },
+        "emojiCode.sqlKeyword.USING": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔧 USING – using columns"
+        },
+        "emojiCode.sqlKeyword.INSERT": {
+          "type": "boolean",
+          "default": true,
+          "description": "➕ INSERT – insert data"
+        },
+        "emojiCode.sqlKeyword.INTO": {
+          "type": "boolean",
+          "default": true,
+          "description": "📥 INTO – into table"
+        },
+        "emojiCode.sqlKeyword.VALUES": {
+          "type": "boolean",
+          "default": true,
+          "description": "💎 VALUES – values"
+        },
+        "emojiCode.sqlKeyword.UPDATE": {
+          "type": "boolean",
+          "default": true,
+          "description": "✏️ UPDATE – update data"
+        },
+        "emojiCode.sqlKeyword.SET": {
+          "type": "boolean",
+          "default": true,
+          "description": "📝 SET – set values"
+        },
+        "emojiCode.sqlKeyword.DELETE": {
+          "type": "boolean",
+          "default": true,
+          "description": "🗑️ DELETE – delete data"
+        },
+        "emojiCode.sqlKeyword.TRUNCATE": {
+          "type": "boolean",
+          "default": true,
+          "description": "🧹 TRUNCATE – truncate table"
+        },
+        "emojiCode.sqlKeyword.MERGE": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔀 MERGE – merge data"
+        },
+        "emojiCode.sqlKeyword.CREATE": {
+          "type": "boolean",
+          "default": true,
+          "description": "🏗️ CREATE – create object"
+        },
+        "emojiCode.sqlKeyword.ALTER": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔧 ALTER – alter object"
+        },
+        "emojiCode.sqlKeyword.DROP": {
+          "type": "boolean",
+          "default": true,
+          "description": "💥 DROP – drop object"
+        },
+        "emojiCode.sqlKeyword.TABLE": {
+          "type": "boolean",
+          "default": true,
+          "description": "📊 TABLE – table"
+        },
+        "emojiCode.sqlKeyword.DATABASE": {
+          "type": "boolean",
+          "default": true,
+          "description": "🗄️ DATABASE – database"
+        },
+        "emojiCode.sqlKeyword.SCHEMA": {
+          "type": "boolean",
+          "default": true,
+          "description": "📐 SCHEMA – schema"
+        },
+        "emojiCode.sqlKeyword.INDEX": {
+          "type": "boolean",
+          "default": true,
+          "description": "📑 INDEX – index"
+        },
+        "emojiCode.sqlKeyword.VIEW": {
+          "type": "boolean",
+          "default": true,
+          "description": "👁️ VIEW – view"
+        },
+        "emojiCode.sqlKeyword.SEQUENCE": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔢 SEQUENCE – sequence"
+        },
+        "emojiCode.sqlKeyword.TRIGGER": {
+          "type": "boolean",
+          "default": true,
+          "description": "⚡ TRIGGER – trigger"
+        },
+        "emojiCode.sqlKeyword.PROCEDURE": {
+          "type": "boolean",
+          "default": true,
+          "description": "📜 PROCEDURE – stored procedure"
+        },
+        "emojiCode.sqlKeyword.FUNCTION": {
+          "type": "boolean",
+          "default": true,
+          "description": "⚙️ FUNCTION – function"
+        },
+        "emojiCode.sqlKeyword.PRIMARY": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔑 PRIMARY – primary key"
+        },
+        "emojiCode.sqlKeyword.FOREIGN": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔐 FOREIGN – foreign key"
+        },
+        "emojiCode.sqlKeyword.KEY": {
+          "type": "boolean",
+          "default": true,
+          "description": "🗝️ KEY – key"
+        },
+        "emojiCode.sqlKeyword.UNIQUE": {
+          "type": "boolean",
+          "default": true,
+          "description": "🦄 UNIQUE – unique"
+        },
+        "emojiCode.sqlKeyword.CHECK": {
+          "type": "boolean",
+          "default": true,
+          "description": "✔️ CHECK – check constraint"
+        },
+        "emojiCode.sqlKeyword.DEFAULT": {
+          "type": "boolean",
+          "default": true,
+          "description": "📌 DEFAULT – default value"
+        },
+        "emojiCode.sqlKeyword.CONSTRAINT": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔒 CONSTRAINT – constraint"
+        },
+        "emojiCode.sqlKeyword.REFERENCES": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔗 REFERENCES – references"
+        },
+        "emojiCode.sqlKeyword.CASCADE": {
+          "type": "boolean",
+          "default": true,
+          "description": "🌊 CASCADE – cascade action"
+        },
+        "emojiCode.sqlKeyword.INT": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔢 INT – integer"
+        },
+        "emojiCode.sqlKeyword.INTEGER": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔢 INTEGER – integer"
+        },
+        "emojiCode.sqlKeyword.BIGINT": {
+          "type": "boolean",
+          "default": true,
+          "description": "📐 BIGINT – big integer"
+        },
+        "emojiCode.sqlKeyword.SMALLINT": {
+          "type": "boolean",
+          "default": true,
+          "description": "📏 SMALLINT – small integer"
+        },
+        "emojiCode.sqlKeyword.DECIMAL": {
+          "type": "boolean",
+          "default": true,
+          "description": "💰 DECIMAL – decimal"
+        },
+        "emojiCode.sqlKeyword.NUMERIC": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔣 NUMERIC – numeric"
+        },
+        "emojiCode.sqlKeyword.FLOAT": {
+          "type": "boolean",
+          "default": true,
+          "description": "🎈 FLOAT – float"
+        },
+        "emojiCode.sqlKeyword.REAL": {
+          "type": "boolean",
+          "default": true,
+          "description": "🎭 REAL – real"
+        },
+        "emojiCode.sqlKeyword.DOUBLE": {
+          "type": "boolean",
+          "default": true,
+          "description": "🎭 DOUBLE – double"
+        },
+        "emojiCode.sqlKeyword.VARCHAR": {
+          "type": "boolean",
+          "default": true,
+          "description": "📝 VARCHAR – variable char"
+        },
+        "emojiCode.sqlKeyword.CHAR": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔤 CHAR – char"
+        },
+        "emojiCode.sqlKeyword.TEXT": {
+          "type": "boolean",
+          "default": true,
+          "description": "📄 TEXT – text"
+        },
+        "emojiCode.sqlKeyword.DATE": {
+          "type": "boolean",
+          "default": true,
+          "description": "📅 DATE – date"
+        },
+        "emojiCode.sqlKeyword.TIME": {
+          "type": "boolean",
+          "default": true,
+          "description": "🕐 TIME – time"
+        },
+        "emojiCode.sqlKeyword.TIMESTAMP": {
+          "type": "boolean",
+          "default": true,
+          "description": "⏰ TIMESTAMP – timestamp"
+        },
+        "emojiCode.sqlKeyword.DATETIME": {
+          "type": "boolean",
+          "default": true,
+          "description": "📆 DATETIME – datetime"
+        },
+        "emojiCode.sqlKeyword.BOOLEAN": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔘 BOOLEAN – boolean"
+        },
+        "emojiCode.sqlKeyword.BLOB": {
+          "type": "boolean",
+          "default": true,
+          "description": "📦 BLOB – binary blob"
+        },
+        "emojiCode.sqlKeyword.TRUE": {
+          "type": "boolean",
+          "default": true,
+          "description": "✅ TRUE – true"
+        },
+        "emojiCode.sqlKeyword.FALSE": {
+          "type": "boolean",
+          "default": true,
+          "description": "❌ FALSE – false"
+        },
+        "emojiCode.sqlKeyword.BEGIN": {
+          "type": "boolean",
+          "default": true,
+          "description": "🚀 BEGIN – begin"
+        },
+        "emojiCode.sqlKeyword.COMMIT": {
+          "type": "boolean",
+          "default": true,
+          "description": "💾 COMMIT – commit"
+        },
+        "emojiCode.sqlKeyword.ROLLBACK": {
+          "type": "boolean",
+          "default": true,
+          "description": "↩️ ROLLBACK – rollback"
+        },
+        "emojiCode.sqlKeyword.SAVEPOINT": {
+          "type": "boolean",
+          "default": true,
+          "description": "📍 SAVEPOINT – savepoint"
+        },
+        "emojiCode.sqlKeyword.TRANSACTION": {
+          "type": "boolean",
+          "default": true,
+          "description": "💳 TRANSACTION – transaction"
+        },
+        "emojiCode.sqlKeyword.GRANT": {
+          "type": "boolean",
+          "default": true,
+          "description": "🎁 GRANT – grant permission"
+        },
+        "emojiCode.sqlKeyword.REVOKE": {
+          "type": "boolean",
+          "default": true,
+          "description": "🚫 REVOKE – revoke permission"
+        },
+        "emojiCode.sqlKeyword.DENY": {
+          "type": "boolean",
+          "default": true,
+          "description": "⛔ DENY – deny access"
+        },
+        "emojiCode.sqlKeyword.WITH": {
+          "type": "boolean",
+          "default": true,
+          "description": "📎 WITH – CTE"
+        },
+        "emojiCode.sqlKeyword.RECURSIVE": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔁 RECURSIVE – recursive"
+        },
+        "emojiCode.sqlKeyword.UNION": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔗 UNION – union"
+        },
+        "emojiCode.sqlKeyword.INTERSECT": {
+          "type": "boolean",
+          "default": true,
+          "description": "🎯 INTERSECT – intersect"
+        },
+        "emojiCode.sqlKeyword.EXCEPT": {
+          "type": "boolean",
+          "default": true,
+          "description": "➖ EXCEPT – except"
+        },
+        "emojiCode.sqlKeyword.COUNT": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔢 COUNT – count"
+        },
+        "emojiCode.sqlKeyword.SUM": {
+          "type": "boolean",
+          "default": true,
+          "description": "➕ SUM – sum"
+        },
+        "emojiCode.sqlKeyword.AVG": {
+          "type": "boolean",
+          "default": true,
+          "description": "📊 AVG – average"
+        },
+        "emojiCode.sqlKeyword.MIN": {
+          "type": "boolean",
+          "default": true,
+          "description": "⬇️ MIN – minimum"
+        },
+        "emojiCode.sqlKeyword.MAX": {
+          "type": "boolean",
+          "default": true,
+          "description": "⬆️ MAX – maximum"
+        },
+        "emojiCode.sqlKeyword.OVER": {
+          "type": "boolean",
+          "default": true,
+          "description": "🪟 OVER – window function"
+        },
+        "emojiCode.sqlKeyword.PARTITION": {
+          "type": "boolean",
+          "default": true,
+          "description": "📂 PARTITION – partition by"
+        },
+        "emojiCode.sqlKeyword.ROWS": {
+          "type": "boolean",
+          "default": true,
+          "description": "📋 ROWS – rows"
+        },
+        "emojiCode.sqlKeyword.RANGE": {
+          "type": "boolean",
+          "default": true,
+          "description": "↔️ RANGE – range"
+        },
+        "emojiCode.sqlKeyword.CASE": {
+          "type": "boolean",
+          "default": true,
+          "description": "📋 CASE – case"
+        },
+        "emojiCode.sqlKeyword.WHEN": {
+          "type": "boolean",
+          "default": true,
+          "description": "⏰ WHEN – when"
+        },
+        "emojiCode.sqlKeyword.THEN": {
+          "type": "boolean",
+          "default": true,
+          "description": "➡️ THEN – then"
+        },
+        "emojiCode.sqlKeyword.ELSE": {
+          "type": "boolean",
+          "default": true,
+          "description": "↪️ ELSE – else"
+        },
+        "emojiCode.sqlKeyword.END": {
+          "type": "boolean",
+          "default": true,
+          "description": "🏁 END – end"
+        },
+        "emojiCode.sqlKeyword.COALESCE": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔄 COALESCE – coalesce"
+        },
+        "emojiCode.sqlKeyword.NULLIF": {
+          "type": "boolean",
+          "default": true,
+          "description": "🚫 NULLIF – nullif"
+        },
+        "emojiCode.sqlKeyword.IFNULL": {
+          "type": "boolean",
+          "default": true,
+          "description": "❓ IFNULL – ifnull"
+        },
+        "emojiCode.sqlKeyword.NVL": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔃 NVL – nvl"
+        },
+        "emojiCode.sqlKeyword.EXPLAIN": {
+          "type": "boolean",
+          "default": true,
+          "description": "📖 EXPLAIN – explain plan"
+        },
+        "emojiCode.sqlKeyword.ANALYZE": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔬 ANALYZE – analyze"
+        },
+        "emojiCode.sqlKeyword.EXECUTE": {
+          "type": "boolean",
+          "default": true,
+          "description": "▶️ EXECUTE – execute"
+        },
+        "emojiCode.sqlKeyword.CALL": {
+          "type": "boolean",
+          "default": true,
+          "description": "📞 CALL – call procedure"
+        },
+        "emojiCode.sqlKeyword.DECLARE": {
+          "type": "boolean",
+          "default": true,
+          "description": "📢 DECLARE – declare variable"
+        },
+        "emojiCode.sqlKeyword.CURSOR": {
+          "type": "boolean",
+          "default": true,
+          "description": "👆 CURSOR – cursor"
+        },
+        "emojiCode.sqlKeyword.FETCH": {
+          "type": "boolean",
+          "default": true,
+          "description": "🎣 FETCH – fetch"
+        },
+        "emojiCode.sqlKeyword.OPEN": {
+          "type": "boolean",
+          "default": true,
+          "description": "📂 OPEN – open cursor"
+        },
+        "emojiCode.sqlKeyword.CLOSE": {
+          "type": "boolean",
+          "default": true,
+          "description": "📁 CLOSE – close cursor"
+        },
+        "emojiCode.sqlKeyword.IF": {
+          "type": "boolean",
+          "default": true,
+          "description": "❓ IF – if"
+        },
+        "emojiCode.sqlKeyword.WHILE": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔂 WHILE – while loop"
+        },
+        "emojiCode.sqlKeyword.RETURN": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔙 RETURN – return"
+        },
+        "emojiCode.sqlKeyword.RETURNS": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔙 RETURNS – returns"
+        },
+        "emojiCode.typescriptKeywords": {
+          "type": "boolean",
+          "default": true,
+          "description": "Master toggle: show emojis for TypeScript keywords."
+        },
+        "emojiCode.tsKeyword.await": {
+          "type": "boolean",
+          "default": true,
+          "description": "⏳ await – waiting for a promise"
+        },
+        "emojiCode.tsKeyword.break": {
+          "type": "boolean",
+          "default": true,
+          "description": "🛑 break – exit loop/switch"
+        },
+        "emojiCode.tsKeyword.case": {
+          "type": "boolean",
+          "default": true,
+          "description": "📋 case – pattern match branch"
+        },
+        "emojiCode.tsKeyword.catch": {
+          "type": "boolean",
+          "default": true,
+          "description": "🥅 catch – catch thrown errors"
+        },
+        "emojiCode.tsKeyword.class": {
+          "type": "boolean",
+          "default": true,
+          "description": "🏛️ class – class declaration"
+        },
+        "emojiCode.tsKeyword.const": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔒 const – immutable binding"
+        },
+        "emojiCode.tsKeyword.continue": {
+          "type": "boolean",
+          "default": true,
+          "description": "⏭️ continue – next iteration"
+        },
+        "emojiCode.tsKeyword.debugger": {
+          "type": "boolean",
+          "default": true,
+          "description": "🐛 debugger – breakpoint"
+        },
+        "emojiCode.tsKeyword.default": {
+          "type": "boolean",
+          "default": true,
+          "description": "📌 default – fallback branch"
+        },
+        "emojiCode.tsKeyword.delete": {
+          "type": "boolean",
+          "default": true,
+          "description": "🗑️ delete – remove property"
+        },
+        "emojiCode.tsKeyword.do": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔄 do – do-while loop"
+        },
+        "emojiCode.tsKeyword.else": {
+          "type": "boolean",
+          "default": true,
+          "description": "↪️ else – alternative branch"
+        },
+        "emojiCode.tsKeyword.export": {
+          "type": "boolean",
+          "default": true,
+          "description": "📦 export – module export"
+        },
+        "emojiCode.tsKeyword.extends": {
+          "type": "boolean",
+          "default": true,
+          "description": "🧬 extends – inheritance"
+        },
+        "emojiCode.tsKeyword.finally": {
+          "type": "boolean",
+          "default": true,
+          "description": "🏁 finally – guaranteed cleanup"
+        },
+        "emojiCode.tsKeyword.for": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔁 for – for loop"
+        },
+        "emojiCode.tsKeyword.function": {
+          "type": "boolean",
+          "default": true,
+          "description": "⚡ function – function declaration"
+        },
+        "emojiCode.tsKeyword.if": {
+          "type": "boolean",
+          "default": true,
+          "description": "❓ if – conditional"
+        },
+        "emojiCode.tsKeyword.import": {
+          "type": "boolean",
+          "default": true,
+          "description": "📥 import – module import"
+        },
+        "emojiCode.tsKeyword.in": {
+          "type": "boolean",
+          "default": true,
+          "description": "📍 in – property membership"
+        },
+        "emojiCode.tsKeyword.instanceof": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔎 instanceof – prototype check"
+        },
+        "emojiCode.tsKeyword.new": {
+          "type": "boolean",
+          "default": true,
+          "description": "✨ new – instance creation"
+        },
+        "emojiCode.tsKeyword.return": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔙 return – return value"
+        },
+        "emojiCode.tsKeyword.super": {
+          "type": "boolean",
+          "default": true,
+          "description": "🦸 super – parent class ref"
+        },
+        "emojiCode.tsKeyword.switch": {
+          "type": "boolean",
+          "default": true,
+          "description": "🎚️ switch – multi-branch"
+        },
+        "emojiCode.tsKeyword.this": {
+          "type": "boolean",
+          "default": true,
+          "description": "👆 this – current context"
+        },
+        "emojiCode.tsKeyword.throw": {
+          "type": "boolean",
+          "default": true,
+          "description": "💥 throw – throw error"
+        },
+        "emojiCode.tsKeyword.try": {
+          "type": "boolean",
+          "default": true,
+          "description": "🤞 try – attempt block"
+        },
+        "emojiCode.tsKeyword.typeof": {
+          "type": "boolean",
+          "default": true,
+          "description": "🏷️ typeof – type check"
+        },
+        "emojiCode.tsKeyword.var": {
+          "type": "boolean",
+          "default": true,
+          "description": "📝 var – variable (legacy)"
+        },
+        "emojiCode.tsKeyword.void": {
+          "type": "boolean",
+          "default": true,
+          "description": "🕳️ void – discard value"
+        },
+        "emojiCode.tsKeyword.while": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔂 while – while loop"
+        },
+        "emojiCode.tsKeyword.with": {
+          "type": "boolean",
+          "default": true,
+          "description": "🤝 with – with statement"
+        },
+        "emojiCode.tsKeyword.yield": {
+          "type": "boolean",
+          "default": true,
+          "description": "🌾 yield – generator yield"
+        },
+        "emojiCode.tsKeyword.type": {
+          "type": "boolean",
+          "default": true,
+          "description": "📐 type – type alias"
+        },
+        "emojiCode.tsKeyword.interface": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔌 interface – interface definition"
+        },
+        "emojiCode.tsKeyword.enum": {
+          "type": "boolean",
+          "default": true,
+          "description": "📊 enum – enumeration"
+        },
+        "emojiCode.tsKeyword.namespace": {
+          "type": "boolean",
+          "default": true,
+          "description": "📁 namespace – namespace"
+        },
+        "emojiCode.tsKeyword.module": {
+          "type": "boolean",
+          "default": true,
+          "description": "🧩 module – module declaration"
+        },
+        "emojiCode.tsKeyword.declare": {
+          "type": "boolean",
+          "default": true,
+          "description": "📢 declare – ambient declaration"
+        },
+        "emojiCode.tsKeyword.abstract": {
+          "type": "boolean",
+          "default": true,
+          "description": "🎨 abstract – abstract class/method"
+        },
+        "emojiCode.tsKeyword.readonly": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔏 readonly – readonly property"
+        },
+        "emojiCode.tsKeyword.implements": {
+          "type": "boolean",
+          "default": true,
+          "description": "✅ implements – implements interface"
+        },
+        "emojiCode.tsKeyword.public": {
+          "type": "boolean",
+          "default": true,
+          "description": "🌍 public – public access"
+        },
+        "emojiCode.tsKeyword.private": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔐 private – private access"
+        },
+        "emojiCode.tsKeyword.protected": {
+          "type": "boolean",
+          "default": true,
+          "description": "🛡️ protected – protected access"
+        },
+        "emojiCode.tsKeyword.keyof": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔑 keyof – keyof operator"
+        },
+        "emojiCode.tsKeyword.infer": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔮 infer – type inference"
+        },
+        "emojiCode.tsKeyword.never": {
+          "type": "boolean",
+          "default": true,
+          "description": "🚫 never – never type"
+        },
+        "emojiCode.tsKeyword.unknown": {
+          "type": "boolean",
+          "default": true,
+          "description": "❔ unknown – unknown type"
+        },
+        "emojiCode.tsKeyword.any": {
+          "type": "boolean",
+          "default": true,
+          "description": "🌀 any – any type"
+        },
+        "emojiCode.tsKeyword.is": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔍 is – type guard"
+        },
+        "emojiCode.tsKeyword.asserts": {
+          "type": "boolean",
+          "default": true,
+          "description": "❗ asserts – assertion function"
+        },
+        "emojiCode.tsKeyword.as": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔀 as – type assertion"
+        },
+        "emojiCode.tsKeyword.satisfies": {
+          "type": "boolean",
+          "default": true,
+          "description": "✔️ satisfies – satisfies operator"
+        },
+        "emojiCode.tsKeyword.true": {
+          "type": "boolean",
+          "default": true,
+          "description": "✅ true – true"
+        },
+        "emojiCode.tsKeyword.false": {
+          "type": "boolean",
+          "default": true,
+          "description": "❌ false – false"
+        },
+        "emojiCode.tsKeyword.null": {
+          "type": "boolean",
+          "default": true,
+          "description": "🚫 null – null value"
+        },
+        "emojiCode.tsKeyword.undefined": {
+          "type": "boolean",
+          "default": true,
+          "description": "❓ undefined – undefined"
+        },
+        "emojiCode.tsKeyword.async": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔮 async – async function"
+        },
+        "emojiCode.tsKeyword.get": {
+          "type": "boolean",
+          "default": true,
+          "description": "📖 get – getter"
+        },
+        "emojiCode.tsKeyword.set": {
+          "type": "boolean",
+          "default": true,
+          "description": "📝 set – setter"
+        },
+        "emojiCode.tsKeyword.static": {
+          "type": "boolean",
+          "default": true,
+          "description": "🏛️ static – static member"
+        },
+        "emojiCode.tsKeyword.constructor": {
+          "type": "boolean",
+          "default": true,
+          "description": "🏗️ constructor – constructor"
+        },
+        "emojiCode.tsKeyword.override": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔄 override – override method"
+        },
+        "emojiCode.tsKeyword.out": {
+          "type": "boolean",
+          "default": true,
+          "description": "📤 out – variance modifier"
+        },
+        "emojiCode.tsKeyword.using": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔗 using – using declaration"
+        },
+        "emojiCode.javaKeywords": {
+          "type": "boolean",
+          "default": true,
+          "description": "Master toggle: show emojis for Java keywords."
+        },
+        "emojiCode.javaKeyword.if": {
+          "type": "boolean",
+          "default": true,
+          "description": "❓ if – conditional"
+        },
+        "emojiCode.javaKeyword.else": {
+          "type": "boolean",
+          "default": true,
+          "description": "↪️ else – alternative branch"
+        },
+        "emojiCode.javaKeyword.switch": {
+          "type": "boolean",
+          "default": true,
+          "description": "🎚️ switch – multi-branch"
+        },
+        "emojiCode.javaKeyword.case": {
+          "type": "boolean",
+          "default": true,
+          "description": "📋 case – switch case"
+        },
+        "emojiCode.javaKeyword.default": {
+          "type": "boolean",
+          "default": true,
+          "description": "📌 default – default case"
+        },
+        "emojiCode.javaKeyword.for": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔁 for – for loop"
+        },
+        "emojiCode.javaKeyword.while": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔂 while – while loop"
+        },
+        "emojiCode.javaKeyword.do": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔄 do – do-while loop"
+        },
+        "emojiCode.javaKeyword.break": {
+          "type": "boolean",
+          "default": true,
+          "description": "🛑 break – exit loop"
+        },
+        "emojiCode.javaKeyword.continue": {
+          "type": "boolean",
+          "default": true,
+          "description": "⏭️ continue – next iteration"
+        },
+        "emojiCode.javaKeyword.return": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔙 return – return value"
+        },
+        "emojiCode.javaKeyword.yield": {
+          "type": "boolean",
+          "default": true,
+          "description": "🌾 yield – switch yield"
+        },
+        "emojiCode.javaKeyword.int": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔢 int – integer"
+        },
+        "emojiCode.javaKeyword.long": {
+          "type": "boolean",
+          "default": true,
+          "description": "📐 long – long integer"
+        },
+        "emojiCode.javaKeyword.short": {
+          "type": "boolean",
+          "default": true,
+          "description": "📏 short – short integer"
+        },
+        "emojiCode.javaKeyword.byte": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔣 byte – byte"
+        },
+        "emojiCode.javaKeyword.float": {
+          "type": "boolean",
+          "default": true,
+          "description": "🎈 float – floating point"
+        },
+        "emojiCode.javaKeyword.double": {
+          "type": "boolean",
+          "default": true,
+          "description": "🎭 double – double precision"
+        },
+        "emojiCode.javaKeyword.char": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔤 char – character"
+        },
+        "emojiCode.javaKeyword.boolean": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔘 boolean – boolean"
+        },
+        "emojiCode.javaKeyword.void": {
+          "type": "boolean",
+          "default": true,
+          "description": "🕳️ void – no return"
+        },
+        "emojiCode.javaKeyword.var": {
+          "type": "boolean",
+          "default": true,
+          "description": "🏷️ var – local variable type inference"
+        },
+        "emojiCode.javaKeyword.true": {
+          "type": "boolean",
+          "default": true,
+          "description": "✅ true – true"
+        },
+        "emojiCode.javaKeyword.false": {
+          "type": "boolean",
+          "default": true,
+          "description": "❌ false – false"
+        },
+        "emojiCode.javaKeyword.null": {
+          "type": "boolean",
+          "default": true,
+          "description": "🚫 null – null value"
+        },
+        "emojiCode.javaKeyword.public": {
+          "type": "boolean",
+          "default": true,
+          "description": "🌍 public – public access"
+        },
+        "emojiCode.javaKeyword.private": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔐 private – private access"
+        },
+        "emojiCode.javaKeyword.protected": {
+          "type": "boolean",
+          "default": true,
+          "description": "🛡️ protected – protected access"
+        },
+        "emojiCode.javaKeyword.class": {
+          "type": "boolean",
+          "default": true,
+          "description": "🏛️ class – class"
+        },
+        "emojiCode.javaKeyword.interface": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔌 interface – interface"
+        },
+        "emojiCode.javaKeyword.enum": {
+          "type": "boolean",
+          "default": true,
+          "description": "📊 enum – enumeration"
+        },
+        "emojiCode.javaKeyword.record": {
+          "type": "boolean",
+          "default": true,
+          "description": "📀 record – record type"
+        },
+        "emojiCode.javaKeyword.abstract": {
+          "type": "boolean",
+          "default": true,
+          "description": "🎨 abstract – abstract"
+        },
+        "emojiCode.javaKeyword.final": {
+          "type": "boolean",
+          "default": true,
+          "description": "🏁 final – final/immutable"
+        },
+        "emojiCode.javaKeyword.static": {
+          "type": "boolean",
+          "default": true,
+          "description": "🏛️ static – static member"
+        },
+        "emojiCode.javaKeyword.sealed": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔐 sealed – sealed class"
+        },
+        "emojiCode.javaKeyword.permits": {
+          "type": "boolean",
+          "default": true,
+          "description": "✅ permits – permits clause"
+        },
+        "emojiCode.javaKeyword.extends": {
+          "type": "boolean",
+          "default": true,
+          "description": "🧬 extends – inheritance"
+        },
+        "emojiCode.javaKeyword.implements": {
+          "type": "boolean",
+          "default": true,
+          "description": "✅ implements – implements interface"
+        },
+        "emojiCode.javaKeyword.new": {
+          "type": "boolean",
+          "default": true,
+          "description": "✨ new – instance creation"
+        },
+        "emojiCode.javaKeyword.this": {
+          "type": "boolean",
+          "default": true,
+          "description": "👆 this – current instance"
+        },
+        "emojiCode.javaKeyword.super": {
+          "type": "boolean",
+          "default": true,
+          "description": "🦸 super – parent class ref"
+        },
+        "emojiCode.javaKeyword.instanceof": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔎 instanceof – type check"
+        },
+        "emojiCode.javaKeyword.try": {
+          "type": "boolean",
+          "default": true,
+          "description": "🤞 try – try block"
+        },
+        "emojiCode.javaKeyword.catch": {
+          "type": "boolean",
+          "default": true,
+          "description": "🥅 catch – catch exception"
+        },
+        "emojiCode.javaKeyword.finally": {
+          "type": "boolean",
+          "default": true,
+          "description": "🏁 finally – finally block"
+        },
+        "emojiCode.javaKeyword.throw": {
+          "type": "boolean",
+          "default": true,
+          "description": "💥 throw – throw exception"
+        },
+        "emojiCode.javaKeyword.throws": {
+          "type": "boolean",
+          "default": true,
+          "description": "⚠️ throws – throws declaration"
+        },
+        "emojiCode.javaKeyword.package": {
+          "type": "boolean",
+          "default": true,
+          "description": "📦 package – package declaration"
+        },
+        "emojiCode.javaKeyword.import": {
+          "type": "boolean",
+          "default": true,
+          "description": "📥 import – import"
+        },
+        "emojiCode.javaKeyword.synchronized": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔒 synchronized – synchronized block"
+        },
+        "emojiCode.javaKeyword.volatile": {
+          "type": "boolean",
+          "default": true,
+          "description": "⚠️ volatile – volatile field"
+        },
+        "emojiCode.javaKeyword.transient": {
+          "type": "boolean",
+          "default": true,
+          "description": "💨 transient – transient field"
+        },
+        "emojiCode.javaKeyword.native": {
+          "type": "boolean",
+          "default": true,
+          "description": "⚙️ native – native method"
+        },
+        "emojiCode.javaKeyword.strictfp": {
+          "type": "boolean",
+          "default": true,
+          "description": "📐 strictfp – strict floating point"
+        },
+        "emojiCode.javaKeyword.assert": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔍 assert – assertion"
+        },
+        "emojiCode.javaKeyword.module": {
+          "type": "boolean",
+          "default": true,
+          "description": "🧩 module – module"
+        },
+        "emojiCode.javaKeyword.requires": {
+          "type": "boolean",
+          "default": true,
+          "description": "📋 requires – requires"
+        },
+        "emojiCode.javaKeyword.exports": {
+          "type": "boolean",
+          "default": true,
+          "description": "📤 exports – exports"
+        },
+        "emojiCode.javaKeyword.opens": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔓 opens – opens"
+        },
+        "emojiCode.javaKeyword.uses": {
+          "type": "boolean",
+          "default": true,
+          "description": "🔧 uses – uses"
+        },
+        "emojiCode.javaKeyword.provides": {
+          "type": "boolean",
+          "default": true,
+          "description": "🎁 provides – provides"
+        },
+        "emojiCode.javaKeyword.with": {
+          "type": "boolean",
+          "default": true,
+          "description": "🤝 with – with"
+        },
+        "emojiCode.javaKeyword.to": {
+          "type": "boolean",
+          "default": true,
+          "description": "➡️ to – to"
         }
       }
     }
