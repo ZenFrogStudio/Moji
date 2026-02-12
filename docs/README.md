@@ -123,51 +123,6 @@ Visual symbols trigger stronger recall than abstract tokens:
 
 ## 🗂️ Supported Languages
 
-    JavaScript (35 keywords)
-
-    TypeScript (57 keywords)
-
-    Python (34 keywords)
-
-    C (32 keywords)
-
-    C++ (73 keywords)
-
-    C# (97 keywords)
-
-    Java (60 keywords)
-
-    SQL (120+ keywords)
-
-    HTML (60+ elements)
-
-    CSS (32 properties)
-
-
-## COMING SOON ##
-
-We will be including support for the following languages in future updates, to be implemented in stages:
-
-Stage 1:
-
--Go
--PHP
--Rust
--Kotlin
--Swift
--Dart
--Ruby
-
-Stage 2:
-
--R
--Scala
--Perl
--Objective C
--Elixir
--Haskell
--MATLAB
-
 ### JavaScript (35 keywords)
 
 **Control Flow**
@@ -511,7 +466,7 @@ Open an issue or submit a PR on [GitHub](https://github.com/lucidiancreative).
 
 ## 📄 License
 
-EmojiCode-Pro is proprietary software licensed under the EmojiCode-Pro End User License Agreement. See [LICENSE](./LICENSE) for details.
+MIT License - Use freely, modify as needed.
 
 ---
 
@@ -543,6 +498,5 @@ Emoji-Code Pro supports 10 languages: JavaScript, TypeScript, Python, C, C++, C#
 The cognitive science behind visual processing, dual coding theory, and reduced working memory load is well-established. This extension applies those principles to code reading.
 
 ---
-All rights reserved. 2026 Brainbox.
 
 **Made with 🧠 for developers who think visually**

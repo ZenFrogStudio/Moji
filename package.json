@@ -1,13 +1,13 @@
 {
-  "name": "Emoji-Code",
-  "displayName": "Emoji-Code",
+  "name": "EmojiCode-Pro",
+  "displayName": "EmojiCode-Pro",
   "description": "Adds emojis to your coding experience for enhanced memorability and comprehension.",
   "version": "1.0.0",
-  "publisher": "your-publisher-id",
-  "license": "MIT",
+  "publisher": "Brainbox",
+  "license": "EmojiCode-Pro is proprietary software licensed under the EmojiCode-Pro End User License Agreement. See [LICENSE](./LICENSE) for details.",
   "repository": {
     "type": "git",
-    "url": "https://github.com/lucidiancreative"
+    "url": "https://github.com/brainbox"
   },
   "icon": "src/img/icon.png",
   "engines": {
