@@ -1,4 +1,4 @@
-// Custom webview panel for configuring Emoji-Code settings with a language-based tabbed interface.
+// Custom webview panel for configuring EmojiCode-Pro settings with a language-based tabbed interface.
 // Uses server-side rendering - all interactions handled via postMessage, no client-side DOM manipulation.
 
 const vscode = require('vscode');
@@ -19,12 +19,17 @@ const { CSHARP_KEYWORD_EMOJI_MAP } = require('./csharpKeywordMap');
 const { SQL_KEYWORD_EMOJI_MAP } = require('./sqlKeywordMap');
 const { TYPESCRIPT_KEYWORD_EMOJI_MAP } = require('./typescriptKeywordMap');
 const { JAVA_KEYWORD_EMOJI_MAP } = require('./javaKeywordMap');
+const crypto = require('crypto');
+
+function getNonce() {
+  return crypto.randomBytes(16).toString('base64');
+}
 
 let currentPanel = undefined;
 let currentTab = 'javascript'; // Track active tab server-side
 
 /**
- * Opens (or focuses) the Emoji-Code settings panel.
+ * Opens (or focuses) the EmojiCode-Pro settings panel.
  * @param {vscode.ExtensionContext} context
  * @param {function} onSettingsChanged - callback when settings change
  */
@@ -43,7 +48,7 @@ function openSettingsPanel(context, onSettingsChanged) {
   // Create new panel
   currentPanel = vscode.window.createWebviewPanel(
     'emojiCodeSettings',
-    'Emoji-Code Settings',
+    'EmojiCode-Pro Settings',
     column || vscode.ViewColumn.One,
     {
       enableScripts: true,
@@ -271,6 +276,7 @@ function getCurrentSettings() {
  * Generate the HTML content for the webview.
  */
 function getWebviewContent() {
+  const nonce = getNonce();
   const settings = getCurrentSettings();
 
   // Build checkbox lists for each category
@@ -396,7 +402,8 @@ function getWebviewContent() {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Emoji-Code Settings</title>
+  <title>EmojiCode-Pro Settings</title>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'nonce-${nonce}';">
   <style>
     :root {
       --bg-color: var(--vscode-editor-background);
@@ -556,7 +563,7 @@ function getWebviewContent() {
   </style>
 </head>
 <body>
-  <h1>Emoji-Code Settings</h1>
+  <h1>EmojiCode-Pro Settings</h1>
 
   <div class="tabs">
     <button class="tab ${jsTabActive}" onclick="switchTab('javascript')" type="button">
@@ -844,7 +851,7 @@ function getWebviewContent() {
     <div class="emoji-grid">${javaItems}</div>
   </div>
 
-  <script>
+  <script nonce="${nonce}">
     const vscode = acquireVsCodeApi();
 
     function switchTab(tab) {

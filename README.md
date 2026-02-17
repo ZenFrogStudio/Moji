@@ -1,4 +1,4 @@
-# Emoji-Code Pro
+# EmojiCode-Pro
 
 > **Visual cues for faster code comprehension**
 > Supplement code keywords with emojis across 10 languages to reduce cognitive load and enhance pattern recognition.
@@ -29,7 +29,7 @@ Programming forces you to work against your brain's strengths.
 
 ## 💡 The Solution
 
-**Emoji-Code Pro** supplements each keyword with a visual symbol:
+**EmojiCode-Pro** supplements each keyword with a visual symbol:
 
 ```javascript
 🔙 return user;
@@ -447,7 +447,7 @@ Stage 2:
 
 1. Open VS Code
 2. Go to **Extensions** (`Cmd+Shift+X` / `Ctrl+Shift+X`)
-3. Search for **"Emoji-Code Pro"**
+3. Search for **"EmojiCode-Pro"**
 4. Click **Install**
 
 ---
@@ -458,11 +458,11 @@ Once installed, emojis appear automatically in supported language files.
 
 **Toggle the extension:**
 - Open Command Palette (`Cmd+Shift+P` / `Ctrl+Shift+P`)
-- Type: `Emoji-Code: Toggle`
+- Type: `EmojiCode-Pro: Toggle`
 
 **Configure emojis:**
 - Open Command Palette (`Cmd+Shift+P` / `Ctrl+Shift+P`)
-- Type: `Emoji-Code: Settings`
+- Type: `EmojiCode-Pro: Settings`
 - Use the visual settings panel to enable/disable individual emojis
 
 **Display modes:**
@@ -534,15 +534,15 @@ Emojis are:
 - Lightweight (no performance impact)
 
 **Can I disable specific emojis?**
-Yes! Open the Settings panel (`Emoji-Code: Settings` command) to toggle individual emojis on/off for each language.
+Yes! Open the Settings panel (`EmojiCode-Pro: Settings` command) to toggle individual emojis on/off for each language.
 
 **Which languages are supported?**
-Emoji-Code Pro supports 10 languages: JavaScript, TypeScript, Python, C, C++, C#, Java, SQL, HTML, and CSS.
+EmojiCode-Pro supports 10 languages: JavaScript, TypeScript, Python, C, C++, C#, Java, SQL, HTML, and CSS.
 
 **Is this scientifically proven?**
 The cognitive science behind visual processing, dual coding theory, and reduced working memory load is well-established. This extension applies those principles to code reading.
 
 ---
-All rights reserved. 2026 Brainbox.
+All rights reserved. 2026 lucidian Creative.
 
 **Made with 🧠 for developers who think visually**

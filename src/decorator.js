@@ -309,7 +309,7 @@ class KeywordDecorator {
     }
 
     vscode.window.showInformationMessage(
-      `EmojiCode: ${this.enabled ? 'Enabled' : 'Disabled'}`,
+      `EmojiCode-Pro: ${this.enabled ? 'Enabled' : 'Disabled'}`,
     );
   }
 

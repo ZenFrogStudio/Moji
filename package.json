@@ -3,11 +3,11 @@
   "displayName": "EmojiCode-Pro",
   "description": "Adds emojis to your coding experience for enhanced memorability and comprehension.",
   "version": "1.0.0",
-  "publisher": "Brainbox",
-  "license": "EmojiCode-Pro is proprietary software licensed under the EmojiCode-Pro End User License Agreement. See [LICENSE](./LICENSE) for details.",
+  "publisher": "Lucidian Creative",
+  "license": "SEE LICENSE IN LICENSE",
   "repository": {
     "type": "git",
-    "url": "https://github.com/brainbox"
+    "url": "https://github.com/lucidiancreative/emoji-code"
   },
   "icon": "src/img/icon.png",
   "engines": {
@@ -40,7 +40,7 @@
     "commands": [
       {
         "command": "emojiCode.toggle",
-        "title": "Emoji-Code: Toggle"
+        "title": "EmojiCode-Pro: Toggle"
       },
       {
         "command": "emojiCode.openSettings",
@@ -56,7 +56,7 @@
       ]
     },
     "configuration": {
-      "title": "Emoji-Code",
+      "title": "EmojiCode-Pro",
       "properties": {
         "emojiCode.enabled": {
           "type": "boolean",
