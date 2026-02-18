@@ -30,13 +30,8 @@ function activate(context) {
 
   context.subscriptions.push(
     vscode.commands.registerCommand('emojiCode.openSettings', () => {
-      openSettingsPanel(context, () => {
-        // Callback when settings change from the panel
-        decorator.reloadConfig();
-        if (vscode.window.activeTextEditor) {
-          decorator.updateEditor(vscode.window.activeTextEditor);
-        }
-      });
+      // No callback needed - debounced config change handler handles updates
+      openSettingsPanel(context);
     }),
   );
 
@@ -64,23 +59,28 @@ function activate(context) {
 
   // ── Configuration changes ──────────────────────────────────────────────
 
+  let configTimer;
   context.subscriptions.push(
     vscode.workspace.onDidChangeConfiguration((event) => {
       if (
         event.affectsConfiguration('emojiCode') ||
         event.affectsConfiguration('editor.fontSize')
       ) {
-        // Read the enabled setting explicitly so toggling via settings works.
-        const newEnabled = vscode.workspace
-          .getConfiguration('emojiCode')
-          .get('enabled', true);
+        // Debounce to batch rapid config changes (e.g., "Select All" updates 30+ settings)
+        clearTimeout(configTimer);
+        configTimer = setTimeout(() => {
+          // Read the enabled setting explicitly so toggling via settings works.
+          const newEnabled = vscode.workspace
+            .getConfiguration('emojiCode')
+            .get('enabled', true);
 
-        decorator.reloadConfig();
-        decorator.enabled = newEnabled;
+          decorator.reloadConfig();
+          decorator.enabled = newEnabled;
 
-        if (vscode.window.activeTextEditor) {
-          decorator.updateEditor(vscode.window.activeTextEditor);
-        }
+          if (vscode.window.activeTextEditor) {
+            decorator.updateEditor(vscode.window.activeTextEditor);
+          }
+        }, 100);
       }
     }),
   );

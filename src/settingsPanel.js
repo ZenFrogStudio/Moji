@@ -31,9 +31,8 @@ let currentTab = 'javascript'; // Track active tab server-side
 /**
  * Opens (or focuses) the EmojiCode-Pro settings panel.
  * @param {vscode.ExtensionContext} context
- * @param {function} onSettingsChanged - callback when settings change
  */
-function openSettingsPanel(context, onSettingsChanged) {
+function openSettingsPanel(context) {
   const column = vscode.window.activeTextEditor
     ? vscode.window.activeTextEditor.viewColumn
     : undefined;
@@ -67,7 +66,6 @@ function openSettingsPanel(context, onSettingsChanged) {
       } else if (message.command === 'toggleSetting') {
         const config = vscode.workspace.getConfiguration();
         await config.update(message.key, message.value, vscode.ConfigurationTarget.Global);
-        if (onSettingsChanged) onSettingsChanged();
         // Re-render to show updated state
         currentPanel.webview.html = getWebviewContent();
       } else if (message.command === 'toggleAll') {
@@ -135,9 +133,7 @@ function openSettingsPanel(context, onSettingsChanged) {
           Object.keys(map).map(key =>
             config.update(`${prefix}.${key}`, value, vscode.ConfigurationTarget.Global)
           )
-        ).then(() => {
-          if (onSettingsChanged) onSettingsChanged();
-        });
+        );
         // Don't re-render - client updates UI instantly
       }
     },
@@ -910,13 +906,4 @@ function createCheckboxItem(category, key, emoji, displayName, checked) {
   `;
 }
 
-/**
- * Refresh the panel content (call after external setting changes).
- */
-function refreshPanel() {
-  if (currentPanel) {
-    currentPanel.webview.html = getWebviewContent();
-  }
-}
-
-module.exports = { openSettingsPanel, refreshPanel };
+module.exports = { openSettingsPanel };

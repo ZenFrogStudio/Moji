@@ -1,5 +1,5 @@
 // CSS token scanner for emoji decorations
-// Optimized with pre-compiled regex patterns
+// Single-pass approach for optimal performance
 
 const vscode = require('vscode');
 const {
@@ -11,48 +11,76 @@ const {
   CSS_VALUE_EMOJI_MAP,
 } = require('./cssKeywordMap');
 
-// Pre-compile regex patterns for better performance
-const COMPILED_PATTERNS = {
-  atRules: {},
-  layout: {},
-  box: {},
-  visual: {},
-  pseudo: {},
-  values: {
-    important: /!important\b/g,
-    none: /:\s*none\s*(?:;|!|})/g,
-    auto: /:\s*auto\s*(?:;|!|})/g,
-    inherit: /:\s*inherit\s*(?:;|!|})/g,
-  },
+// Build combined token patterns for single-pass scanning
+const buildCombinedPattern = () => {
+  const patterns = [];
+  const tokenMap = new Map();
+  let groupIndex = 1;
+
+  // Comments (skip groups) - always come first
+  patterns.push('(\\/\\*[\\s\\S]*?\\*\\/)');  // Block comment
+  const commentGroups = 1;
+  groupIndex += commentGroups;
+
+  // At-rules (@media, @keyframes, etc.)
+  const atRules = Object.keys(CSS_ATRULE_EMOJI_MAP);
+  if (atRules.length > 0) {
+    const atRuleAlt = atRules.join('|');
+    patterns.push(`@(${atRuleAlt})\\b`);
+    tokenMap.set(groupIndex, { type: 'cssAtRule', map: CSS_ATRULE_EMOJI_MAP });
+    groupIndex++;
+  }
+
+  // Properties (combined: layout, box, visual)
+  const allProps = {
+    ...CSS_LAYOUT_EMOJI_MAP,
+    ...CSS_BOX_EMOJI_MAP,
+    ...CSS_VISUAL_EMOJI_MAP,
+  };
+  const props = Object.keys(allProps).sort((a, b) => b.length - a.length);
+  if (props.length > 0) {
+    const propsAlt = props.map(p => p.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|');
+    // Match property name at start of declaration (with optional leading whitespace/punctuation)
+    patterns.push(`(?:^|[{;\\s])\\s*(${propsAlt})(?:-[a-z-]+)?\\s*:`);
+    tokenMap.set(groupIndex, { type: 'cssProperty', map: allProps });
+    groupIndex++;
+  }
+
+  // Pseudo-classes (:hover, :focus, etc.)
+  const pseudos = Object.keys(CSS_PSEUDO_EMOJI_MAP);
+  if (pseudos.length > 0) {
+    const pseudoAlt = pseudos.join('|');
+    patterns.push(`:(${pseudoAlt})\\b`);
+    tokenMap.set(groupIndex, { type: 'cssPseudo', map: CSS_PSEUDO_EMOJI_MAP });
+    groupIndex++;
+  }
+
+  // Values (important, none, auto, inherit)
+  const values = Object.keys(CSS_VALUE_EMOJI_MAP);
+  if (values.length > 0) {
+    // Match values in property context (after colon, before semicolon/brace/important)
+    const valueAlt = values.map(v => v.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|');
+    patterns.push(`:\\s*(${valueAlt})\\s*(?:;|!|})`);
+    tokenMap.set(groupIndex, { type: 'cssValue', map: CSS_VALUE_EMOJI_MAP });
+    groupIndex++;
+  }
+
+  // Special case: !important
+  if (CSS_VALUE_EMOJI_MAP['important']) {
+    patterns.push('(!important)\\b');
+    tokenMap.set(groupIndex, { type: 'cssValue', key: 'important' });
+    groupIndex++;
+  }
+
+  return { regex: new RegExp(patterns.join('|'), 'gm'), tokenMap, commentGroups };
 };
 
-// Build at-rule patterns
-for (const rule of Object.keys(CSS_ATRULE_EMOJI_MAP)) {
-  COMPILED_PATTERNS.atRules[rule] = new RegExp(`@${rule}\\b`, 'g');
-}
-
-// Build layout property patterns
-for (const prop of Object.keys(CSS_LAYOUT_EMOJI_MAP)) {
-  COMPILED_PATTERNS.layout[prop] = new RegExp(`(?:^|[{;\\s])\\s*(${prop})\\s*:`, 'gm');
-}
-
-// Build box model property patterns (with variant support)
-for (const prop of Object.keys(CSS_BOX_EMOJI_MAP)) {
-  COMPILED_PATTERNS.box[prop] = new RegExp(`(?:^|[{;\\s])\\s*(${prop}(?:-[a-z]+)?)\\s*:`, 'gm');
-}
-
-// Build visual property patterns (with variant support)
-for (const prop of Object.keys(CSS_VISUAL_EMOJI_MAP)) {
-  COMPILED_PATTERNS.visual[prop] = new RegExp(`(?:^|[{;\\s])\\s*(${prop}(?:-[a-z-]+)?)\\s*:`, 'gm');
-}
-
-// Build pseudo-class patterns
-for (const pseudo of Object.keys(CSS_PSEUDO_EMOJI_MAP)) {
-  COMPILED_PATTERNS.pseudo[pseudo] = new RegExp(`:${pseudo}\\b`, 'g');
-}
+// Build pattern once at module load
+const { regex: COMBINED_REGEX, tokenMap: TOKEN_MAP, commentGroups: COMMENT_GROUPS } = buildCombinedPattern();
 
 /**
  * Scan a CSS document for tokens that should receive emoji decorations.
+ * Single-pass approach for optimal performance.
  * @param {vscode.TextDocument} document
  * @returns {Array<{keyword: string, range: vscode.Range}>}
  */
@@ -60,69 +88,58 @@ function scanCssTokens(document) {
   const text = document.getText();
   const matches = [];
 
-  // Helper to add matches from a regex
-  const addMatches = (regex, keyword, getStartOffset = null) => {
-    regex.lastIndex = 0; // Reset regex state
-    let match;
-    while ((match = regex.exec(text)) !== null) {
-      const startOffset = getStartOffset ? getStartOffset(match) : match.index;
-      const endOffset = getStartOffset
-        ? startOffset + keyword.split(':')[1].length
-        : match.index + match[0].length;
-      matches.push({
-        keyword,
-        range: new vscode.Range(
-          document.positionAt(startOffset),
-          document.positionAt(endOffset)
-        ),
-      });
-    }
-  };
+  // Reset regex state
+  COMBINED_REGEX.lastIndex = 0;
 
-  // Scan at-rules
-  for (const [rule, regex] of Object.entries(COMPILED_PATTERNS.atRules)) {
-    addMatches(regex, `cssAtRule:${rule}`);
-  }
+  let match;
+  while ((match = COMBINED_REGEX.exec(text)) !== null) {
+    // Skip comment group
+    if (match[1]) continue;
 
-  // Scan layout properties
-  for (const [prop, regex] of Object.entries(COMPILED_PATTERNS.layout)) {
-    addMatches(regex, `cssLayout:${prop}`, (match) => match.index + match[0].indexOf(prop));
-  }
+    // Find which group matched
+    for (let i = COMMENT_GROUPS + 1; i < match.length; i++) {
+      if (match[i]) {
+        const tokenInfo = TOKEN_MAP.get(i);
+        if (!tokenInfo) continue;
 
-  // Scan box model properties
-  for (const [prop, regex] of Object.entries(COMPILED_PATTERNS.box)) {
-    addMatches(regex, `cssBox:${prop}`, (match) => match.index + match[0].indexOf(match[1]));
-  }
+        let keyword, tokenText;
 
-  // Scan visual properties
-  for (const [prop, regex] of Object.entries(COMPILED_PATTERNS.visual)) {
-    addMatches(regex, `cssVisual:${prop}`, (match) => match.index + match[0].indexOf(match[1]));
-  }
+        if (tokenInfo.key) {
+          // Special case (e.g., !important)
+          keyword = `${tokenInfo.type}:${tokenInfo.key}`;
+          tokenText = match[i];
+        } else {
+          // Regular token
+          tokenText = match[i];
+          const baseToken = tokenText.split('-')[0]; // Get base property name
+          const mapKey = Object.keys(tokenInfo.map).find(k =>
+            tokenText === k || tokenText.startsWith(k + '-')
+          ) || baseToken;
 
-  // Scan pseudo-classes
-  for (const [pseudo, regex] of Object.entries(COMPILED_PATTERNS.pseudo)) {
-    addMatches(regex, `cssPseudo:${pseudo}`);
-  }
+          // Determine prefix based on which map it came from
+          let prefix = tokenInfo.type;
+          if (tokenInfo.type === 'cssProperty') {
+            if (CSS_LAYOUT_EMOJI_MAP[mapKey]) prefix = 'cssLayout';
+            else if (CSS_BOX_EMOJI_MAP[mapKey]) prefix = 'cssBox';
+            else if (CSS_VISUAL_EMOJI_MAP[mapKey]) prefix = 'cssVisual';
+          }
 
-  // Scan values
-  if (CSS_VALUE_EMOJI_MAP['important']) {
-    addMatches(COMPILED_PATTERNS.values.important, 'cssValue:important');
-  }
+          keyword = `${prefix}:${mapKey}`;
+        }
 
-  for (const value of ['none', 'auto', 'inherit']) {
-    if (CSS_VALUE_EMOJI_MAP[value]) {
-      const regex = COMPILED_PATTERNS.values[value];
-      regex.lastIndex = 0;
-      let match;
-      while ((match = regex.exec(text)) !== null) {
-        const valueStart = match.index + match[0].indexOf(value);
+        // Calculate precise token position within the match
+        const tokenStart = match.index + match[0].indexOf(tokenText);
+        const tokenEnd = tokenStart + tokenText.length;
+
         matches.push({
-          keyword: `cssValue:${value}`,
+          keyword,
           range: new vscode.Range(
-            document.positionAt(valueStart),
-            document.positionAt(valueStart + value.length)
+            document.positionAt(tokenStart),
+            document.positionAt(tokenEnd)
           ),
         });
+
+        break; // Only one group can match
       }
     }
   }

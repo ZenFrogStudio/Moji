@@ -50,6 +50,8 @@ class KeywordDecorator {
   constructor() {
     /** @type {Map<string, vscode.TextEditorDecorationType>} */
     this.decorationTypes = new Map();
+    /** @type {Map<string, {version: number, matches: Array}>} */
+    this.scanCache = new Map(); // Cache scan results by document URI
     this.enabled = true;
     this._buildDecorationTypes();
   }
@@ -93,132 +95,37 @@ class KeywordDecorator {
       );
     };
 
-    // ── JavaScript keywords ─────────────────────────────────────────────
-    if (config.get('javascriptKeywords', true)) {
-      const jsCfg = vscode.workspace.getConfiguration('emojiCode.jsKeyword');
-      for (const [keyword, emoji] of Object.entries(KEYWORD_EMOJI_MAP)) {
-        if (jsCfg.get(keyword, true)) addDecoration(keyword, emoji);
-      }
-    }
+    // ── Language/Category Configuration Table ─────────────────────────────
+    // Unified configuration for all language categories to eliminate code duplication
+    const CATEGORY_CONFIG = [
+      { masterKey: 'javascriptKeywords', configNs: 'emojiCode.jsKeyword', map: KEYWORD_EMOJI_MAP, prefix: '' },
+      { masterKey: 'htmlTags', configNs: 'emojiCode.htmlTag', map: HTML_TAG_EMOJI_MAP, prefix: 'tag:' },
+      { masterKey: 'htmlVoidElements', configNs: 'emojiCode.htmlVoid', map: HTML_VOID_EMOJI_MAP, prefix: 'void:' },
+      { masterKey: 'htmlAttributes', configNs: 'emojiCode.htmlAttr', map: HTML_ATTR_EMOJI_MAP, prefix: 'attr:' },
+      { masterKey: 'cssAtRules', configNs: 'emojiCode.cssAtRule', map: CSS_ATRULE_EMOJI_MAP, prefix: 'cssAtRule:' },
+      { masterKey: 'cssLayout', configNs: 'emojiCode.cssLayout', map: CSS_LAYOUT_EMOJI_MAP, prefix: 'cssLayout:' },
+      { masterKey: 'cssBox', configNs: 'emojiCode.cssBox', map: CSS_BOX_EMOJI_MAP, prefix: 'cssBox:' },
+      { masterKey: 'cssVisual', configNs: 'emojiCode.cssVisual', map: CSS_VISUAL_EMOJI_MAP, prefix: 'cssVisual:' },
+      { masterKey: 'cssPseudo', configNs: 'emojiCode.cssPseudo', map: CSS_PSEUDO_EMOJI_MAP, prefix: 'cssPseudo:' },
+      { masterKey: 'cssValues', configNs: 'emojiCode.cssValue', map: CSS_VALUE_EMOJI_MAP, prefix: 'cssValue:' },
+      { masterKey: 'pythonKeywords', configNs: 'emojiCode.pyKeyword', map: PYTHON_KEYWORD_EMOJI_MAP, prefix: 'py:' },
+      { masterKey: 'cKeywords', configNs: 'emojiCode.cKeyword', map: C_KEYWORD_EMOJI_MAP, prefix: 'c:' },
+      { masterKey: 'cppKeywords', configNs: 'emojiCode.cppKeyword', map: CPP_KEYWORD_EMOJI_MAP, prefix: 'cpp:' },
+      { masterKey: 'csharpKeywords', configNs: 'emojiCode.csharpKeyword', map: CSHARP_KEYWORD_EMOJI_MAP, prefix: 'csharp:' },
+      { masterKey: 'sqlKeywords', configNs: 'emojiCode.sqlKeyword', map: SQL_KEYWORD_EMOJI_MAP, prefix: 'sql:' },
+      { masterKey: 'typescriptKeywords', configNs: 'emojiCode.tsKeyword', map: TYPESCRIPT_KEYWORD_EMOJI_MAP, prefix: 'ts:' },
+      { masterKey: 'javaKeywords', configNs: 'emojiCode.javaKeyword', map: JAVA_KEYWORD_EMOJI_MAP, prefix: 'java:' },
+    ];
 
-    // ── HTML categories (master toggle + individual per-token toggles) ──
-    if (config.get('htmlTags', true)) {
-      const tagCfg = vscode.workspace.getConfiguration('emojiCode.htmlTag');
-      for (const [tag, emoji] of Object.entries(HTML_TAG_EMOJI_MAP)) {
-        if (tagCfg.get(tag, true)) addDecoration(`tag:${tag}`, emoji);
-      }
-    }
-
-    if (config.get('htmlVoidElements', true)) {
-      const voidCfg = vscode.workspace.getConfiguration('emojiCode.htmlVoid');
-      for (const [tag, emoji] of Object.entries(HTML_VOID_EMOJI_MAP)) {
-        if (voidCfg.get(tag, true)) addDecoration(`void:${tag}`, emoji);
-      }
-    }
-
-    if (config.get('htmlAttributes', true)) {
-      const attrCfg = vscode.workspace.getConfiguration('emojiCode.htmlAttr');
-      for (const [attr, emoji] of Object.entries(HTML_ATTR_EMOJI_MAP)) {
-        if (attrCfg.get(attr, true)) addDecoration(`attr:${attr}`, emoji);
-      }
-    }
-
-    // ── CSS categories ───────────────────────────────────────────────────
-    if (config.get('cssAtRules', true)) {
-      const atRuleCfg = vscode.workspace.getConfiguration('emojiCode.cssAtRule');
-      for (const [rule, emoji] of Object.entries(CSS_ATRULE_EMOJI_MAP)) {
-        if (atRuleCfg.get(rule, true)) addDecoration(`cssAtRule:${rule}`, emoji);
-      }
-    }
-
-    if (config.get('cssLayout', true)) {
-      const layoutCfg = vscode.workspace.getConfiguration('emojiCode.cssLayout');
-      for (const [prop, emoji] of Object.entries(CSS_LAYOUT_EMOJI_MAP)) {
-        if (layoutCfg.get(prop, true)) addDecoration(`cssLayout:${prop}`, emoji);
-      }
-    }
-
-    if (config.get('cssBox', true)) {
-      const boxCfg = vscode.workspace.getConfiguration('emojiCode.cssBox');
-      for (const [prop, emoji] of Object.entries(CSS_BOX_EMOJI_MAP)) {
-        if (boxCfg.get(prop, true)) addDecoration(`cssBox:${prop}`, emoji);
-      }
-    }
-
-    if (config.get('cssVisual', true)) {
-      const visualCfg = vscode.workspace.getConfiguration('emojiCode.cssVisual');
-      for (const [prop, emoji] of Object.entries(CSS_VISUAL_EMOJI_MAP)) {
-        if (visualCfg.get(prop, true)) addDecoration(`cssVisual:${prop}`, emoji);
-      }
-    }
-
-    if (config.get('cssPseudo', true)) {
-      const pseudoCfg = vscode.workspace.getConfiguration('emojiCode.cssPseudo');
-      for (const [pseudo, emoji] of Object.entries(CSS_PSEUDO_EMOJI_MAP)) {
-        if (pseudoCfg.get(pseudo, true)) addDecoration(`cssPseudo:${pseudo}`, emoji);
-      }
-    }
-
-    if (config.get('cssValues', true)) {
-      const valueCfg = vscode.workspace.getConfiguration('emojiCode.cssValue');
-      for (const [value, emoji] of Object.entries(CSS_VALUE_EMOJI_MAP)) {
-        if (valueCfg.get(value, true)) addDecoration(`cssValue:${value}`, emoji);
-      }
-    }
-
-    // ── Python keywords ───────────────────────────────────────────────────
-    if (config.get('pythonKeywords', true)) {
-      const pyCfg = vscode.workspace.getConfiguration('emojiCode.pyKeyword');
-      for (const [keyword, emoji] of Object.entries(PYTHON_KEYWORD_EMOJI_MAP)) {
-        if (pyCfg.get(keyword, true)) addDecoration(`py:${keyword}`, emoji);
-      }
-    }
-
-    // ── C keywords ────────────────────────────────────────────────────────
-    if (config.get('cKeywords', true)) {
-      const cCfg = vscode.workspace.getConfiguration('emojiCode.cKeyword');
-      for (const [keyword, emoji] of Object.entries(C_KEYWORD_EMOJI_MAP)) {
-        if (cCfg.get(keyword, true)) addDecoration(`c:${keyword}`, emoji);
-      }
-    }
-
-    // ── C++ keywords ──────────────────────────────────────────────────────
-    if (config.get('cppKeywords', true)) {
-      const cppCfg = vscode.workspace.getConfiguration('emojiCode.cppKeyword');
-      for (const [keyword, emoji] of Object.entries(CPP_KEYWORD_EMOJI_MAP)) {
-        if (cppCfg.get(keyword, true)) addDecoration(`cpp:${keyword}`, emoji);
-      }
-    }
-
-    // ── C# keywords ───────────────────────────────────────────────────────
-    if (config.get('csharpKeywords', true)) {
-      const csharpCfg = vscode.workspace.getConfiguration('emojiCode.csharpKeyword');
-      for (const [keyword, emoji] of Object.entries(CSHARP_KEYWORD_EMOJI_MAP)) {
-        if (csharpCfg.get(keyword, true)) addDecoration(`csharp:${keyword}`, emoji);
-      }
-    }
-
-    // ── SQL keywords ─────────────────────────────────────────────────────
-    if (config.get('sqlKeywords', true)) {
-      const sqlCfg = vscode.workspace.getConfiguration('emojiCode.sqlKeyword');
-      for (const [keyword, emoji] of Object.entries(SQL_KEYWORD_EMOJI_MAP)) {
-        if (sqlCfg.get(keyword, true)) addDecoration(`sql:${keyword}`, emoji);
-      }
-    }
-
-    // ── TypeScript keywords ──────────────────────────────────────────────
-    if (config.get('typescriptKeywords', true)) {
-      const tsCfg = vscode.workspace.getConfiguration('emojiCode.tsKeyword');
-      for (const [keyword, emoji] of Object.entries(TYPESCRIPT_KEYWORD_EMOJI_MAP)) {
-        if (tsCfg.get(keyword, true)) addDecoration(`ts:${keyword}`, emoji);
-      }
-    }
-
-    // ── Java keywords ────────────────────────────────────────────────────
-    if (config.get('javaKeywords', true)) {
-      const javaCfg = vscode.workspace.getConfiguration('emojiCode.javaKeyword');
-      for (const [keyword, emoji] of Object.entries(JAVA_KEYWORD_EMOJI_MAP)) {
-        if (javaCfg.get(keyword, true)) addDecoration(`java:${keyword}`, emoji);
+    // Process all categories using the configuration table
+    for (const { masterKey, configNs, map, prefix } of CATEGORY_CONFIG) {
+      if (config.get(masterKey, true)) {
+        const itemCfg = vscode.workspace.getConfiguration(configNs);
+        for (const [key, emoji] of Object.entries(map)) {
+          if (itemCfg.get(key, true)) {
+            addDecoration(`${prefix}${key}`, emoji);
+          }
+        }
       }
     }
   }
@@ -243,43 +150,42 @@ class KeywordDecorator {
       return;
     }
 
-    // Scan for keyword matches using the appropriate scanner.
-    const langId = editor.document.languageId;
+    // Check cache first to avoid redundant scans
+    const docUri = editor.document.uri.toString();
+    const docVersion = editor.document.version;
+    const cached = this.scanCache.get(docUri);
+
     let matches;
-    if (HTML_LANGUAGES.has(langId)) {
-      matches = scanHtmlTokens(editor.document);
-    } else if (CSS_LANGUAGES.has(langId)) {
-      matches = scanCssTokens(editor.document);
-    } else if (PYTHON_LANGUAGES.has(langId)) {
-      matches = scanPythonKeywords(editor.document);
-      // Prefix Python keywords with 'py:' to match decoration keys
-      matches = matches.map(m => ({ keyword: `py:${m.keyword}`, range: m.range }));
-    } else if (C_LANGUAGES.has(langId)) {
-      matches = scanCKeywords(editor.document);
-      // Prefix C keywords with 'c:' to match decoration keys
-      matches = matches.map(m => ({ keyword: `c:${m.keyword}`, range: m.range }));
-    } else if (CPP_LANGUAGES.has(langId)) {
-      matches = scanCppKeywords(editor.document);
-      // Prefix C++ keywords with 'cpp:' to match decoration keys
-      matches = matches.map(m => ({ keyword: `cpp:${m.keyword}`, range: m.range }));
-    } else if (CSHARP_LANGUAGES.has(langId)) {
-      matches = scanCsharpKeywords(editor.document);
-      // Prefix C# keywords with 'csharp:' to match decoration keys
-      matches = matches.map(m => ({ keyword: `csharp:${m.keyword}`, range: m.range }));
-    } else if (SQL_LANGUAGES.has(langId)) {
-      matches = scanSqlKeywords(editor.document);
-      // Prefix SQL keywords with 'sql:' to match decoration keys
-      matches = matches.map(m => ({ keyword: `sql:${m.keyword}`, range: m.range }));
-    } else if (TS_LANGUAGES.has(langId)) {
-      matches = scanTypescriptKeywords(editor.document);
-      // Prefix TypeScript keywords with 'ts:' to match decoration keys
-      matches = matches.map(m => ({ keyword: `ts:${m.keyword}`, range: m.range }));
-    } else if (JAVA_LANGUAGES.has(langId)) {
-      matches = scanJavaKeywords(editor.document);
-      // Prefix Java keywords with 'java:' to match decoration keys
-      matches = matches.map(m => ({ keyword: `java:${m.keyword}`, range: m.range }));
+    if (cached && cached.version === docVersion) {
+      // Use cached scan results
+      matches = cached.matches;
     } else {
-      matches = scanKeywords(editor.document);
+      // Scan for keyword matches using the appropriate scanner
+      const langId = editor.document.languageId;
+      if (HTML_LANGUAGES.has(langId)) {
+        matches = scanHtmlTokens(editor.document);
+      } else if (CSS_LANGUAGES.has(langId)) {
+        matches = scanCssTokens(editor.document);
+      } else if (PYTHON_LANGUAGES.has(langId)) {
+        matches = scanPythonKeywords(editor.document);
+      } else if (C_LANGUAGES.has(langId)) {
+        matches = scanCKeywords(editor.document);
+      } else if (CPP_LANGUAGES.has(langId)) {
+        matches = scanCppKeywords(editor.document);
+      } else if (CSHARP_LANGUAGES.has(langId)) {
+        matches = scanCsharpKeywords(editor.document);
+      } else if (SQL_LANGUAGES.has(langId)) {
+        matches = scanSqlKeywords(editor.document);
+      } else if (TS_LANGUAGES.has(langId)) {
+        matches = scanTypescriptKeywords(editor.document);
+      } else if (JAVA_LANGUAGES.has(langId)) {
+        matches = scanJavaKeywords(editor.document);
+      } else {
+        matches = scanKeywords(editor.document);
+      }
+
+      // Cache the scan results
+      this.scanCache.set(docUri, { version: docVersion, matches });
     }
 
     // Group matches by keyword.
@@ -318,6 +224,8 @@ class KeywordDecorator {
     const wasEnabled = this.enabled;
     this._buildDecorationTypes();
     this.enabled = wasEnabled;
+    // Clear scan cache since decoration types have changed
+    this.scanCache.clear();
   }
 
   /** Dispose all decoration types. */
