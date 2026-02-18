@@ -566,34 +566,34 @@ function getWebviewContent() {
   <h1>EmojiCode-Pro Settings</h1>
 
   <div class="tabs">
-    <button class="tab ${jsTabActive}" onclick="switchTab('javascript')" type="button">
+    <button class="tab ${jsTabActive}" data-tab="javascript" type="button">
       JavaScript <span class="count">(${jsCount})</span>
     </button>
-    <button class="tab ${htmlTabActive}" onclick="switchTab('html')" type="button">
+    <button class="tab ${htmlTabActive}" data-tab="html" type="button">
       HTML <span class="count">(${tagCount + voidCount + attrCount})</span>
     </button>
-    <button class="tab ${cssTabActive}" onclick="switchTab('css')" type="button">
+    <button class="tab ${cssTabActive}" data-tab="css" type="button">
       CSS <span class="count">(${cssTotal})</span>
     </button>
-    <button class="tab ${pythonTabActive}" onclick="switchTab('python')" type="button">
+    <button class="tab ${pythonTabActive}" data-tab="python" type="button">
       Python <span class="count">(${pythonCount})</span>
     </button>
-    <button class="tab ${cTabActive}" onclick="switchTab('c')" type="button">
+    <button class="tab ${cTabActive}" data-tab="c" type="button">
       C <span class="count">(${cCount})</span>
     </button>
-    <button class="tab ${cppTabActive}" onclick="switchTab('cpp')" type="button">
+    <button class="tab ${cppTabActive}" data-tab="cpp" type="button">
       C++ <span class="count">(${cppCount})</span>
     </button>
-    <button class="tab ${csharpTabActive}" onclick="switchTab('csharp')" type="button">
+    <button class="tab ${csharpTabActive}" data-tab="csharp" type="button">
       C# <span class="count">(${csharpCount})</span>
     </button>
-    <button class="tab ${sqlTabActive}" onclick="switchTab('sql')" type="button">
+    <button class="tab ${sqlTabActive}" data-tab="sql" type="button">
       SQL <span class="count">(${sqlCount})</span>
     </button>
-    <button class="tab ${typescriptTabActive}" onclick="switchTab('typescript')" type="button">
+    <button class="tab ${typescriptTabActive}" data-tab="typescript" type="button">
       TypeScript <span class="count">(${typescriptCount})</span>
     </button>
-    <button class="tab ${javaTabActive}" onclick="switchTab('java')" type="button">
+    <button class="tab ${javaTabActive}" data-tab="java" type="button">
       Java <span class="count">(${javaCount})</span>
     </button>
   </div>
@@ -601,13 +601,12 @@ function getWebviewContent() {
   <!-- JavaScript Tab -->
   <div id="javascript" class="tab-content ${jsContentActive}">
     <div class="master-toggle">
-      <input type="checkbox" id="master-javascript" ${settings.masterToggles.javascriptKeywords ? 'checked' : ''}
-        onchange="toggleSetting('emojiCode.javascriptKeywords', this.checked)">
+      <input type="checkbox" id="master-javascript" data-setting-key="emojiCode.javascriptKeywords" ${settings.masterToggles.javascriptKeywords ? 'checked' : ''}>
       <label for="master-javascript">Enable JavaScript keyword emojis</label>
     </div>
     <div class="bulk-actions">
-      <button class="bulk-btn" onclick="toggleAll('javascript', true, this)" type="button">Select All</button>
-      <button class="bulk-btn" onclick="toggleAll('javascript', false, this)" type="button">Deselect All</button>
+      <button class="bulk-btn" data-toggle-all="javascript" data-toggle-value="true" type="button">Select All</button>
+      <button class="bulk-btn" data-toggle-all="javascript" data-toggle-value="false" type="button">Deselect All</button>
     </div>
     <div class="emoji-grid">${jsItems}</div>
   </div>
@@ -618,13 +617,12 @@ function getWebviewContent() {
     <div class="section">
       <div class="section-title">Tags <span class="count">(${tagCount})</span></div>
       <div class="master-toggle">
-        <input type="checkbox" id="master-tags" ${settings.masterToggles.htmlTags ? 'checked' : ''}
-          onchange="toggleSetting('emojiCode.htmlTags', this.checked)">
+        <input type="checkbox" id="master-tags" data-setting-key="emojiCode.htmlTags" ${settings.masterToggles.htmlTags ? 'checked' : ''}>
         <label for="master-tags">Enable tag emojis</label>
       </div>
       <div class="bulk-actions">
-        <button class="bulk-btn" onclick="toggleAll('tags', true, this)" type="button">Select All</button>
-        <button class="bulk-btn" onclick="toggleAll('tags', false, this)" type="button">Deselect All</button>
+        <button class="bulk-btn" data-toggle-all="tags" data-toggle-value="true" type="button">Select All</button>
+        <button class="bulk-btn" data-toggle-all="tags" data-toggle-value="false" type="button">Deselect All</button>
       </div>
       <div class="emoji-grid">${tagItems}</div>
     </div>
@@ -633,13 +631,12 @@ function getWebviewContent() {
     <div class="section">
       <div class="section-title">Void Elements <span class="count">(${voidCount})</span></div>
       <div class="master-toggle">
-        <input type="checkbox" id="master-void" ${settings.masterToggles.htmlVoidElements ? 'checked' : ''}
-          onchange="toggleSetting('emojiCode.htmlVoidElements', this.checked)">
+        <input type="checkbox" id="master-void" data-setting-key="emojiCode.htmlVoidElements" ${settings.masterToggles.htmlVoidElements ? 'checked' : ''}>
         <label for="master-void">Enable void element emojis</label>
       </div>
       <div class="bulk-actions">
-        <button class="bulk-btn" onclick="toggleAll('void', true, this)" type="button">Select All</button>
-        <button class="bulk-btn" onclick="toggleAll('void', false, this)" type="button">Deselect All</button>
+        <button class="bulk-btn" data-toggle-all="void" data-toggle-value="true" type="button">Select All</button>
+        <button class="bulk-btn" data-toggle-all="void" data-toggle-value="false" type="button">Deselect All</button>
       </div>
       <div class="emoji-grid">${voidItems}</div>
     </div>
@@ -648,13 +645,12 @@ function getWebviewContent() {
     <div class="section">
       <div class="section-title">Attributes <span class="count">(${attrCount})</span></div>
       <div class="master-toggle">
-        <input type="checkbox" id="master-attr" ${settings.masterToggles.htmlAttributes ? 'checked' : ''}
-          onchange="toggleSetting('emojiCode.htmlAttributes', this.checked)">
+        <input type="checkbox" id="master-attr" data-setting-key="emojiCode.htmlAttributes" ${settings.masterToggles.htmlAttributes ? 'checked' : ''}>
         <label for="master-attr">Enable attribute emojis</label>
       </div>
       <div class="bulk-actions">
-        <button class="bulk-btn" onclick="toggleAll('attr', true, this)" type="button">Select All</button>
-        <button class="bulk-btn" onclick="toggleAll('attr', false, this)" type="button">Deselect All</button>
+        <button class="bulk-btn" data-toggle-all="attr" data-toggle-value="true" type="button">Select All</button>
+        <button class="bulk-btn" data-toggle-all="attr" data-toggle-value="false" type="button">Deselect All</button>
       </div>
       <div class="emoji-grid">${attrItems}</div>
     </div>
@@ -666,13 +662,12 @@ function getWebviewContent() {
     <div class="section">
       <div class="section-title">At-Rules <span class="count">(${cssAtRuleCount})</span></div>
       <div class="master-toggle">
-        <input type="checkbox" id="master-cssAtRule" ${settings.masterToggles.cssAtRules ? 'checked' : ''}
-          onchange="toggleSetting('emojiCode.cssAtRules', this.checked)">
+        <input type="checkbox" id="master-cssAtRule" data-setting-key="emojiCode.cssAtRules" ${settings.masterToggles.cssAtRules ? 'checked' : ''}>
         <label for="master-cssAtRule">Enable at-rule emojis</label>
       </div>
       <div class="bulk-actions">
-        <button class="bulk-btn" onclick="toggleAll('cssAtRule', true, this)" type="button">Select All</button>
-        <button class="bulk-btn" onclick="toggleAll('cssAtRule', false, this)" type="button">Deselect All</button>
+        <button class="bulk-btn" data-toggle-all="cssAtRule" data-toggle-value="true" type="button">Select All</button>
+        <button class="bulk-btn" data-toggle-all="cssAtRule" data-toggle-value="false" type="button">Deselect All</button>
       </div>
       <div class="emoji-grid">${cssAtRuleItems}</div>
     </div>
@@ -681,13 +676,12 @@ function getWebviewContent() {
     <div class="section">
       <div class="section-title">Layout Properties <span class="count">(${cssLayoutCount})</span></div>
       <div class="master-toggle">
-        <input type="checkbox" id="master-cssLayout" ${settings.masterToggles.cssLayout ? 'checked' : ''}
-          onchange="toggleSetting('emojiCode.cssLayout', this.checked)">
+        <input type="checkbox" id="master-cssLayout" data-setting-key="emojiCode.cssLayout" ${settings.masterToggles.cssLayout ? 'checked' : ''}>
         <label for="master-cssLayout">Enable layout emojis</label>
       </div>
       <div class="bulk-actions">
-        <button class="bulk-btn" onclick="toggleAll('cssLayout', true, this)" type="button">Select All</button>
-        <button class="bulk-btn" onclick="toggleAll('cssLayout', false, this)" type="button">Deselect All</button>
+        <button class="bulk-btn" data-toggle-all="cssLayout" data-toggle-value="true" type="button">Select All</button>
+        <button class="bulk-btn" data-toggle-all="cssLayout" data-toggle-value="false" type="button">Deselect All</button>
       </div>
       <div class="emoji-grid">${cssLayoutItems}</div>
     </div>
@@ -696,13 +690,12 @@ function getWebviewContent() {
     <div class="section">
       <div class="section-title">Box Model <span class="count">(${cssBoxCount})</span></div>
       <div class="master-toggle">
-        <input type="checkbox" id="master-cssBox" ${settings.masterToggles.cssBox ? 'checked' : ''}
-          onchange="toggleSetting('emojiCode.cssBox', this.checked)">
+        <input type="checkbox" id="master-cssBox" data-setting-key="emojiCode.cssBox" ${settings.masterToggles.cssBox ? 'checked' : ''}>
         <label for="master-cssBox">Enable box model emojis</label>
       </div>
       <div class="bulk-actions">
-        <button class="bulk-btn" onclick="toggleAll('cssBox', true, this)" type="button">Select All</button>
-        <button class="bulk-btn" onclick="toggleAll('cssBox', false, this)" type="button">Deselect All</button>
+        <button class="bulk-btn" data-toggle-all="cssBox" data-toggle-value="true" type="button">Select All</button>
+        <button class="bulk-btn" data-toggle-all="cssBox" data-toggle-value="false" type="button">Deselect All</button>
       </div>
       <div class="emoji-grid">${cssBoxItems}</div>
     </div>
@@ -711,13 +704,12 @@ function getWebviewContent() {
     <div class="section">
       <div class="section-title">Visual Properties <span class="count">(${cssVisualCount})</span></div>
       <div class="master-toggle">
-        <input type="checkbox" id="master-cssVisual" ${settings.masterToggles.cssVisual ? 'checked' : ''}
-          onchange="toggleSetting('emojiCode.cssVisual', this.checked)">
+        <input type="checkbox" id="master-cssVisual" data-setting-key="emojiCode.cssVisual" ${settings.masterToggles.cssVisual ? 'checked' : ''}>
         <label for="master-cssVisual">Enable visual emojis</label>
       </div>
       <div class="bulk-actions">
-        <button class="bulk-btn" onclick="toggleAll('cssVisual', true, this)" type="button">Select All</button>
-        <button class="bulk-btn" onclick="toggleAll('cssVisual', false, this)" type="button">Deselect All</button>
+        <button class="bulk-btn" data-toggle-all="cssVisual" data-toggle-value="true" type="button">Select All</button>
+        <button class="bulk-btn" data-toggle-all="cssVisual" data-toggle-value="false" type="button">Deselect All</button>
       </div>
       <div class="emoji-grid">${cssVisualItems}</div>
     </div>
@@ -726,13 +718,12 @@ function getWebviewContent() {
     <div class="section">
       <div class="section-title">Pseudo-classes <span class="count">(${cssPseudoCount})</span></div>
       <div class="master-toggle">
-        <input type="checkbox" id="master-cssPseudo" ${settings.masterToggles.cssPseudo ? 'checked' : ''}
-          onchange="toggleSetting('emojiCode.cssPseudo', this.checked)">
+        <input type="checkbox" id="master-cssPseudo" data-setting-key="emojiCode.cssPseudo" ${settings.masterToggles.cssPseudo ? 'checked' : ''}>
         <label for="master-cssPseudo">Enable pseudo-class emojis</label>
       </div>
       <div class="bulk-actions">
-        <button class="bulk-btn" onclick="toggleAll('cssPseudo', true, this)" type="button">Select All</button>
-        <button class="bulk-btn" onclick="toggleAll('cssPseudo', false, this)" type="button">Deselect All</button>
+        <button class="bulk-btn" data-toggle-all="cssPseudo" data-toggle-value="true" type="button">Select All</button>
+        <button class="bulk-btn" data-toggle-all="cssPseudo" data-toggle-value="false" type="button">Deselect All</button>
       </div>
       <div class="emoji-grid">${cssPseudoItems}</div>
     </div>
@@ -741,13 +732,12 @@ function getWebviewContent() {
     <div class="section">
       <div class="section-title">Important Values <span class="count">(${cssValueCount})</span></div>
       <div class="master-toggle">
-        <input type="checkbox" id="master-cssValue" ${settings.masterToggles.cssValues ? 'checked' : ''}
-          onchange="toggleSetting('emojiCode.cssValues', this.checked)">
+        <input type="checkbox" id="master-cssValue" data-setting-key="emojiCode.cssValues" ${settings.masterToggles.cssValues ? 'checked' : ''}>
         <label for="master-cssValue">Enable value emojis</label>
       </div>
       <div class="bulk-actions">
-        <button class="bulk-btn" onclick="toggleAll('cssValue', true, this)" type="button">Select All</button>
-        <button class="bulk-btn" onclick="toggleAll('cssValue', false, this)" type="button">Deselect All</button>
+        <button class="bulk-btn" data-toggle-all="cssValue" data-toggle-value="true" type="button">Select All</button>
+        <button class="bulk-btn" data-toggle-all="cssValue" data-toggle-value="false" type="button">Deselect All</button>
       </div>
       <div class="emoji-grid">${cssValueItems}</div>
     </div>
@@ -756,13 +746,12 @@ function getWebviewContent() {
   <!-- Python Tab -->
   <div id="python" class="tab-content ${pythonContentActive}">
     <div class="master-toggle">
-      <input type="checkbox" id="master-python" ${settings.masterToggles.pythonKeywords ? 'checked' : ''}
-        onchange="toggleSetting('emojiCode.pythonKeywords', this.checked)">
+      <input type="checkbox" id="master-python" data-setting-key="emojiCode.pythonKeywords" ${settings.masterToggles.pythonKeywords ? 'checked' : ''}>
       <label for="master-python">Enable Python keyword emojis</label>
     </div>
     <div class="bulk-actions">
-      <button class="bulk-btn" onclick="toggleAll('python', true, this)" type="button">Select All</button>
-      <button class="bulk-btn" onclick="toggleAll('python', false, this)" type="button">Deselect All</button>
+      <button class="bulk-btn" data-toggle-all="python" data-toggle-value="true" type="button">Select All</button>
+      <button class="bulk-btn" data-toggle-all="python" data-toggle-value="false" type="button">Deselect All</button>
     </div>
     <div class="emoji-grid">${pythonItems}</div>
   </div>
@@ -770,13 +759,12 @@ function getWebviewContent() {
   <!-- C Tab -->
   <div id="c" class="tab-content ${cContentActive}">
     <div class="master-toggle">
-      <input type="checkbox" id="master-c" ${settings.masterToggles.cKeywords ? 'checked' : ''}
-        onchange="toggleSetting('emojiCode.cKeywords', this.checked)">
+      <input type="checkbox" id="master-c" data-setting-key="emojiCode.cKeywords" ${settings.masterToggles.cKeywords ? 'checked' : ''}>
       <label for="master-c">Enable C keyword emojis</label>
     </div>
     <div class="bulk-actions">
-      <button class="bulk-btn" onclick="toggleAll('c', true, this)" type="button">Select All</button>
-      <button class="bulk-btn" onclick="toggleAll('c', false, this)" type="button">Deselect All</button>
+      <button class="bulk-btn" data-toggle-all="c" data-toggle-value="true" type="button">Select All</button>
+      <button class="bulk-btn" data-toggle-all="c" data-toggle-value="false" type="button">Deselect All</button>
     </div>
     <div class="emoji-grid">${cItems}</div>
   </div>
@@ -784,13 +772,12 @@ function getWebviewContent() {
   <!-- C++ Tab -->
   <div id="cpp" class="tab-content ${cppContentActive}">
     <div class="master-toggle">
-      <input type="checkbox" id="master-cpp" ${settings.masterToggles.cppKeywords ? 'checked' : ''}
-        onchange="toggleSetting('emojiCode.cppKeywords', this.checked)">
+      <input type="checkbox" id="master-cpp" data-setting-key="emojiCode.cppKeywords" ${settings.masterToggles.cppKeywords ? 'checked' : ''}>
       <label for="master-cpp">Enable C++ keyword emojis</label>
     </div>
     <div class="bulk-actions">
-      <button class="bulk-btn" onclick="toggleAll('cpp', true, this)" type="button">Select All</button>
-      <button class="bulk-btn" onclick="toggleAll('cpp', false, this)" type="button">Deselect All</button>
+      <button class="bulk-btn" data-toggle-all="cpp" data-toggle-value="true" type="button">Select All</button>
+      <button class="bulk-btn" data-toggle-all="cpp" data-toggle-value="false" type="button">Deselect All</button>
     </div>
     <div class="emoji-grid">${cppItems}</div>
   </div>
@@ -798,13 +785,12 @@ function getWebviewContent() {
   <!-- C# Tab -->
   <div id="csharp" class="tab-content ${csharpContentActive}">
     <div class="master-toggle">
-      <input type="checkbox" id="master-csharp" ${settings.masterToggles.csharpKeywords ? 'checked' : ''}
-        onchange="toggleSetting('emojiCode.csharpKeywords', this.checked)">
+      <input type="checkbox" id="master-csharp" data-setting-key="emojiCode.csharpKeywords" ${settings.masterToggles.csharpKeywords ? 'checked' : ''}>
       <label for="master-csharp">Enable C# keyword emojis</label>
     </div>
     <div class="bulk-actions">
-      <button class="bulk-btn" onclick="toggleAll('csharp', true, this)" type="button">Select All</button>
-      <button class="bulk-btn" onclick="toggleAll('csharp', false, this)" type="button">Deselect All</button>
+      <button class="bulk-btn" data-toggle-all="csharp" data-toggle-value="true" type="button">Select All</button>
+      <button class="bulk-btn" data-toggle-all="csharp" data-toggle-value="false" type="button">Deselect All</button>
     </div>
     <div class="emoji-grid">${csharpItems}</div>
   </div>
@@ -812,13 +798,12 @@ function getWebviewContent() {
   <!-- SQL Tab -->
   <div id="sql" class="tab-content ${sqlContentActive}">
     <div class="master-toggle">
-      <input type="checkbox" id="master-sql" ${settings.masterToggles.sqlKeywords ? 'checked' : ''}
-        onchange="toggleSetting('emojiCode.sqlKeywords', this.checked)">
+      <input type="checkbox" id="master-sql" data-setting-key="emojiCode.sqlKeywords" ${settings.masterToggles.sqlKeywords ? 'checked' : ''}>
       <label for="master-sql">Enable SQL keyword emojis</label>
     </div>
     <div class="bulk-actions">
-      <button class="bulk-btn" onclick="toggleAll('sql', true, this)" type="button">Select All</button>
-      <button class="bulk-btn" onclick="toggleAll('sql', false, this)" type="button">Deselect All</button>
+      <button class="bulk-btn" data-toggle-all="sql" data-toggle-value="true" type="button">Select All</button>
+      <button class="bulk-btn" data-toggle-all="sql" data-toggle-value="false" type="button">Deselect All</button>
     </div>
     <div class="emoji-grid">${sqlItems}</div>
   </div>
@@ -826,13 +811,12 @@ function getWebviewContent() {
   <!-- TypeScript Tab -->
   <div id="typescript" class="tab-content ${typescriptContentActive}">
     <div class="master-toggle">
-      <input type="checkbox" id="master-typescript" ${settings.masterToggles.typescriptKeywords ? 'checked' : ''}
-        onchange="toggleSetting('emojiCode.typescriptKeywords', this.checked)">
+      <input type="checkbox" id="master-typescript" data-setting-key="emojiCode.typescriptKeywords" ${settings.masterToggles.typescriptKeywords ? 'checked' : ''}>
       <label for="master-typescript">Enable TypeScript keyword emojis</label>
     </div>
     <div class="bulk-actions">
-      <button class="bulk-btn" onclick="toggleAll('typescript', true, this)" type="button">Select All</button>
-      <button class="bulk-btn" onclick="toggleAll('typescript', false, this)" type="button">Deselect All</button>
+      <button class="bulk-btn" data-toggle-all="typescript" data-toggle-value="true" type="button">Select All</button>
+      <button class="bulk-btn" data-toggle-all="typescript" data-toggle-value="false" type="button">Deselect All</button>
     </div>
     <div class="emoji-grid">${typescriptItems}</div>
   </div>
@@ -840,13 +824,12 @@ function getWebviewContent() {
   <!-- Java Tab -->
   <div id="java" class="tab-content ${javaContentActive}">
     <div class="master-toggle">
-      <input type="checkbox" id="master-java" ${settings.masterToggles.javaKeywords ? 'checked' : ''}
-        onchange="toggleSetting('emojiCode.javaKeywords', this.checked)">
+      <input type="checkbox" id="master-java" data-setting-key="emojiCode.javaKeywords" ${settings.masterToggles.javaKeywords ? 'checked' : ''}>
       <label for="master-java">Enable Java keyword emojis</label>
     </div>
     <div class="bulk-actions">
-      <button class="bulk-btn" onclick="toggleAll('java', true, this)" type="button">Select All</button>
-      <button class="bulk-btn" onclick="toggleAll('java', false, this)" type="button">Deselect All</button>
+      <button class="bulk-btn" data-toggle-all="java" data-toggle-value="true" type="button">Select All</button>
+      <button class="bulk-btn" data-toggle-all="java" data-toggle-value="false" type="button">Deselect All</button>
     </div>
     <div class="emoji-grid">${javaItems}</div>
   </div>
@@ -854,47 +837,61 @@ function getWebviewContent() {
   <script nonce="${nonce}">
     const vscode = acquireVsCodeApi();
 
-    function switchTab(tab) {
-      vscode.postMessage({ command: 'switchTab', tab: tab });
-    }
+    const CONFIG_MAP = {
+      javascript: 'emojiCode.jsKeyword.',
+      tags: 'emojiCode.htmlTag.',
+      void: 'emojiCode.htmlVoid.',
+      attr: 'emojiCode.htmlAttr.',
+      cssAtRule: 'emojiCode.cssAtRule.',
+      cssLayout: 'emojiCode.cssLayout.',
+      cssBox: 'emojiCode.cssBox.',
+      cssVisual: 'emojiCode.cssVisual.',
+      cssPseudo: 'emojiCode.cssPseudo.',
+      cssValue: 'emojiCode.cssValue.',
+      python: 'emojiCode.pyKeyword.',
+      c: 'emojiCode.cKeyword.',
+      cpp: 'emojiCode.cppKeyword.',
+      csharp: 'emojiCode.csharpKeyword.',
+      sql: 'emojiCode.sqlKeyword.',
+      typescript: 'emojiCode.tsKeyword.',
+      java: 'emojiCode.javaKeyword.'
+    };
 
-    function toggleSetting(key, value) {
-      vscode.postMessage({ command: 'toggleSetting', key: key, value: value });
-    }
+    // Tab buttons
+    document.querySelectorAll('[data-tab]').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        vscode.postMessage({ command: 'switchTab', tab: this.dataset.tab });
+      });
+    });
 
-    function toggleAll(category, value, btn) {
-      // Instantly update UI - find checkboxes in the same section as the button
-      var section = btn.closest('.section') || btn.closest('.tab-content');
-      if (section) {
-        var checkboxes = section.querySelectorAll('.emoji-item input[type="checkbox"]');
-        checkboxes.forEach(function(cb) { cb.checked = value; });
-      }
-      // Save in background
-      vscode.postMessage({ command: 'toggleAll', category: category, value: value });
-    }
+    // Master toggle checkboxes
+    document.querySelectorAll('[data-setting-key]').forEach(function(cb) {
+      cb.addEventListener('change', function() {
+        vscode.postMessage({ command: 'toggleSetting', key: this.dataset.settingKey, value: this.checked });
+      });
+    });
 
-    function toggleItem(category, key, checked) {
-      let configKey;
-      if (category === 'javascript') configKey = 'emojiCode.jsKeyword.' + key;
-      else if (category === 'tags') configKey = 'emojiCode.htmlTag.' + key;
-      else if (category === 'void') configKey = 'emojiCode.htmlVoid.' + key;
-      else if (category === 'attr') configKey = 'emojiCode.htmlAttr.' + key;
-      else if (category === 'cssAtRule') configKey = 'emojiCode.cssAtRule.' + key;
-      else if (category === 'cssLayout') configKey = 'emojiCode.cssLayout.' + key;
-      else if (category === 'cssBox') configKey = 'emojiCode.cssBox.' + key;
-      else if (category === 'cssVisual') configKey = 'emojiCode.cssVisual.' + key;
-      else if (category === 'cssPseudo') configKey = 'emojiCode.cssPseudo.' + key;
-      else if (category === 'cssValue') configKey = 'emojiCode.cssValue.' + key;
-      else if (category === 'python') configKey = 'emojiCode.pyKeyword.' + key;
-      else if (category === 'c') configKey = 'emojiCode.cKeyword.' + key;
-      else if (category === 'cpp') configKey = 'emojiCode.cppKeyword.' + key;
-      else if (category === 'csharp') configKey = 'emojiCode.csharpKeyword.' + key;
-      else if (category === 'sql') configKey = 'emojiCode.sqlKeyword.' + key;
-      else if (category === 'typescript') configKey = 'emojiCode.tsKeyword.' + key;
-      else if (category === 'java') configKey = 'emojiCode.javaKeyword.' + key;
-      else return;
-      vscode.postMessage({ command: 'toggleSetting', key: configKey, value: checked });
-    }
+    // Bulk select/deselect buttons
+    document.querySelectorAll('[data-toggle-all]').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var category = this.dataset.toggleAll;
+        var value = this.dataset.toggleValue === 'true';
+        var section = this.closest('.section') || this.closest('.tab-content');
+        if (section) {
+          section.querySelectorAll('.emoji-item input[type="checkbox"]').forEach(function(cb) { cb.checked = value; });
+        }
+        vscode.postMessage({ command: 'toggleAll', category: category, value: value });
+      });
+    });
+
+    // Individual emoji checkboxes
+    document.querySelectorAll('[data-category]').forEach(function(cb) {
+      cb.addEventListener('change', function() {
+        var prefix = CONFIG_MAP[this.dataset.category];
+        if (!prefix) return;
+        vscode.postMessage({ command: 'toggleSetting', key: prefix + this.dataset.key, value: this.checked });
+      });
+    });
   </script>
 </body>
 </html>`;
@@ -906,7 +903,7 @@ function getWebviewContent() {
 function createCheckboxItem(category, key, emoji, displayName, checked) {
   return `
     <label class="emoji-item">
-      <input type="checkbox" ${checked ? 'checked' : ''} onchange="toggleItem('${category}', '${key}', this.checked)">
+      <input type="checkbox" ${checked ? 'checked' : ''} data-category="${category}" data-key="${key}">
       <span class="emoji">${emoji}</span>
       <span class="name">${displayName}</span>
     </label>
