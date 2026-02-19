@@ -12,6 +12,6 @@ nul
 
 # Exclude large source image files (keep only the final icon)
 src/img/*.clip
-src/img/FlashCodePro.png
+src/img/MojiCodePro.png
 src/img/Emoticon_Smile_Face.png
 src/img/Emoticon_Smile_Face_v4.png

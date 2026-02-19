@@ -1,6 +1,6 @@
 {
-  "name": "FlashCode-Pro",
-  "displayName": "FlashCode Pro",
+  "name": "MojiCode-Pro",
+  "displayName": "MojiCode Pro",
   "description": "Adds visual symbols to your coding experience for enhanced memorability and comprehension.",
   "version": "1.0.0",
   "publisher": "Lucidian",
@@ -8,7 +8,7 @@
   "icon": "src/img/icon.png",
   "repository": {
     "type": "git",
-    "url": "https://github.com/lucidiancreative/FlashCode-Pro"
+    "url": "https://github.com/lucidiancreative/MojiCode-Pro"
   },
   "engines": {
     "vscode": "^1.75.0"
@@ -59,31 +59,31 @@
   "contributes": {
     "commands": [
       {
-        "command": "flashCode.toggle",
-        "title": "FlashCode Pro: Toggle"
+        "command": "mojiCode.toggle",
+        "title": "MojiCode Pro: Toggle"
       },
       {
-        "command": "flashCode.openSettings",
+        "command": "mojiCode.openSettings",
         "title": "Customize"
       }
     ],
     "menus": {
       "extension/context": [
         {
-          "command": "flashCode.openSettings",
+          "command": "mojiCode.openSettings",
           "group": "navigation"
         }
       ]
     },
     "configuration": {
-      "title": "FlashCode Pro",
+      "title": "MojiCode Pro",
       "properties": {
-        "flashCode.enabled": {
+        "mojiCode.enabled": {
           "type": "boolean",
           "default": true,
           "description": "Enable or disable emoji keyword decorations."
         },
-        "flashCode.displayMode": {
+        "mojiCode.displayMode": {
           "type": "string",
           "enum": [
             "replace",
@@ -96,3564 +96,3564 @@
           "default": "overlay",
           "description": "How emojis are rendered relative to keywords."
         },
-        "flashCode.overlayOpacity": {
+        "mojiCode.overlayOpacity": {
           "type": "number",
           "default": 1,
           "minimum": 0,
           "maximum": 1,
           "description": "Opacity of keyword text in overlay mode (0 = invisible, 1 = fully visible)."
         },
-        "flashCode.htmlTags": {
+        "mojiCode.htmlTags": {
           "type": "boolean",
           "default": true,
           "description": "Master toggle: show emojis for HTML tag names."
         },
-        "flashCode.htmlVoidElements": {
+        "mojiCode.htmlVoidElements": {
           "type": "boolean",
           "default": true,
           "description": "Master toggle: show emojis for HTML void elements."
         },
-        "flashCode.htmlAttributes": {
+        "mojiCode.htmlAttributes": {
           "type": "boolean",
           "default": true,
           "description": "Master toggle: show emojis for HTML attribute names."
         },
-        "flashCode.javascriptKeywords": {
+        "mojiCode.javascriptKeywords": {
           "type": "boolean",
           "default": true,
           "description": "Master toggle: show emojis for JavaScript keywords."
         },
-        "flashCode.jsKeyword.await": {
+        "mojiCode.jsKeyword.await": {
           "type": "boolean",
           "default": true,
           "description": "⏳ await – waiting for a promise"
         },
-        "flashCode.jsKeyword.break": {
+        "mojiCode.jsKeyword.break": {
           "type": "boolean",
           "default": true,
           "description": "🛑 break – exit loop / switch"
         },
-        "flashCode.jsKeyword.case": {
+        "mojiCode.jsKeyword.case": {
           "type": "boolean",
           "default": true,
           "description": "📋 case – pattern match branch"
         },
-        "flashCode.jsKeyword.catch": {
+        "mojiCode.jsKeyword.catch": {
           "type": "boolean",
           "default": true,
           "description": "🥅 catch – catch thrown errors"
         },
-        "flashCode.jsKeyword.class": {
+        "mojiCode.jsKeyword.class": {
           "type": "boolean",
           "default": true,
           "description": "🏛️ class – class declaration"
         },
-        "flashCode.jsKeyword.const": {
+        "mojiCode.jsKeyword.const": {
           "type": "boolean",
           "default": true,
           "description": "🔒 const – immutable binding"
         },
-        "flashCode.jsKeyword.continue": {
+        "mojiCode.jsKeyword.continue": {
           "type": "boolean",
           "default": true,
           "description": "⏭️ continue – next iteration"
         },
-        "flashCode.jsKeyword.debugger": {
+        "mojiCode.jsKeyword.debugger": {
           "type": "boolean",
           "default": true,
           "description": "🐛 debugger – breakpoint"
         },
-        "flashCode.jsKeyword.default": {
+        "mojiCode.jsKeyword.default": {
           "type": "boolean",
           "default": true,
           "description": "📌 default – fallback branch"
         },
-        "flashCode.jsKeyword.delete": {
+        "mojiCode.jsKeyword.delete": {
           "type": "boolean",
           "default": true,
           "description": "🗑️ delete – remove property"
         },
-        "flashCode.jsKeyword.do": {
+        "mojiCode.jsKeyword.do": {
           "type": "boolean",
           "default": true,
           "description": "🔄 do – do-while loop"
         },
-        "flashCode.jsKeyword.else": {
+        "mojiCode.jsKeyword.else": {
           "type": "boolean",
           "default": true,
           "description": "↪️ else – alternative branch"
         },
-        "flashCode.jsKeyword.enum": {
+        "mojiCode.jsKeyword.enum": {
           "type": "boolean",
           "default": true,
           "description": "📊 enum – enumeration (reserved)"
         },
-        "flashCode.jsKeyword.export": {
+        "mojiCode.jsKeyword.export": {
           "type": "boolean",
           "default": true,
           "description": "📦 export – module export"
         },
-        "flashCode.jsKeyword.extends": {
+        "mojiCode.jsKeyword.extends": {
           "type": "boolean",
           "default": true,
           "description": "🧬 extends – inheritance"
         },
-        "flashCode.jsKeyword.finally": {
+        "mojiCode.jsKeyword.finally": {
           "type": "boolean",
           "default": true,
           "description": "🏁 finally – guaranteed cleanup"
         },
-        "flashCode.jsKeyword.for": {
+        "mojiCode.jsKeyword.for": {
           "type": "boolean",
           "default": true,
           "description": "🔁 for – for loop"
         },
-        "flashCode.jsKeyword.function": {
+        "mojiCode.jsKeyword.function": {
           "type": "boolean",
           "default": true,
           "description": "⚡ function – function declaration"
         },
-        "flashCode.jsKeyword.if": {
+        "mojiCode.jsKeyword.if": {
           "type": "boolean",
           "default": true,
           "description": "❓ if – conditional"
         },
-        "flashCode.jsKeyword.import": {
+        "mojiCode.jsKeyword.import": {
           "type": "boolean",
           "default": true,
           "description": "📥 import – module import"
         },
-        "flashCode.jsKeyword.in": {
+        "mojiCode.jsKeyword.in": {
           "type": "boolean",
           "default": true,
           "description": "📍 in – property membership"
         },
-        "flashCode.jsKeyword.instanceof": {
+        "mojiCode.jsKeyword.instanceof": {
           "type": "boolean",
           "default": true,
           "description": "🔎 instanceof – prototype check"
         },
-        "flashCode.jsKeyword.new": {
+        "mojiCode.jsKeyword.new": {
           "type": "boolean",
           "default": true,
           "description": "✨ new – instance creation"
         },
-        "flashCode.jsKeyword.return": {
+        "mojiCode.jsKeyword.return": {
           "type": "boolean",
           "default": true,
           "description": "🔙 return – return value"
         },
-        "flashCode.jsKeyword.super": {
+        "mojiCode.jsKeyword.super": {
           "type": "boolean",
           "default": true,
           "description": "🦸 super – parent class ref"
         },
-        "flashCode.jsKeyword.switch": {
+        "mojiCode.jsKeyword.switch": {
           "type": "boolean",
           "default": true,
           "description": "🎚️ switch – multi-branch"
         },
-        "flashCode.jsKeyword.this": {
+        "mojiCode.jsKeyword.this": {
           "type": "boolean",
           "default": true,
           "description": "👆 this – current context"
         },
-        "flashCode.jsKeyword.throw": {
+        "mojiCode.jsKeyword.throw": {
           "type": "boolean",
           "default": true,
           "description": "💥 throw – throw error"
         },
-        "flashCode.jsKeyword.try": {
+        "mojiCode.jsKeyword.try": {
           "type": "boolean",
           "default": true,
           "description": "🤞 try – attempt block"
         },
-        "flashCode.jsKeyword.typeof": {
+        "mojiCode.jsKeyword.typeof": {
           "type": "boolean",
           "default": true,
           "description": "🏷️ typeof – type check"
         },
-        "flashCode.jsKeyword.var": {
+        "mojiCode.jsKeyword.var": {
           "type": "boolean",
           "default": true,
           "description": "📝 var – variable (legacy)"
         },
-        "flashCode.jsKeyword.void": {
+        "mojiCode.jsKeyword.void": {
           "type": "boolean",
           "default": true,
           "description": "🕳️ void – discard value"
         },
-        "flashCode.jsKeyword.while": {
+        "mojiCode.jsKeyword.while": {
           "type": "boolean",
           "default": true,
           "description": "🔂 while – while loop"
         },
-        "flashCode.jsKeyword.with": {
+        "mojiCode.jsKeyword.with": {
           "type": "boolean",
           "default": true,
           "description": "🤝 with – with statement"
         },
-        "flashCode.jsKeyword.yield": {
+        "mojiCode.jsKeyword.yield": {
           "type": "boolean",
           "default": true,
           "description": "🌾 yield – generator yield"
         },
-        "flashCode.htmlTag.html": {
+        "mojiCode.htmlTag.html": {
           "type": "boolean",
           "default": true,
           "description": "🌐 <html> – root document element"
         },
-        "flashCode.htmlTag.head": {
+        "mojiCode.htmlTag.head": {
           "type": "boolean",
           "default": true,
           "description": "🧠 <head> – document metadata container"
         },
-        "flashCode.htmlTag.body": {
+        "mojiCode.htmlTag.body": {
           "type": "boolean",
           "default": true,
           "description": "🦴 <body> – document body"
         },
-        "flashCode.htmlTag.div": {
+        "mojiCode.htmlTag.div": {
           "type": "boolean",
           "default": true,
           "description": "📦 <div> – generic block container"
         },
-        "flashCode.htmlTag.span": {
+        "mojiCode.htmlTag.span": {
           "type": "boolean",
           "default": true,
           "description": "🔖 <span> – generic inline container"
         },
-        "flashCode.htmlTag.p": {
+        "mojiCode.htmlTag.p": {
           "type": "boolean",
           "default": true,
           "description": "📄 <p> – paragraph"
         },
-        "flashCode.htmlTag.a": {
+        "mojiCode.htmlTag.a": {
           "type": "boolean",
           "default": true,
           "description": "🔗 <a> – anchor / hyperlink"
         },
-        "flashCode.htmlTag.h1": {
+        "mojiCode.htmlTag.h1": {
           "type": "boolean",
           "default": true,
           "description": "1️⃣ <h1> – heading level 1"
         },
-        "flashCode.htmlTag.h2": {
+        "mojiCode.htmlTag.h2": {
           "type": "boolean",
           "default": true,
           "description": "2️⃣ <h2> – heading level 2"
         },
-        "flashCode.htmlTag.h3": {
+        "mojiCode.htmlTag.h3": {
           "type": "boolean",
           "default": true,
           "description": "3️⃣ <h3> – heading level 3"
         },
-        "flashCode.htmlTag.h4": {
+        "mojiCode.htmlTag.h4": {
           "type": "boolean",
           "default": true,
           "description": "4️⃣ <h4> – heading level 4"
         },
-        "flashCode.htmlTag.h5": {
+        "mojiCode.htmlTag.h5": {
           "type": "boolean",
           "default": true,
           "description": "5️⃣ <h5> – heading level 5"
         },
-        "flashCode.htmlTag.h6": {
+        "mojiCode.htmlTag.h6": {
           "type": "boolean",
           "default": true,
           "description": "6️⃣ <h6> – heading level 6"
         },
-        "flashCode.htmlTag.ul": {
+        "mojiCode.htmlTag.ul": {
           "type": "boolean",
           "default": true,
           "description": "📝 <ul> – unordered list"
         },
-        "flashCode.htmlTag.ol": {
+        "mojiCode.htmlTag.ol": {
           "type": "boolean",
           "default": true,
           "description": "🔢 <ol> – ordered list"
         },
-        "flashCode.htmlTag.li": {
+        "mojiCode.htmlTag.li": {
           "type": "boolean",
           "default": true,
           "description": "▪️ <li> – list item"
         },
-        "flashCode.htmlTag.table": {
+        "mojiCode.htmlTag.table": {
           "type": "boolean",
           "default": true,
           "description": "📊 <table> – data table"
         },
-        "flashCode.htmlTag.tr": {
+        "mojiCode.htmlTag.tr": {
           "type": "boolean",
           "default": true,
           "description": "➡️ <tr> – table row"
         },
-        "flashCode.htmlTag.td": {
+        "mojiCode.htmlTag.td": {
           "type": "boolean",
           "default": true,
           "description": "📎 <td> – table data cell"
         },
-        "flashCode.htmlTag.th": {
+        "mojiCode.htmlTag.th": {
           "type": "boolean",
           "default": true,
           "description": "🏷️ <th> – table header cell"
         },
-        "flashCode.htmlTag.thead": {
+        "mojiCode.htmlTag.thead": {
           "type": "boolean",
           "default": true,
           "description": "🔝 <thead> – table head group"
         },
-        "flashCode.htmlTag.tbody": {
+        "mojiCode.htmlTag.tbody": {
           "type": "boolean",
           "default": true,
           "description": "📋 <tbody> – table body group"
         },
-        "flashCode.htmlTag.tfoot": {
+        "mojiCode.htmlTag.tfoot": {
           "type": "boolean",
           "default": true,
           "description": "🔚 <tfoot> – table foot group"
         },
-        "flashCode.htmlTag.form": {
+        "mojiCode.htmlTag.form": {
           "type": "boolean",
           "default": true,
           "description": "📑 <form> – input form"
         },
-        "flashCode.htmlTag.button": {
+        "mojiCode.htmlTag.button": {
           "type": "boolean",
           "default": true,
           "description": "🔘 <button> – clickable button"
         },
-        "flashCode.htmlTag.select": {
+        "mojiCode.htmlTag.select": {
           "type": "boolean",
           "default": true,
           "description": "📂 <select> – dropdown select"
         },
-        "flashCode.htmlTag.option": {
+        "mojiCode.htmlTag.option": {
           "type": "boolean",
           "default": true,
           "description": "☑️ <option> – select option"
         },
-        "flashCode.htmlTag.textarea": {
+        "mojiCode.htmlTag.textarea": {
           "type": "boolean",
           "default": true,
           "description": "✏️ <textarea> – multiline text input"
         },
-        "flashCode.htmlTag.label": {
+        "mojiCode.htmlTag.label": {
           "type": "boolean",
           "default": true,
           "description": "🪧 <label> – form control label"
         },
-        "flashCode.htmlTag.nav": {
+        "mojiCode.htmlTag.nav": {
           "type": "boolean",
           "default": true,
           "description": "🧭 <nav> – navigation section"
         },
-        "flashCode.htmlTag.header": {
+        "mojiCode.htmlTag.header": {
           "type": "boolean",
           "default": true,
           "description": "📰 <header> – page header"
         },
-        "flashCode.htmlTag.footer": {
+        "mojiCode.htmlTag.footer": {
           "type": "boolean",
           "default": true,
           "description": "👟 <footer> – page footer"
         },
-        "flashCode.htmlTag.main": {
+        "mojiCode.htmlTag.main": {
           "type": "boolean",
           "default": true,
           "description": "🏠 <main> – main content area"
         },
-        "flashCode.htmlTag.section": {
+        "mojiCode.htmlTag.section": {
           "type": "boolean",
           "default": true,
           "description": "📐 <section> – thematic section"
         },
-        "flashCode.htmlTag.article": {
+        "mojiCode.htmlTag.article": {
           "type": "boolean",
           "default": true,
           "description": "📓 <article> – self-contained article"
         },
-        "flashCode.htmlTag.aside": {
+        "mojiCode.htmlTag.aside": {
           "type": "boolean",
           "default": true,
           "description": "📌 <aside> – tangential content"
         },
-        "flashCode.htmlTag.script": {
+        "mojiCode.htmlTag.script": {
           "type": "boolean",
           "default": true,
           "description": "⚡ <script> – executable script"
         },
-        "flashCode.htmlTag.style": {
+        "mojiCode.htmlTag.style": {
           "type": "boolean",
           "default": true,
           "description": "🎨 <style> – embedded stylesheet"
         },
-        "flashCode.htmlTag.title": {
+        "mojiCode.htmlTag.title": {
           "type": "boolean",
           "default": true,
           "description": "👑 <title> – document title"
         },
-        "flashCode.htmlTag.video": {
+        "mojiCode.htmlTag.video": {
           "type": "boolean",
           "default": true,
           "description": "🎬 <video> – video player"
         },
-        "flashCode.htmlTag.audio": {
+        "mojiCode.htmlTag.audio": {
           "type": "boolean",
           "default": true,
           "description": "🔊 <audio> – audio player"
         },
-        "flashCode.htmlTag.canvas": {
+        "mojiCode.htmlTag.canvas": {
           "type": "boolean",
           "default": true,
           "description": "🖌️ <canvas> – drawing surface"
         },
-        "flashCode.htmlTag.iframe": {
+        "mojiCode.htmlTag.iframe": {
           "type": "boolean",
           "default": true,
           "description": "🪟 <iframe> – nested browsing context"
         },
-        "flashCode.htmlTag.picture": {
+        "mojiCode.htmlTag.picture": {
           "type": "boolean",
           "default": true,
           "description": "📸 <picture> – responsive image container"
         },
-        "flashCode.htmlTag.pre": {
+        "mojiCode.htmlTag.pre": {
           "type": "boolean",
           "default": true,
           "description": "📟 <pre> – preformatted text"
         },
-        "flashCode.htmlTag.code": {
+        "mojiCode.htmlTag.code": {
           "type": "boolean",
           "default": true,
           "description": "💻 <code> – code fragment"
         },
-        "flashCode.htmlTag.strong": {
+        "mojiCode.htmlTag.strong": {
           "type": "boolean",
           "default": true,
           "description": "💪 <strong> – strong importance"
         },
-        "flashCode.htmlTag.em": {
+        "mojiCode.htmlTag.em": {
           "type": "boolean",
           "default": true,
           "description": "✍️ <em> – stress emphasis"
         },
-        "flashCode.htmlTag.blockquote": {
+        "mojiCode.htmlTag.blockquote": {
           "type": "boolean",
           "default": true,
           "description": "🗨️ <blockquote> – extended quotation"
         },
-        "flashCode.htmlTag.mark": {
+        "mojiCode.htmlTag.mark": {
           "type": "boolean",
           "default": true,
           "description": "🖍️ <mark> – highlighted text"
         },
-        "flashCode.htmlTag.del": {
+        "mojiCode.htmlTag.del": {
           "type": "boolean",
           "default": true,
           "description": "❌ <del> – deleted text"
         },
-        "flashCode.htmlTag.ins": {
+        "mojiCode.htmlTag.ins": {
           "type": "boolean",
           "default": true,
           "description": "➕ <ins> – inserted text"
         },
-        "flashCode.htmlTag.small": {
+        "mojiCode.htmlTag.small": {
           "type": "boolean",
           "default": true,
           "description": "🔹 <small> – side comment"
         },
-        "flashCode.htmlTag.sub": {
+        "mojiCode.htmlTag.sub": {
           "type": "boolean",
           "default": true,
           "description": "⬇️ <sub> – subscript"
         },
-        "flashCode.htmlTag.sup": {
+        "mojiCode.htmlTag.sup": {
           "type": "boolean",
           "default": true,
           "description": "⬆️ <sup> – superscript"
         },
-        "flashCode.htmlTag.figure": {
+        "mojiCode.htmlTag.figure": {
           "type": "boolean",
           "default": true,
           "description": "🎞️ <figure> – figure with optional caption"
         },
-        "flashCode.htmlTag.figcaption": {
+        "mojiCode.htmlTag.figcaption": {
           "type": "boolean",
           "default": true,
           "description": "💬 <figcaption> – figure caption"
         },
-        "flashCode.htmlTag.details": {
+        "mojiCode.htmlTag.details": {
           "type": "boolean",
           "default": true,
           "description": "🔍 <details> – disclosure widget"
         },
-        "flashCode.htmlTag.summary": {
+        "mojiCode.htmlTag.summary": {
           "type": "boolean",
           "default": true,
           "description": "📖 <summary> – disclosure summary"
         },
-        "flashCode.htmlTag.dialog": {
+        "mojiCode.htmlTag.dialog": {
           "type": "boolean",
           "default": true,
           "description": "💭 <dialog> – dialog box"
         },
-        "flashCode.htmlTag.template": {
+        "mojiCode.htmlTag.template": {
           "type": "boolean",
           "default": true,
           "description": "🧩 <template> – content template"
         },
-        "flashCode.htmlTag.slot": {
+        "mojiCode.htmlTag.slot": {
           "type": "boolean",
           "default": true,
           "description": "🔌 <slot> – shadow DOM slot"
         },
-        "flashCode.htmlTag.fieldset": {
+        "mojiCode.htmlTag.fieldset": {
           "type": "boolean",
           "default": true,
           "description": "🔲 <fieldset> – field grouping"
         },
-        "flashCode.htmlTag.legend": {
+        "mojiCode.htmlTag.legend": {
           "type": "boolean",
           "default": true,
           "description": "🏆 <legend> – fieldset caption"
         },
-        "flashCode.htmlTag.output": {
+        "mojiCode.htmlTag.output": {
           "type": "boolean",
           "default": true,
           "description": "📤 <output> – calculation result"
         },
-        "flashCode.htmlTag.progress": {
+        "mojiCode.htmlTag.progress": {
           "type": "boolean",
           "default": true,
           "description": "⏳ <progress> – progress indicator"
         },
-        "flashCode.htmlTag.meter": {
+        "mojiCode.htmlTag.meter": {
           "type": "boolean",
           "default": true,
           "description": "📏 <meter> – scalar gauge"
         },
-        "flashCode.htmlTag.datalist": {
+        "mojiCode.htmlTag.datalist": {
           "type": "boolean",
           "default": true,
           "description": "📃 <datalist> – predefined options"
         },
-        "flashCode.htmlTag.map": {
+        "mojiCode.htmlTag.map": {
           "type": "boolean",
           "default": true,
           "description": "🗺️ <map> – image map"
         },
-        "flashCode.htmlVoid.img": {
+        "mojiCode.htmlVoid.img": {
           "type": "boolean",
           "default": true,
           "description": "🖼️ <img> – image"
         },
-        "flashCode.htmlVoid.input": {
+        "mojiCode.htmlVoid.input": {
           "type": "boolean",
           "default": true,
           "description": "⌨️ <input> – form input"
         },
-        "flashCode.htmlVoid.br": {
+        "mojiCode.htmlVoid.br": {
           "type": "boolean",
           "default": true,
           "description": "↩️ <br> – line break"
         },
-        "flashCode.htmlVoid.hr": {
+        "mojiCode.htmlVoid.hr": {
           "type": "boolean",
           "default": true,
           "description": "➖ <hr> – horizontal rule"
         },
-        "flashCode.htmlVoid.meta": {
+        "mojiCode.htmlVoid.meta": {
           "type": "boolean",
           "default": true,
           "description": "ℹ️ <meta> – document metadata"
         },
-        "flashCode.htmlVoid.link": {
+        "mojiCode.htmlVoid.link": {
           "type": "boolean",
           "default": true,
           "description": "⛓️ <link> – external resource link"
         },
-        "flashCode.htmlVoid.source": {
+        "mojiCode.htmlVoid.source": {
           "type": "boolean",
           "default": true,
           "description": "📡 <source> – media source"
         },
-        "flashCode.htmlVoid.embed": {
+        "mojiCode.htmlVoid.embed": {
           "type": "boolean",
           "default": true,
           "description": "📼 <embed> – embedded content"
         },
-        "flashCode.htmlVoid.area": {
+        "mojiCode.htmlVoid.area": {
           "type": "boolean",
           "default": true,
           "description": "📍 <area> – image map clickable area"
         },
-        "flashCode.htmlVoid.track": {
+        "mojiCode.htmlVoid.track": {
           "type": "boolean",
           "default": true,
           "description": "🎵 <track> – text track"
         },
-        "flashCode.htmlVoid.wbr": {
+        "mojiCode.htmlVoid.wbr": {
           "type": "boolean",
           "default": true,
           "description": "✂️ <wbr> – word break opportunity"
         },
-        "flashCode.htmlVoid.col": {
+        "mojiCode.htmlVoid.col": {
           "type": "boolean",
           "default": true,
           "description": "🗄️ <col> – table column"
         },
-        "flashCode.htmlVoid.base": {
+        "mojiCode.htmlVoid.base": {
           "type": "boolean",
           "default": true,
           "description": "⚓ <base> – base URL"
         },
-        "flashCode.htmlAttr.class": {
+        "mojiCode.htmlAttr.class": {
           "type": "boolean",
           "default": true,
           "description": "🏛️ class – CSS class name"
         },
-        "flashCode.htmlAttr.id": {
+        "mojiCode.htmlAttr.id": {
           "type": "boolean",
           "default": true,
           "description": "🆔 id – unique identifier"
         },
-        "flashCode.htmlAttr.href": {
+        "mojiCode.htmlAttr.href": {
           "type": "boolean",
           "default": true,
           "description": "🌍 href – hyperlink reference"
         },
-        "flashCode.htmlAttr.src": {
+        "mojiCode.htmlAttr.src": {
           "type": "boolean",
           "default": true,
           "description": "📥 src – source URL"
         },
-        "flashCode.htmlAttr.alt": {
+        "mojiCode.htmlAttr.alt": {
           "type": "boolean",
           "default": true,
           "description": "🗣️ alt – alternative text"
         },
-        "flashCode.htmlAttr.style": {
+        "mojiCode.htmlAttr.style": {
           "type": "boolean",
           "default": true,
           "description": "🎭 style – inline CSS styles"
         },
-        "flashCode.htmlAttr.type": {
+        "mojiCode.htmlAttr.type": {
           "type": "boolean",
           "default": true,
           "description": "🔤 type – input / mime type"
         },
-        "flashCode.htmlAttr.name": {
+        "mojiCode.htmlAttr.name": {
           "type": "boolean",
           "default": true,
           "description": "📛 name – element name"
         },
-        "flashCode.htmlAttr.value": {
+        "mojiCode.htmlAttr.value": {
           "type": "boolean",
           "default": true,
           "description": "💎 value – element value"
         },
-        "flashCode.htmlAttr.placeholder": {
+        "mojiCode.htmlAttr.placeholder": {
           "type": "boolean",
           "default": true,
           "description": "💡 placeholder – placeholder hint"
         },
-        "flashCode.htmlAttr.action": {
+        "mojiCode.htmlAttr.action": {
           "type": "boolean",
           "default": true,
           "description": "🎯 action – form submission URL"
         },
-        "flashCode.htmlAttr.method": {
+        "mojiCode.htmlAttr.method": {
           "type": "boolean",
           "default": true,
           "description": "📮 method – HTTP method"
         },
-        "flashCode.htmlAttr.target": {
+        "mojiCode.htmlAttr.target": {
           "type": "boolean",
           "default": true,
           "description": "🏹 target – link target"
         },
-        "flashCode.htmlAttr.rel": {
+        "mojiCode.htmlAttr.rel": {
           "type": "boolean",
           "default": true,
           "description": "🤝 rel – link relationship"
         },
-        "flashCode.htmlAttr.width": {
+        "mojiCode.htmlAttr.width": {
           "type": "boolean",
           "default": true,
           "description": "↔️ width – element width"
         },
-        "flashCode.htmlAttr.height": {
+        "mojiCode.htmlAttr.height": {
           "type": "boolean",
           "default": true,
           "description": "↕️ height – element height"
         },
-        "flashCode.htmlAttr.disabled": {
+        "mojiCode.htmlAttr.disabled": {
           "type": "boolean",
           "default": true,
           "description": "🚫 disabled – disabled state"
         },
-        "flashCode.htmlAttr.required": {
+        "mojiCode.htmlAttr.required": {
           "type": "boolean",
           "default": true,
           "description": "❗ required – required field"
         },
-        "flashCode.htmlAttr.checked": {
+        "mojiCode.htmlAttr.checked": {
           "type": "boolean",
           "default": true,
           "description": "✅ checked – checked state"
         },
-        "flashCode.htmlAttr.readonly": {
+        "mojiCode.htmlAttr.readonly": {
           "type": "boolean",
           "default": true,
           "description": "🔒 readonly – read-only field"
         },
-        "flashCode.htmlAttr.hidden": {
+        "mojiCode.htmlAttr.hidden": {
           "type": "boolean",
           "default": true,
           "description": "👻 hidden – hidden element"
         },
-        "flashCode.htmlAttr.autofocus": {
+        "mojiCode.htmlAttr.autofocus": {
           "type": "boolean",
           "default": true,
           "description": "🔦 autofocus – automatic focus"
         },
-        "flashCode.htmlAttr.defer": {
+        "mojiCode.htmlAttr.defer": {
           "type": "boolean",
           "default": true,
           "description": "⏱️ defer – deferred script loading"
         },
-        "flashCode.htmlAttr.async": {
+        "mojiCode.htmlAttr.async": {
           "type": "boolean",
           "default": true,
           "description": "🔄 async – asynchronous loading"
         },
-        "flashCode.htmlAttr.charset": {
+        "mojiCode.htmlAttr.charset": {
           "type": "boolean",
           "default": true,
           "description": "🔠 charset – character encoding"
         },
-        "flashCode.htmlAttr.lang": {
+        "mojiCode.htmlAttr.lang": {
           "type": "boolean",
           "default": true,
           "description": "🌎 lang – language code"
         },
-        "flashCode.htmlAttr.role": {
+        "mojiCode.htmlAttr.role": {
           "type": "boolean",
           "default": true,
           "description": "🎪 role – ARIA role"
         },
-        "flashCode.htmlAttr.tabindex": {
+        "mojiCode.htmlAttr.tabindex": {
           "type": "boolean",
           "default": true,
           "description": "#️⃣ tabindex – tab order index"
         },
-        "flashCode.htmlAttr.for": {
+        "mojiCode.htmlAttr.for": {
           "type": "boolean",
           "default": true,
           "description": "🔁 for – associated control id"
         },
-        "flashCode.htmlAttr.loading": {
+        "mojiCode.htmlAttr.loading": {
           "type": "boolean",
           "default": true,
           "description": "⏰ loading – lazy / eager loading"
         },
-        "flashCode.htmlAttr.content": {
+        "mojiCode.htmlAttr.content": {
           "type": "boolean",
           "default": true,
           "description": "📜 content – meta content value"
         },
-        "flashCode.cssAtRules": {
+        "mojiCode.cssAtRules": {
           "type": "boolean",
           "default": true,
           "description": "Master toggle: show emojis for CSS at-rules (@media, @keyframes, etc.)"
         },
-        "flashCode.cssLayout": {
+        "mojiCode.cssLayout": {
           "type": "boolean",
           "default": true,
           "description": "Master toggle: show emojis for CSS layout properties."
         },
-        "flashCode.cssBox": {
+        "mojiCode.cssBox": {
           "type": "boolean",
           "default": true,
           "description": "Master toggle: show emojis for CSS box model properties."
         },
-        "flashCode.cssVisual": {
+        "mojiCode.cssVisual": {
           "type": "boolean",
           "default": true,
           "description": "Master toggle: show emojis for CSS visual properties."
         },
-        "flashCode.cssPseudo": {
+        "mojiCode.cssPseudo": {
           "type": "boolean",
           "default": true,
           "description": "Master toggle: show emojis for CSS pseudo-classes."
         },
-        "flashCode.cssValues": {
+        "mojiCode.cssValues": {
           "type": "boolean",
           "default": true,
           "description": "Master toggle: show emojis for CSS important values."
         },
-        "flashCode.cssAtRule.media": {
+        "mojiCode.cssAtRule.media": {
           "type": "boolean",
           "default": true,
           "description": "📺 @media – media queries"
         },
-        "flashCode.cssAtRule.keyframes": {
+        "mojiCode.cssAtRule.keyframes": {
           "type": "boolean",
           "default": true,
           "description": "🎬 @keyframes – animation keyframes"
         },
-        "flashCode.cssAtRule.import": {
+        "mojiCode.cssAtRule.import": {
           "type": "boolean",
           "default": true,
           "description": "📥 @import – import stylesheet"
         },
-        "flashCode.cssAtRule.font-face": {
+        "mojiCode.cssAtRule.font-face": {
           "type": "boolean",
           "default": true,
           "description": "🔤 @font-face – custom fonts"
         },
-        "flashCode.cssAtRule.supports": {
+        "mojiCode.cssAtRule.supports": {
           "type": "boolean",
           "default": true,
           "description": "✅ @supports – feature detection"
         },
-        "flashCode.cssLayout.display": {
+        "mojiCode.cssLayout.display": {
           "type": "boolean",
           "default": true,
           "description": "🖥️ display – display mode"
         },
-        "flashCode.cssLayout.flex": {
+        "mojiCode.cssLayout.flex": {
           "type": "boolean",
           "default": true,
           "description": "📦 flex – flexbox"
         },
-        "flashCode.cssLayout.grid": {
+        "mojiCode.cssLayout.grid": {
           "type": "boolean",
           "default": true,
           "description": "🔲 grid – grid layout"
         },
-        "flashCode.cssLayout.position": {
+        "mojiCode.cssLayout.position": {
           "type": "boolean",
           "default": true,
           "description": "📍 position – positioning"
         },
-        "flashCode.cssLayout.float": {
+        "mojiCode.cssLayout.float": {
           "type": "boolean",
           "default": true,
           "description": "🎈 float – float"
         },
-        "flashCode.cssBox.margin": {
+        "mojiCode.cssBox.margin": {
           "type": "boolean",
           "default": true,
           "description": "⬜ margin – outer spacing"
         },
-        "flashCode.cssBox.padding": {
+        "mojiCode.cssBox.padding": {
           "type": "boolean",
           "default": true,
           "description": "🔳 padding – inner spacing"
         },
-        "flashCode.cssBox.border": {
+        "mojiCode.cssBox.border": {
           "type": "boolean",
           "default": true,
           "description": "🔲 border – border"
         },
-        "flashCode.cssBox.width": {
+        "mojiCode.cssBox.width": {
           "type": "boolean",
           "default": true,
           "description": "↔️ width – width"
         },
-        "flashCode.cssBox.height": {
+        "mojiCode.cssBox.height": {
           "type": "boolean",
           "default": true,
           "description": "↕️ height – height"
         },
-        "flashCode.cssVisual.background": {
+        "mojiCode.cssVisual.background": {
           "type": "boolean",
           "default": true,
           "description": "🖼️ background – background"
         },
-        "flashCode.cssVisual.color": {
+        "mojiCode.cssVisual.color": {
           "type": "boolean",
           "default": true,
           "description": "🎨 color – color"
         },
-        "flashCode.cssVisual.opacity": {
+        "mojiCode.cssVisual.opacity": {
           "type": "boolean",
           "default": true,
           "description": "👻 opacity – transparency"
         },
-        "flashCode.cssVisual.transform": {
+        "mojiCode.cssVisual.transform": {
           "type": "boolean",
           "default": true,
           "description": "🔄 transform – transform"
         },
-        "flashCode.cssVisual.animation": {
+        "mojiCode.cssVisual.animation": {
           "type": "boolean",
           "default": true,
           "description": "🎬 animation – animation"
         },
-        "flashCode.cssVisual.transition": {
+        "mojiCode.cssVisual.transition": {
           "type": "boolean",
           "default": true,
           "description": "⏳ transition – transition"
         },
-        "flashCode.cssVisual.visibility": {
+        "mojiCode.cssVisual.visibility": {
           "type": "boolean",
           "default": true,
           "description": "👁️ visibility – visibility"
         },
-        "flashCode.cssVisual.cursor": {
+        "mojiCode.cssVisual.cursor": {
           "type": "boolean",
           "default": true,
           "description": "👆 cursor – cursor"
         },
-        "flashCode.cssPseudo.hover": {
+        "mojiCode.cssPseudo.hover": {
           "type": "boolean",
           "default": true,
           "description": "🖱️ :hover – mouse hover"
         },
-        "flashCode.cssPseudo.focus": {
+        "mojiCode.cssPseudo.focus": {
           "type": "boolean",
           "default": true,
           "description": "🎯 :focus – focus state"
         },
-        "flashCode.cssPseudo.active": {
+        "mojiCode.cssPseudo.active": {
           "type": "boolean",
           "default": true,
           "description": "⚡ :active – active/click state"
         },
-        "flashCode.cssPseudo.first-child": {
+        "mojiCode.cssPseudo.first-child": {
           "type": "boolean",
           "default": true,
           "description": "👒 :first-child – first child"
         },
-        "flashCode.cssPseudo.last-child": {
+        "mojiCode.cssPseudo.last-child": {
           "type": "boolean",
           "default": true,
           "description": "👴 :last-child – last child"
         },
-        "flashCode.cssValue.important": {
+        "mojiCode.cssValue.important": {
           "type": "boolean",
           "default": true,
           "description": "❗ !important – important override"
         },
-        "flashCode.cssValue.none": {
+        "mojiCode.cssValue.none": {
           "type": "boolean",
           "default": true,
           "description": "🚫 none – none value"
         },
-        "flashCode.cssValue.auto": {
+        "mojiCode.cssValue.auto": {
           "type": "boolean",
           "default": true,
           "description": "🤖 auto – auto value"
         },
-        "flashCode.cssValue.inherit": {
+        "mojiCode.cssValue.inherit": {
           "type": "boolean",
           "default": true,
           "description": "👪 inherit – inherit value"
         },
-        "flashCode.pythonKeywords": {
+        "mojiCode.pythonKeywords": {
           "type": "boolean",
           "default": true,
           "description": "Master toggle: show emojis for Python keywords."
         },
-        "flashCode.pyKeyword.True": {
+        "mojiCode.pyKeyword.True": {
           "type": "boolean",
           "default": true,
           "description": "✅ True – boolean true"
         },
-        "flashCode.pyKeyword.False": {
+        "mojiCode.pyKeyword.False": {
           "type": "boolean",
           "default": true,
           "description": "❌ False – boolean false"
         },
-        "flashCode.pyKeyword.None": {
+        "mojiCode.pyKeyword.None": {
           "type": "boolean",
           "default": true,
           "description": "🚫 None – null/nothing"
         },
-        "flashCode.pyKeyword.if": {
+        "mojiCode.pyKeyword.if": {
           "type": "boolean",
           "default": true,
           "description": "❓ if – conditional"
         },
-        "flashCode.pyKeyword.elif": {
+        "mojiCode.pyKeyword.elif": {
           "type": "boolean",
           "default": true,
           "description": "🔀 elif – else if branch"
         },
-        "flashCode.pyKeyword.else": {
+        "mojiCode.pyKeyword.else": {
           "type": "boolean",
           "default": true,
           "description": "↪️ else – alternative branch"
         },
-        "flashCode.pyKeyword.for": {
+        "mojiCode.pyKeyword.for": {
           "type": "boolean",
           "default": true,
           "description": "🔁 for – for loop"
         },
-        "flashCode.pyKeyword.while": {
+        "mojiCode.pyKeyword.while": {
           "type": "boolean",
           "default": true,
           "description": "🔂 while – while loop"
         },
-        "flashCode.pyKeyword.break": {
+        "mojiCode.pyKeyword.break": {
           "type": "boolean",
           "default": true,
           "description": "🛑 break – exit loop"
         },
-        "flashCode.pyKeyword.continue": {
+        "mojiCode.pyKeyword.continue": {
           "type": "boolean",
           "default": true,
           "description": "⏭️ continue – next iteration"
         },
-        "flashCode.pyKeyword.pass": {
+        "mojiCode.pyKeyword.pass": {
           "type": "boolean",
           "default": true,
           "description": "⏩ pass – placeholder/no-op"
         },
-        "flashCode.pyKeyword.match": {
+        "mojiCode.pyKeyword.match": {
           "type": "boolean",
           "default": true,
           "description": "🎯 match – pattern matching"
         },
-        "flashCode.pyKeyword.case": {
+        "mojiCode.pyKeyword.case": {
           "type": "boolean",
           "default": true,
           "description": "📋 case – match case branch"
         },
-        "flashCode.pyKeyword.def": {
+        "mojiCode.pyKeyword.def": {
           "type": "boolean",
           "default": true,
           "description": "⚡ def – function definition"
         },
-        "flashCode.pyKeyword.return": {
+        "mojiCode.pyKeyword.return": {
           "type": "boolean",
           "default": true,
           "description": "🔙 return – return value"
         },
-        "flashCode.pyKeyword.yield": {
+        "mojiCode.pyKeyword.yield": {
           "type": "boolean",
           "default": true,
           "description": "🌾 yield – generator yield"
         },
-        "flashCode.pyKeyword.lambda": {
+        "mojiCode.pyKeyword.lambda": {
           "type": "boolean",
           "default": true,
           "description": "λ lambda – anonymous function"
         },
-        "flashCode.pyKeyword.class": {
+        "mojiCode.pyKeyword.class": {
           "type": "boolean",
           "default": true,
           "description": "🏛️ class – class declaration"
         },
-        "flashCode.pyKeyword.try": {
+        "mojiCode.pyKeyword.try": {
           "type": "boolean",
           "default": true,
           "description": "🤞 try – attempt block"
         },
-        "flashCode.pyKeyword.except": {
+        "mojiCode.pyKeyword.except": {
           "type": "boolean",
           "default": true,
           "description": "🥅 except – catch exception"
         },
-        "flashCode.pyKeyword.finally": {
+        "mojiCode.pyKeyword.finally": {
           "type": "boolean",
           "default": true,
           "description": "🏁 finally – guaranteed cleanup"
         },
-        "flashCode.pyKeyword.raise": {
+        "mojiCode.pyKeyword.raise": {
           "type": "boolean",
           "default": true,
           "description": "💥 raise – raise exception"
         },
-        "flashCode.pyKeyword.assert": {
+        "mojiCode.pyKeyword.assert": {
           "type": "boolean",
           "default": true,
           "description": "🔍 assert – assertion check"
         },
-        "flashCode.pyKeyword.import": {
+        "mojiCode.pyKeyword.import": {
           "type": "boolean",
           "default": true,
           "description": "📥 import – module import"
         },
-        "flashCode.pyKeyword.from": {
+        "mojiCode.pyKeyword.from": {
           "type": "boolean",
           "default": true,
           "description": "📤 from – import source"
         },
-        "flashCode.pyKeyword.as": {
+        "mojiCode.pyKeyword.as": {
           "type": "boolean",
           "default": true,
           "description": "🏷️ as – alias"
         },
-        "flashCode.pyKeyword.global": {
+        "mojiCode.pyKeyword.global": {
           "type": "boolean",
           "default": true,
           "description": "🌐 global – global scope"
         },
-        "flashCode.pyKeyword.nonlocal": {
+        "mojiCode.pyKeyword.nonlocal": {
           "type": "boolean",
           "default": true,
           "description": "📡 nonlocal – enclosing scope"
         },
-        "flashCode.pyKeyword.and": {
+        "mojiCode.pyKeyword.and": {
           "type": "boolean",
           "default": true,
           "description": "🤝 and – logical and"
         },
-        "flashCode.pyKeyword.or": {
+        "mojiCode.pyKeyword.or": {
           "type": "boolean",
           "default": true,
           "description": "🔀 or – logical or"
         },
-        "flashCode.pyKeyword.not": {
+        "mojiCode.pyKeyword.not": {
           "type": "boolean",
           "default": true,
           "description": "🚷 not – logical negation"
         },
-        "flashCode.pyKeyword.in": {
+        "mojiCode.pyKeyword.in": {
           "type": "boolean",
           "default": true,
           "description": "📍 in – membership test"
         },
-        "flashCode.pyKeyword.is": {
+        "mojiCode.pyKeyword.is": {
           "type": "boolean",
           "default": true,
           "description": "🔗 is – identity test"
         },
-        "flashCode.pyKeyword.async": {
+        "mojiCode.pyKeyword.async": {
           "type": "boolean",
           "default": true,
           "description": "🔮 async – async definition"
         },
-        "flashCode.pyKeyword.await": {
+        "mojiCode.pyKeyword.await": {
           "type": "boolean",
           "default": true,
           "description": "⏳ await – await coroutine"
         },
-        "flashCode.pyKeyword.with": {
+        "mojiCode.pyKeyword.with": {
           "type": "boolean",
           "default": true,
           "description": "🎁 with – context manager"
         },
-        "flashCode.pyKeyword.del": {
+        "mojiCode.pyKeyword.del": {
           "type": "boolean",
           "default": true,
           "description": "🗑️ del – delete reference"
         },
-        "flashCode.cKeywords": {
+        "mojiCode.cKeywords": {
           "type": "boolean",
           "default": true,
           "description": "Master toggle: show emojis for C keywords."
         },
-        "flashCode.cKeyword.if": {
+        "mojiCode.cKeyword.if": {
           "type": "boolean",
           "default": true,
           "description": "❓ if – conditional"
         },
-        "flashCode.cKeyword.else": {
+        "mojiCode.cKeyword.else": {
           "type": "boolean",
           "default": true,
           "description": "↪️ else – alternative branch"
         },
-        "flashCode.cKeyword.switch": {
+        "mojiCode.cKeyword.switch": {
           "type": "boolean",
           "default": true,
           "description": "🎚️ switch – multi-branch"
         },
-        "flashCode.cKeyword.case": {
+        "mojiCode.cKeyword.case": {
           "type": "boolean",
           "default": true,
           "description": "📋 case – switch case branch"
         },
-        "flashCode.cKeyword.default": {
+        "mojiCode.cKeyword.default": {
           "type": "boolean",
           "default": true,
           "description": "📌 default – fallback branch"
         },
-        "flashCode.cKeyword.for": {
+        "mojiCode.cKeyword.for": {
           "type": "boolean",
           "default": true,
           "description": "🔁 for – for loop"
         },
-        "flashCode.cKeyword.while": {
+        "mojiCode.cKeyword.while": {
           "type": "boolean",
           "default": true,
           "description": "🔂 while – while loop"
         },
-        "flashCode.cKeyword.do": {
+        "mojiCode.cKeyword.do": {
           "type": "boolean",
           "default": true,
           "description": "🔄 do – do-while loop"
         },
-        "flashCode.cKeyword.break": {
+        "mojiCode.cKeyword.break": {
           "type": "boolean",
           "default": true,
           "description": "🛑 break – exit loop/switch"
         },
-        "flashCode.cKeyword.continue": {
+        "mojiCode.cKeyword.continue": {
           "type": "boolean",
           "default": true,
           "description": "⏭️ continue – next iteration"
         },
-        "flashCode.cKeyword.goto": {
+        "mojiCode.cKeyword.goto": {
           "type": "boolean",
           "default": true,
           "description": "🚀 goto – unconditional jump"
         },
-        "flashCode.cKeyword.return": {
+        "mojiCode.cKeyword.return": {
           "type": "boolean",
           "default": true,
           "description": "🔙 return – return value"
         },
-        "flashCode.cKeyword.int": {
+        "mojiCode.cKeyword.int": {
           "type": "boolean",
           "default": true,
           "description": "🔢 int – integer type"
         },
-        "flashCode.cKeyword.char": {
+        "mojiCode.cKeyword.char": {
           "type": "boolean",
           "default": true,
           "description": "🔤 char – character type"
         },
-        "flashCode.cKeyword.float": {
+        "mojiCode.cKeyword.float": {
           "type": "boolean",
           "default": true,
           "description": "🎈 float – floating point"
         },
-        "flashCode.cKeyword.double": {
+        "mojiCode.cKeyword.double": {
           "type": "boolean",
           "default": true,
           "description": "🎭 double – double precision"
         },
-        "flashCode.cKeyword.void": {
+        "mojiCode.cKeyword.void": {
           "type": "boolean",
           "default": true,
           "description": "🕳️ void – no type/value"
         },
-        "flashCode.cKeyword.short": {
+        "mojiCode.cKeyword.short": {
           "type": "boolean",
           "default": true,
           "description": "📏 short – short integer"
         },
-        "flashCode.cKeyword.long": {
+        "mojiCode.cKeyword.long": {
           "type": "boolean",
           "default": true,
           "description": "📐 long – long integer"
         },
-        "flashCode.cKeyword.signed": {
+        "mojiCode.cKeyword.signed": {
           "type": "boolean",
           "default": true,
           "description": "➕ signed – signed type"
         },
-        "flashCode.cKeyword.unsigned": {
+        "mojiCode.cKeyword.unsigned": {
           "type": "boolean",
           "default": true,
           "description": "➖ unsigned – unsigned type"
         },
-        "flashCode.cKeyword.const": {
+        "mojiCode.cKeyword.const": {
           "type": "boolean",
           "default": true,
           "description": "🔒 const – constant/immutable"
         },
-        "flashCode.cKeyword.volatile": {
+        "mojiCode.cKeyword.volatile": {
           "type": "boolean",
           "default": true,
           "description": "⚠️ volatile – volatile memory"
         },
-        "flashCode.cKeyword.static": {
+        "mojiCode.cKeyword.static": {
           "type": "boolean",
           "default": true,
           "description": "🏛️ static – static storage"
         },
-        "flashCode.cKeyword.extern": {
+        "mojiCode.cKeyword.extern": {
           "type": "boolean",
           "default": true,
           "description": "🌐 extern – external linkage"
         },
-        "flashCode.cKeyword.register": {
+        "mojiCode.cKeyword.register": {
           "type": "boolean",
           "default": true,
           "description": "⚡ register – register storage"
         },
-        "flashCode.cKeyword.auto": {
+        "mojiCode.cKeyword.auto": {
           "type": "boolean",
           "default": true,
           "description": "🤖 auto – automatic storage"
         },
-        "flashCode.cKeyword.struct": {
+        "mojiCode.cKeyword.struct": {
           "type": "boolean",
           "default": true,
           "description": "🏗️ struct – structure type"
         },
-        "flashCode.cKeyword.union": {
+        "mojiCode.cKeyword.union": {
           "type": "boolean",
           "default": true,
           "description": "🤝 union – union type"
         },
-        "flashCode.cKeyword.enum": {
+        "mojiCode.cKeyword.enum": {
           "type": "boolean",
           "default": true,
           "description": "📊 enum – enumeration"
         },
-        "flashCode.cKeyword.typedef": {
+        "mojiCode.cKeyword.typedef": {
           "type": "boolean",
           "default": true,
           "description": "🏷️ typedef – type definition"
         },
-        "flashCode.cKeyword.sizeof": {
+        "mojiCode.cKeyword.sizeof": {
           "type": "boolean",
           "default": true,
           "description": "📐 sizeof – size operator"
         },
-        "flashCode.cppKeywords": {
+        "mojiCode.cppKeywords": {
           "type": "boolean",
           "default": true,
           "description": "Master toggle: show emojis for C++ keywords."
         },
-        "flashCode.cppKeyword.if": {
+        "mojiCode.cppKeyword.if": {
           "type": "boolean",
           "default": true,
           "description": "❓ if – conditional"
         },
-        "flashCode.cppKeyword.else": {
+        "mojiCode.cppKeyword.else": {
           "type": "boolean",
           "default": true,
           "description": "↪️ else – alternative branch"
         },
-        "flashCode.cppKeyword.switch": {
+        "mojiCode.cppKeyword.switch": {
           "type": "boolean",
           "default": true,
           "description": "🎚️ switch – multi-branch"
         },
-        "flashCode.cppKeyword.case": {
+        "mojiCode.cppKeyword.case": {
           "type": "boolean",
           "default": true,
           "description": "📋 case – switch case branch"
         },
-        "flashCode.cppKeyword.default": {
+        "mojiCode.cppKeyword.default": {
           "type": "boolean",
           "default": true,
           "description": "📌 default – fallback branch"
         },
-        "flashCode.cppKeyword.for": {
+        "mojiCode.cppKeyword.for": {
           "type": "boolean",
           "default": true,
           "description": "🔁 for – for loop"
         },
-        "flashCode.cppKeyword.while": {
+        "mojiCode.cppKeyword.while": {
           "type": "boolean",
           "default": true,
           "description": "🔂 while – while loop"
         },
-        "flashCode.cppKeyword.do": {
+        "mojiCode.cppKeyword.do": {
           "type": "boolean",
           "default": true,
           "description": "🔄 do – do-while loop"
         },
-        "flashCode.cppKeyword.break": {
+        "mojiCode.cppKeyword.break": {
           "type": "boolean",
           "default": true,
           "description": "🛑 break – exit loop/switch"
         },
-        "flashCode.cppKeyword.continue": {
+        "mojiCode.cppKeyword.continue": {
           "type": "boolean",
           "default": true,
           "description": "⏭️ continue – next iteration"
         },
-        "flashCode.cppKeyword.goto": {
+        "mojiCode.cppKeyword.goto": {
           "type": "boolean",
           "default": true,
           "description": "🚀 goto – unconditional jump"
         },
-        "flashCode.cppKeyword.return": {
+        "mojiCode.cppKeyword.return": {
           "type": "boolean",
           "default": true,
           "description": "🔙 return – return value"
         },
-        "flashCode.cppKeyword.int": {
+        "mojiCode.cppKeyword.int": {
           "type": "boolean",
           "default": true,
           "description": "🔢 int – integer type"
         },
-        "flashCode.cppKeyword.char": {
+        "mojiCode.cppKeyword.char": {
           "type": "boolean",
           "default": true,
           "description": "🔤 char – character type"
         },
-        "flashCode.cppKeyword.float": {
+        "mojiCode.cppKeyword.float": {
           "type": "boolean",
           "default": true,
           "description": "🎈 float – floating point"
         },
-        "flashCode.cppKeyword.double": {
+        "mojiCode.cppKeyword.double": {
           "type": "boolean",
           "default": true,
           "description": "🎭 double – double precision"
         },
-        "flashCode.cppKeyword.void": {
+        "mojiCode.cppKeyword.void": {
           "type": "boolean",
           "default": true,
           "description": "🕳️ void – no type/value"
         },
-        "flashCode.cppKeyword.short": {
+        "mojiCode.cppKeyword.short": {
           "type": "boolean",
           "default": true,
           "description": "📏 short – short integer"
         },
-        "flashCode.cppKeyword.long": {
+        "mojiCode.cppKeyword.long": {
           "type": "boolean",
           "default": true,
           "description": "📐 long – long integer"
         },
-        "flashCode.cppKeyword.signed": {
+        "mojiCode.cppKeyword.signed": {
           "type": "boolean",
           "default": true,
           "description": "➕ signed – signed type"
         },
-        "flashCode.cppKeyword.unsigned": {
+        "mojiCode.cppKeyword.unsigned": {
           "type": "boolean",
           "default": true,
           "description": "➖ unsigned – unsigned type"
         },
-        "flashCode.cppKeyword.bool": {
+        "mojiCode.cppKeyword.bool": {
           "type": "boolean",
           "default": true,
           "description": "🔘 bool – boolean type"
         },
-        "flashCode.cppKeyword.true": {
+        "mojiCode.cppKeyword.true": {
           "type": "boolean",
           "default": true,
           "description": "✅ true – boolean true"
         },
-        "flashCode.cppKeyword.false": {
+        "mojiCode.cppKeyword.false": {
           "type": "boolean",
           "default": true,
           "description": "❌ false – boolean false"
         },
-        "flashCode.cppKeyword.nullptr": {
+        "mojiCode.cppKeyword.nullptr": {
           "type": "boolean",
           "default": true,
           "description": "🚫 nullptr – null pointer"
         },
-        "flashCode.cppKeyword.auto": {
+        "mojiCode.cppKeyword.auto": {
           "type": "boolean",
           "default": true,
           "description": "🤖 auto – type inference"
         },
-        "flashCode.cppKeyword.wchar_t": {
+        "mojiCode.cppKeyword.wchar_t": {
           "type": "boolean",
           "default": true,
           "description": "🔠 wchar_t – wide character"
         },
-        "flashCode.cppKeyword.char16_t": {
+        "mojiCode.cppKeyword.char16_t": {
           "type": "boolean",
           "default": true,
           "description": "🔡 char16_t – UTF-16 character"
         },
-        "flashCode.cppKeyword.char32_t": {
+        "mojiCode.cppKeyword.char32_t": {
           "type": "boolean",
           "default": true,
           "description": "🔣 char32_t – UTF-32 character"
         },
-        "flashCode.cppKeyword.const": {
+        "mojiCode.cppKeyword.const": {
           "type": "boolean",
           "default": true,
           "description": "🔒 const – constant/immutable"
         },
-        "flashCode.cppKeyword.volatile": {
+        "mojiCode.cppKeyword.volatile": {
           "type": "boolean",
           "default": true,
           "description": "⚠️ volatile – volatile memory"
         },
-        "flashCode.cppKeyword.static": {
+        "mojiCode.cppKeyword.static": {
           "type": "boolean",
           "default": true,
           "description": "🏛️ static – static storage"
         },
-        "flashCode.cppKeyword.extern": {
+        "mojiCode.cppKeyword.extern": {
           "type": "boolean",
           "default": true,
           "description": "🌐 extern – external linkage"
         },
-        "flashCode.cppKeyword.register": {
+        "mojiCode.cppKeyword.register": {
           "type": "boolean",
           "default": true,
           "description": "⚡ register – register storage"
         },
-        "flashCode.cppKeyword.mutable": {
+        "mojiCode.cppKeyword.mutable": {
           "type": "boolean",
           "default": true,
           "description": "🔓 mutable – mutable member"
         },
-        "flashCode.cppKeyword.constexpr": {
+        "mojiCode.cppKeyword.constexpr": {
           "type": "boolean",
           "default": true,
           "description": "🔐 constexpr – compile-time const"
         },
-        "flashCode.cppKeyword.consteval": {
+        "mojiCode.cppKeyword.consteval": {
           "type": "boolean",
           "default": true,
           "description": "🗝️ consteval – immediate function"
         },
-        "flashCode.cppKeyword.constinit": {
+        "mojiCode.cppKeyword.constinit": {
           "type": "boolean",
           "default": true,
           "description": "🔑 constinit – constant init"
         },
-        "flashCode.cppKeyword.inline": {
+        "mojiCode.cppKeyword.inline": {
           "type": "boolean",
           "default": true,
           "description": "📎 inline – inline function"
         },
-        "flashCode.cppKeyword.class": {
+        "mojiCode.cppKeyword.class": {
           "type": "boolean",
           "default": true,
           "description": "🏛️ class – class definition"
         },
-        "flashCode.cppKeyword.struct": {
+        "mojiCode.cppKeyword.struct": {
           "type": "boolean",
           "default": true,
           "description": "🏗️ struct – structure type"
         },
-        "flashCode.cppKeyword.union": {
+        "mojiCode.cppKeyword.union": {
           "type": "boolean",
           "default": true,
           "description": "🤝 union – union type"
         },
-        "flashCode.cppKeyword.enum": {
+        "mojiCode.cppKeyword.enum": {
           "type": "boolean",
           "default": true,
           "description": "📊 enum – enumeration"
         },
-        "flashCode.cppKeyword.public": {
+        "mojiCode.cppKeyword.public": {
           "type": "boolean",
           "default": true,
           "description": "🌍 public – public access"
         },
-        "flashCode.cppKeyword.private": {
+        "mojiCode.cppKeyword.private": {
           "type": "boolean",
           "default": true,
           "description": "🔐 private – private access"
         },
-        "flashCode.cppKeyword.protected": {
+        "mojiCode.cppKeyword.protected": {
           "type": "boolean",
           "default": true,
           "description": "🛡️ protected – protected access"
         },
-        "flashCode.cppKeyword.virtual": {
+        "mojiCode.cppKeyword.virtual": {
           "type": "boolean",
           "default": true,
           "description": "👻 virtual – virtual function"
         },
-        "flashCode.cppKeyword.override": {
+        "mojiCode.cppKeyword.override": {
           "type": "boolean",
           "default": true,
           "description": "🔄 override – override method"
         },
-        "flashCode.cppKeyword.final": {
+        "mojiCode.cppKeyword.final": {
           "type": "boolean",
           "default": true,
           "description": "🏁 final – prevent override"
         },
-        "flashCode.cppKeyword.friend": {
+        "mojiCode.cppKeyword.friend": {
           "type": "boolean",
           "default": true,
           "description": "🤗 friend – friend access"
         },
-        "flashCode.cppKeyword.this": {
+        "mojiCode.cppKeyword.this": {
           "type": "boolean",
           "default": true,
           "description": "👆 this – current object"
         },
-        "flashCode.cppKeyword.explicit": {
+        "mojiCode.cppKeyword.explicit": {
           "type": "boolean",
           "default": true,
           "description": "❗ explicit – explicit conversion"
         },
-        "flashCode.cppKeyword.template": {
+        "mojiCode.cppKeyword.template": {
           "type": "boolean",
           "default": true,
           "description": "📝 template – template definition"
         },
-        "flashCode.cppKeyword.typename": {
+        "mojiCode.cppKeyword.typename": {
           "type": "boolean",
           "default": true,
           "description": "🏷️ typename – type parameter"
         },
-        "flashCode.cppKeyword.concept": {
+        "mojiCode.cppKeyword.concept": {
           "type": "boolean",
           "default": true,
           "description": "💡 concept – concept definition"
         },
-        "flashCode.cppKeyword.requires": {
+        "mojiCode.cppKeyword.requires": {
           "type": "boolean",
           "default": true,
           "description": "📋 requires – requires clause"
         },
-        "flashCode.cppKeyword.namespace": {
+        "mojiCode.cppKeyword.namespace": {
           "type": "boolean",
           "default": true,
           "description": "📁 namespace – namespace"
         },
-        "flashCode.cppKeyword.using": {
+        "mojiCode.cppKeyword.using": {
           "type": "boolean",
           "default": true,
           "description": "🔗 using – using directive"
         },
-        "flashCode.cppKeyword.new": {
+        "mojiCode.cppKeyword.new": {
           "type": "boolean",
           "default": true,
           "description": "✨ new – allocate memory"
         },
-        "flashCode.cppKeyword.delete": {
+        "mojiCode.cppKeyword.delete": {
           "type": "boolean",
           "default": true,
           "description": "🗑️ delete – deallocate memory"
         },
-        "flashCode.cppKeyword.sizeof": {
+        "mojiCode.cppKeyword.sizeof": {
           "type": "boolean",
           "default": true,
           "description": "📐 sizeof – size operator"
         },
-        "flashCode.cppKeyword.alignof": {
+        "mojiCode.cppKeyword.alignof": {
           "type": "boolean",
           "default": true,
           "description": "📏 alignof – alignment"
         },
-        "flashCode.cppKeyword.alignas": {
+        "mojiCode.cppKeyword.alignas": {
           "type": "boolean",
           "default": true,
           "description": "↔️ alignas – align specifier"
         },
-        "flashCode.cppKeyword.typedef": {
+        "mojiCode.cppKeyword.typedef": {
           "type": "boolean",
           "default": true,
           "description": "🏷️ typedef – type alias"
         },
-        "flashCode.cppKeyword.try": {
+        "mojiCode.cppKeyword.try": {
           "type": "boolean",
           "default": true,
           "description": "🤞 try – try block"
         },
-        "flashCode.cppKeyword.catch": {
+        "mojiCode.cppKeyword.catch": {
           "type": "boolean",
           "default": true,
           "description": "🥅 catch – catch exception"
         },
-        "flashCode.cppKeyword.throw": {
+        "mojiCode.cppKeyword.throw": {
           "type": "boolean",
           "default": true,
           "description": "💥 throw – throw exception"
         },
-        "flashCode.cppKeyword.noexcept": {
+        "mojiCode.cppKeyword.noexcept": {
           "type": "boolean",
           "default": true,
           "description": "🛡️ noexcept – no exceptions"
         },
-        "flashCode.cppKeyword.static_cast": {
+        "mojiCode.cppKeyword.static_cast": {
           "type": "boolean",
           "default": true,
           "description": "🎯 static_cast – static cast"
         },
-        "flashCode.cppKeyword.dynamic_cast": {
+        "mojiCode.cppKeyword.dynamic_cast": {
           "type": "boolean",
           "default": true,
           "description": "🔮 dynamic_cast – dynamic cast"
         },
-        "flashCode.cppKeyword.const_cast": {
+        "mojiCode.cppKeyword.const_cast": {
           "type": "boolean",
           "default": true,
           "description": "🔓 const_cast – const cast"
         },
-        "flashCode.cppKeyword.reinterpret_cast": {
+        "mojiCode.cppKeyword.reinterpret_cast": {
           "type": "boolean",
           "default": true,
           "description": "🔀 reinterpret_cast – reinterpret cast"
         },
-        "flashCode.cppKeyword.operator": {
+        "mojiCode.cppKeyword.operator": {
           "type": "boolean",
           "default": true,
           "description": "🔧 operator – operator overload"
         },
-        "flashCode.cppKeyword.typeid": {
+        "mojiCode.cppKeyword.typeid": {
           "type": "boolean",
           "default": true,
           "description": "🆔 typeid – type identification"
         },
-        "flashCode.cppKeyword.decltype": {
+        "mojiCode.cppKeyword.decltype": {
           "type": "boolean",
           "default": true,
           "description": "🔍 decltype – declared type"
         },
-        "flashCode.cppKeyword.asm": {
+        "mojiCode.cppKeyword.asm": {
           "type": "boolean",
           "default": true,
           "description": "⚙️ asm – inline assembly"
         },
-        "flashCode.cppKeyword.export": {
+        "mojiCode.cppKeyword.export": {
           "type": "boolean",
           "default": true,
           "description": "📦 export – module export"
         },
-        "flashCode.cppKeyword.import": {
+        "mojiCode.cppKeyword.import": {
           "type": "boolean",
           "default": true,
           "description": "📥 import – module import"
         },
-        "flashCode.cppKeyword.module": {
+        "mojiCode.cppKeyword.module": {
           "type": "boolean",
           "default": true,
           "description": "🧩 module – module"
         },
-        "flashCode.cppKeyword.co_await": {
+        "mojiCode.cppKeyword.co_await": {
           "type": "boolean",
           "default": true,
           "description": "⏳ co_await – coroutine await"
         },
-        "flashCode.cppKeyword.co_return": {
+        "mojiCode.cppKeyword.co_return": {
           "type": "boolean",
           "default": true,
           "description": "↩️ co_return – coroutine return"
         },
-        "flashCode.cppKeyword.co_yield": {
+        "mojiCode.cppKeyword.co_yield": {
           "type": "boolean",
           "default": true,
           "description": "🌾 co_yield – coroutine yield"
         },
-        "flashCode.csharpKeywords": {
+        "mojiCode.csharpKeywords": {
           "type": "boolean",
           "default": true,
           "description": "Master toggle: show emojis for C# keywords."
         },
-        "flashCode.csharpKeyword.if": {
+        "mojiCode.csharpKeyword.if": {
           "type": "boolean",
           "default": true,
           "description": "❓ if – conditional"
         },
-        "flashCode.csharpKeyword.else": {
+        "mojiCode.csharpKeyword.else": {
           "type": "boolean",
           "default": true,
           "description": "↪️ else – alternative branch"
         },
-        "flashCode.csharpKeyword.switch": {
+        "mojiCode.csharpKeyword.switch": {
           "type": "boolean",
           "default": true,
           "description": "🎚️ switch – multi-branch"
         },
-        "flashCode.csharpKeyword.case": {
+        "mojiCode.csharpKeyword.case": {
           "type": "boolean",
           "default": true,
           "description": "📋 case – switch case"
         },
-        "flashCode.csharpKeyword.default": {
+        "mojiCode.csharpKeyword.default": {
           "type": "boolean",
           "default": true,
           "description": "📌 default – default case"
         },
-        "flashCode.csharpKeyword.for": {
+        "mojiCode.csharpKeyword.for": {
           "type": "boolean",
           "default": true,
           "description": "🔁 for – for loop"
         },
-        "flashCode.csharpKeyword.foreach": {
+        "mojiCode.csharpKeyword.foreach": {
           "type": "boolean",
           "default": true,
           "description": "🔂 foreach – foreach loop"
         },
-        "flashCode.csharpKeyword.while": {
+        "mojiCode.csharpKeyword.while": {
           "type": "boolean",
           "default": true,
           "description": "🔄 while – while loop"
         },
-        "flashCode.csharpKeyword.do": {
+        "mojiCode.csharpKeyword.do": {
           "type": "boolean",
           "default": true,
           "description": "🔃 do – do-while loop"
         },
-        "flashCode.csharpKeyword.break": {
+        "mojiCode.csharpKeyword.break": {
           "type": "boolean",
           "default": true,
           "description": "🛑 break – exit loop"
         },
-        "flashCode.csharpKeyword.continue": {
+        "mojiCode.csharpKeyword.continue": {
           "type": "boolean",
           "default": true,
           "description": "⏭️ continue – next iteration"
         },
-        "flashCode.csharpKeyword.goto": {
+        "mojiCode.csharpKeyword.goto": {
           "type": "boolean",
           "default": true,
           "description": "🚀 goto – unconditional jump"
         },
-        "flashCode.csharpKeyword.return": {
+        "mojiCode.csharpKeyword.return": {
           "type": "boolean",
           "default": true,
           "description": "🔙 return – return value"
         },
-        "flashCode.csharpKeyword.yield": {
+        "mojiCode.csharpKeyword.yield": {
           "type": "boolean",
           "default": true,
           "description": "🌾 yield – yield return"
         },
-        "flashCode.csharpKeyword.when": {
+        "mojiCode.csharpKeyword.when": {
           "type": "boolean",
           "default": true,
           "description": "⏰ when – pattern guard"
         },
-        "flashCode.csharpKeyword.int": {
+        "mojiCode.csharpKeyword.int": {
           "type": "boolean",
           "default": true,
           "description": "🔢 int – integer"
         },
-        "flashCode.csharpKeyword.long": {
+        "mojiCode.csharpKeyword.long": {
           "type": "boolean",
           "default": true,
           "description": "📐 long – long integer"
         },
-        "flashCode.csharpKeyword.short": {
+        "mojiCode.csharpKeyword.short": {
           "type": "boolean",
           "default": true,
           "description": "📏 short – short integer"
         },
-        "flashCode.csharpKeyword.byte": {
+        "mojiCode.csharpKeyword.byte": {
           "type": "boolean",
           "default": true,
           "description": "🔣 byte – byte"
         },
-        "flashCode.csharpKeyword.sbyte": {
+        "mojiCode.csharpKeyword.sbyte": {
           "type": "boolean",
           "default": true,
           "description": "🔤 sbyte – signed byte"
         },
-        "flashCode.csharpKeyword.uint": {
+        "mojiCode.csharpKeyword.uint": {
           "type": "boolean",
           "default": true,
           "description": "➕ uint – unsigned int"
         },
-        "flashCode.csharpKeyword.ulong": {
+        "mojiCode.csharpKeyword.ulong": {
           "type": "boolean",
           "default": true,
           "description": "➖ ulong – unsigned long"
         },
-        "flashCode.csharpKeyword.ushort": {
+        "mojiCode.csharpKeyword.ushort": {
           "type": "boolean",
           "default": true,
           "description": "✖️ ushort – unsigned short"
         },
-        "flashCode.csharpKeyword.float": {
+        "mojiCode.csharpKeyword.float": {
           "type": "boolean",
           "default": true,
           "description": "🎈 float – floating point"
         },
-        "flashCode.csharpKeyword.double": {
+        "mojiCode.csharpKeyword.double": {
           "type": "boolean",
           "default": true,
           "description": "🎭 double – double precision"
         },
-        "flashCode.csharpKeyword.decimal": {
+        "mojiCode.csharpKeyword.decimal": {
           "type": "boolean",
           "default": true,
           "description": "💰 decimal – decimal"
         },
-        "flashCode.csharpKeyword.bool": {
+        "mojiCode.csharpKeyword.bool": {
           "type": "boolean",
           "default": true,
           "description": "🔘 bool – boolean"
         },
-        "flashCode.csharpKeyword.char": {
+        "mojiCode.csharpKeyword.char": {
           "type": "boolean",
           "default": true,
           "description": "🔡 char – character"
         },
-        "flashCode.csharpKeyword.string": {
+        "mojiCode.csharpKeyword.string": {
           "type": "boolean",
           "default": true,
           "description": "📝 string – string type"
         },
-        "flashCode.csharpKeyword.object": {
+        "mojiCode.csharpKeyword.object": {
           "type": "boolean",
           "default": true,
           "description": "📦 object – object type"
         },
-        "flashCode.csharpKeyword.void": {
+        "mojiCode.csharpKeyword.void": {
           "type": "boolean",
           "default": true,
           "description": "🕳️ void – no return"
         },
-        "flashCode.csharpKeyword.var": {
+        "mojiCode.csharpKeyword.var": {
           "type": "boolean",
           "default": true,
           "description": "🏷️ var – implicit type"
         },
-        "flashCode.csharpKeyword.dynamic": {
+        "mojiCode.csharpKeyword.dynamic": {
           "type": "boolean",
           "default": true,
           "description": "🌊 dynamic – dynamic type"
         },
-        "flashCode.csharpKeyword.true": {
+        "mojiCode.csharpKeyword.true": {
           "type": "boolean",
           "default": true,
           "description": "✅ true – true"
         },
-        "flashCode.csharpKeyword.false": {
+        "mojiCode.csharpKeyword.false": {
           "type": "boolean",
           "default": true,
           "description": "❌ false – false"
         },
-        "flashCode.csharpKeyword.null": {
+        "mojiCode.csharpKeyword.null": {
           "type": "boolean",
           "default": true,
           "description": "🚫 null – null value"
         },
-        "flashCode.csharpKeyword.public": {
+        "mojiCode.csharpKeyword.public": {
           "type": "boolean",
           "default": true,
           "description": "🌍 public – public access"
         },
-        "flashCode.csharpKeyword.private": {
+        "mojiCode.csharpKeyword.private": {
           "type": "boolean",
           "default": true,
           "description": "🔐 private – private access"
         },
-        "flashCode.csharpKeyword.protected": {
+        "mojiCode.csharpKeyword.protected": {
           "type": "boolean",
           "default": true,
           "description": "🛡️ protected – protected access"
         },
-        "flashCode.csharpKeyword.internal": {
+        "mojiCode.csharpKeyword.internal": {
           "type": "boolean",
           "default": true,
           "description": "🏠 internal – internal access"
         },
-        "flashCode.csharpKeyword.static": {
+        "mojiCode.csharpKeyword.static": {
           "type": "boolean",
           "default": true,
           "description": "🏛️ static – static member"
         },
-        "flashCode.csharpKeyword.readonly": {
+        "mojiCode.csharpKeyword.readonly": {
           "type": "boolean",
           "default": true,
           "description": "🔒 readonly – read only"
         },
-        "flashCode.csharpKeyword.const": {
+        "mojiCode.csharpKeyword.const": {
           "type": "boolean",
           "default": true,
           "description": "🔏 const – constant"
         },
-        "flashCode.csharpKeyword.volatile": {
+        "mojiCode.csharpKeyword.volatile": {
           "type": "boolean",
           "default": true,
           "description": "⚠️ volatile – volatile"
         },
-        "flashCode.csharpKeyword.sealed": {
+        "mojiCode.csharpKeyword.sealed": {
           "type": "boolean",
           "default": true,
           "description": "🔐 sealed – sealed class"
         },
-        "flashCode.csharpKeyword.abstract": {
+        "mojiCode.csharpKeyword.abstract": {
           "type": "boolean",
           "default": true,
           "description": "🎨 abstract – abstract"
         },
-        "flashCode.csharpKeyword.virtual": {
+        "mojiCode.csharpKeyword.virtual": {
           "type": "boolean",
           "default": true,
           "description": "👻 virtual – virtual method"
         },
-        "flashCode.csharpKeyword.override": {
+        "mojiCode.csharpKeyword.override": {
           "type": "boolean",
           "default": true,
           "description": "🔄 override – override method"
         },
-        "flashCode.csharpKeyword.extern": {
+        "mojiCode.csharpKeyword.extern": {
           "type": "boolean",
           "default": true,
           "description": "🌐 extern – external"
         },
-        "flashCode.csharpKeyword.unsafe": {
+        "mojiCode.csharpKeyword.unsafe": {
           "type": "boolean",
           "default": true,
           "description": "☢️ unsafe – unsafe code"
         },
-        "flashCode.csharpKeyword.partial": {
+        "mojiCode.csharpKeyword.partial": {
           "type": "boolean",
           "default": true,
           "description": "🧩 partial – partial class"
         },
-        "flashCode.csharpKeyword.class": {
+        "mojiCode.csharpKeyword.class": {
           "type": "boolean",
           "default": true,
           "description": "🏛️ class – class"
         },
-        "flashCode.csharpKeyword.struct": {
+        "mojiCode.csharpKeyword.struct": {
           "type": "boolean",
           "default": true,
           "description": "🏗️ struct – struct"
         },
-        "flashCode.csharpKeyword.interface": {
+        "mojiCode.csharpKeyword.interface": {
           "type": "boolean",
           "default": true,
           "description": "🔌 interface – interface"
         },
-        "flashCode.csharpKeyword.enum": {
+        "mojiCode.csharpKeyword.enum": {
           "type": "boolean",
           "default": true,
           "description": "📊 enum – enumeration"
         },
-        "flashCode.csharpKeyword.record": {
+        "mojiCode.csharpKeyword.record": {
           "type": "boolean",
           "default": true,
           "description": "📀 record – record type"
         },
-        "flashCode.csharpKeyword.delegate": {
+        "mojiCode.csharpKeyword.delegate": {
           "type": "boolean",
           "default": true,
           "description": "📨 delegate – delegate"
         },
-        "flashCode.csharpKeyword.event": {
+        "mojiCode.csharpKeyword.event": {
           "type": "boolean",
           "default": true,
           "description": "🎉 event – event"
         },
-        "flashCode.csharpKeyword.this": {
+        "mojiCode.csharpKeyword.this": {
           "type": "boolean",
           "default": true,
           "description": "👆 this – current instance"
         },
-        "flashCode.csharpKeyword.base": {
+        "mojiCode.csharpKeyword.base": {
           "type": "boolean",
           "default": true,
           "description": "👇 base – base class"
         },
-        "flashCode.csharpKeyword.new": {
+        "mojiCode.csharpKeyword.new": {
           "type": "boolean",
           "default": true,
           "description": "✨ new – new instance"
         },
-        "flashCode.csharpKeyword.try": {
+        "mojiCode.csharpKeyword.try": {
           "type": "boolean",
           "default": true,
           "description": "🤞 try – try block"
         },
-        "flashCode.csharpKeyword.catch": {
+        "mojiCode.csharpKeyword.catch": {
           "type": "boolean",
           "default": true,
           "description": "🥅 catch – catch exception"
         },
-        "flashCode.csharpKeyword.finally": {
+        "mojiCode.csharpKeyword.finally": {
           "type": "boolean",
           "default": true,
           "description": "🏁 finally – finally block"
         },
-        "flashCode.csharpKeyword.throw": {
+        "mojiCode.csharpKeyword.throw": {
           "type": "boolean",
           "default": true,
           "description": "💥 throw – throw exception"
         },
-        "flashCode.csharpKeyword.async": {
+        "mojiCode.csharpKeyword.async": {
           "type": "boolean",
           "default": true,
           "description": "🔮 async – async method"
         },
-        "flashCode.csharpKeyword.await": {
+        "mojiCode.csharpKeyword.await": {
           "type": "boolean",
           "default": true,
           "description": "⏳ await – await task"
         },
-        "flashCode.csharpKeyword.namespace": {
+        "mojiCode.csharpKeyword.namespace": {
           "type": "boolean",
           "default": true,
           "description": "📁 namespace – namespace"
         },
-        "flashCode.csharpKeyword.using": {
+        "mojiCode.csharpKeyword.using": {
           "type": "boolean",
           "default": true,
           "description": "🔗 using – using directive"
         },
-        "flashCode.csharpKeyword.typeof": {
+        "mojiCode.csharpKeyword.typeof": {
           "type": "boolean",
           "default": true,
           "description": "🏷️ typeof – type of"
         },
-        "flashCode.csharpKeyword.sizeof": {
+        "mojiCode.csharpKeyword.sizeof": {
           "type": "boolean",
           "default": true,
           "description": "📐 sizeof – size of"
         },
-        "flashCode.csharpKeyword.is": {
+        "mojiCode.csharpKeyword.is": {
           "type": "boolean",
           "default": true,
           "description": "🔍 is – is type"
         },
-        "flashCode.csharpKeyword.as": {
+        "mojiCode.csharpKeyword.as": {
           "type": "boolean",
           "default": true,
           "description": "🔀 as – as type"
         },
-        "flashCode.csharpKeyword.nameof": {
+        "mojiCode.csharpKeyword.nameof": {
           "type": "boolean",
           "default": true,
           "description": "📛 nameof – name of"
         },
-        "flashCode.csharpKeyword.ref": {
+        "mojiCode.csharpKeyword.ref": {
           "type": "boolean",
           "default": true,
           "description": "📎 ref – reference"
         },
-        "flashCode.csharpKeyword.out": {
+        "mojiCode.csharpKeyword.out": {
           "type": "boolean",
           "default": true,
           "description": "📤 out – out parameter"
         },
-        "flashCode.csharpKeyword.in": {
+        "mojiCode.csharpKeyword.in": {
           "type": "boolean",
           "default": true,
           "description": "📥 in – in parameter"
         },
-        "flashCode.csharpKeyword.params": {
+        "mojiCode.csharpKeyword.params": {
           "type": "boolean",
           "default": true,
           "description": "📋 params – params array"
         },
-        "flashCode.csharpKeyword.stackalloc": {
+        "mojiCode.csharpKeyword.stackalloc": {
           "type": "boolean",
           "default": true,
           "description": "🗃️ stackalloc – stack allocate"
         },
-        "flashCode.csharpKeyword.fixed": {
+        "mojiCode.csharpKeyword.fixed": {
           "type": "boolean",
           "default": true,
           "description": "📍 fixed – fixed pointer"
         },
-        "flashCode.csharpKeyword.lock": {
+        "mojiCode.csharpKeyword.lock": {
           "type": "boolean",
           "default": true,
           "description": "🔒 lock – thread lock"
         },
-        "flashCode.csharpKeyword.checked": {
+        "mojiCode.csharpKeyword.checked": {
           "type": "boolean",
           "default": true,
           "description": "✔️ checked – checked context"
         },
-        "flashCode.csharpKeyword.unchecked": {
+        "mojiCode.csharpKeyword.unchecked": {
           "type": "boolean",
           "default": true,
           "description": "✖️ unchecked – unchecked context"
         },
-        "flashCode.csharpKeyword.from": {
+        "mojiCode.csharpKeyword.from": {
           "type": "boolean",
           "default": true,
           "description": "📤 from – LINQ from"
         },
-        "flashCode.csharpKeyword.where": {
+        "mojiCode.csharpKeyword.where": {
           "type": "boolean",
           "default": true,
           "description": "🔎 where – LINQ where"
         },
-        "flashCode.csharpKeyword.select": {
+        "mojiCode.csharpKeyword.select": {
           "type": "boolean",
           "default": true,
           "description": "✅ select – LINQ select"
         },
-        "flashCode.csharpKeyword.orderby": {
+        "mojiCode.csharpKeyword.orderby": {
           "type": "boolean",
           "default": true,
           "description": "📶 orderby – LINQ order by"
         },
-        "flashCode.csharpKeyword.group": {
+        "mojiCode.csharpKeyword.group": {
           "type": "boolean",
           "default": true,
           "description": "👥 group – LINQ group"
         },
-        "flashCode.csharpKeyword.join": {
+        "mojiCode.csharpKeyword.join": {
           "type": "boolean",
           "default": true,
           "description": "🤝 join – LINQ join"
         },
-        "flashCode.csharpKeyword.let": {
+        "mojiCode.csharpKeyword.let": {
           "type": "boolean",
           "default": true,
           "description": "📝 let – LINQ let"
         },
-        "flashCode.csharpKeyword.into": {
+        "mojiCode.csharpKeyword.into": {
           "type": "boolean",
           "default": true,
           "description": "➡️ into – LINQ into"
         },
-        "flashCode.csharpKeyword.ascending": {
+        "mojiCode.csharpKeyword.ascending": {
           "type": "boolean",
           "default": true,
           "description": "⬆️ ascending – ascending order"
         },
-        "flashCode.csharpKeyword.descending": {
+        "mojiCode.csharpKeyword.descending": {
           "type": "boolean",
           "default": true,
           "description": "⬇️ descending – descending order"
         },
-        "flashCode.csharpKeyword.on": {
+        "mojiCode.csharpKeyword.on": {
           "type": "boolean",
           "default": true,
           "description": "🔛 on – join condition"
         },
-        "flashCode.csharpKeyword.equals": {
+        "mojiCode.csharpKeyword.equals": {
           "type": "boolean",
           "default": true,
           "description": "⚖️ equals – equality"
         },
-        "flashCode.csharpKeyword.by": {
+        "mojiCode.csharpKeyword.by": {
           "type": "boolean",
           "default": true,
           "description": "📌 by – group by"
         },
-        "flashCode.csharpKeyword.get": {
+        "mojiCode.csharpKeyword.get": {
           "type": "boolean",
           "default": true,
           "description": "📖 get – getter"
         },
-        "flashCode.csharpKeyword.set": {
+        "mojiCode.csharpKeyword.set": {
           "type": "boolean",
           "default": true,
           "description": "📝 set – setter"
         },
-        "flashCode.csharpKeyword.init": {
+        "mojiCode.csharpKeyword.init": {
           "type": "boolean",
           "default": true,
           "description": "🎬 init – init-only setter"
         },
-        "flashCode.csharpKeyword.value": {
+        "mojiCode.csharpKeyword.value": {
           "type": "boolean",
           "default": true,
           "description": "💎 value – property value"
         },
-        "flashCode.csharpKeyword.add": {
+        "mojiCode.csharpKeyword.add": {
           "type": "boolean",
           "default": true,
           "description": "➕ add – event add"
         },
-        "flashCode.csharpKeyword.remove": {
+        "mojiCode.csharpKeyword.remove": {
           "type": "boolean",
           "default": true,
           "description": "➖ remove – event remove"
         },
-        "flashCode.csharpKeyword.with": {
+        "mojiCode.csharpKeyword.with": {
           "type": "boolean",
           "default": true,
           "description": "🎁 with – with expression"
         },
-        "flashCode.csharpKeyword.required": {
+        "mojiCode.csharpKeyword.required": {
           "type": "boolean",
           "default": true,
           "description": "❗ required – required member"
         },
-        "flashCode.csharpKeyword.global": {
+        "mojiCode.csharpKeyword.global": {
           "type": "boolean",
           "default": true,
           "description": "🌐 global – global using"
         },
-        "flashCode.sqlKeywords": {
+        "mojiCode.sqlKeywords": {
           "type": "boolean",
           "default": true,
           "description": "Master toggle: show emojis for SQL keywords."
         },
-        "flashCode.sqlKeyword.SELECT": {
+        "mojiCode.sqlKeyword.SELECT": {
           "type": "boolean",
           "default": true,
           "description": "🔍 SELECT – select data"
         },
-        "flashCode.sqlKeyword.FROM": {
+        "mojiCode.sqlKeyword.FROM": {
           "type": "boolean",
           "default": true,
           "description": "📂 FROM – source table"
         },
-        "flashCode.sqlKeyword.WHERE": {
+        "mojiCode.sqlKeyword.WHERE": {
           "type": "boolean",
           "default": true,
           "description": "🔎 WHERE – filter condition"
         },
-        "flashCode.sqlKeyword.AND": {
+        "mojiCode.sqlKeyword.AND": {
           "type": "boolean",
           "default": true,
           "description": "🤝 AND – logical and"
         },
-        "flashCode.sqlKeyword.OR": {
+        "mojiCode.sqlKeyword.OR": {
           "type": "boolean",
           "default": true,
           "description": "🔀 OR – logical or"
         },
-        "flashCode.sqlKeyword.NOT": {
+        "mojiCode.sqlKeyword.NOT": {
           "type": "boolean",
           "default": true,
           "description": "🚷 NOT – logical not"
         },
-        "flashCode.sqlKeyword.IN": {
+        "mojiCode.sqlKeyword.IN": {
           "type": "boolean",
           "default": true,
           "description": "📥 IN – in set"
         },
-        "flashCode.sqlKeyword.BETWEEN": {
+        "mojiCode.sqlKeyword.BETWEEN": {
           "type": "boolean",
           "default": true,
           "description": "↔️ BETWEEN – between range"
         },
-        "flashCode.sqlKeyword.LIKE": {
+        "mojiCode.sqlKeyword.LIKE": {
           "type": "boolean",
           "default": true,
           "description": "🎭 LIKE – pattern match"
         },
-        "flashCode.sqlKeyword.IS": {
+        "mojiCode.sqlKeyword.IS": {
           "type": "boolean",
           "default": true,
           "description": "🔗 IS – is comparison"
         },
-        "flashCode.sqlKeyword.NULL": {
+        "mojiCode.sqlKeyword.NULL": {
           "type": "boolean",
           "default": true,
           "description": "🚫 NULL – null value"
         },
-        "flashCode.sqlKeyword.AS": {
+        "mojiCode.sqlKeyword.AS": {
           "type": "boolean",
           "default": true,
           "description": "🏷️ AS – alias"
         },
-        "flashCode.sqlKeyword.DISTINCT": {
+        "mojiCode.sqlKeyword.DISTINCT": {
           "type": "boolean",
           "default": true,
           "description": "✨ DISTINCT – unique values"
         },
-        "flashCode.sqlKeyword.ALL": {
+        "mojiCode.sqlKeyword.ALL": {
           "type": "boolean",
           "default": true,
           "description": "📦 ALL – all records"
         },
-        "flashCode.sqlKeyword.ANY": {
+        "mojiCode.sqlKeyword.ANY": {
           "type": "boolean",
           "default": true,
           "description": "🎲 ANY – any match"
         },
-        "flashCode.sqlKeyword.EXISTS": {
+        "mojiCode.sqlKeyword.EXISTS": {
           "type": "boolean",
           "default": true,
           "description": "✅ EXISTS – exists check"
         },
-        "flashCode.sqlKeyword.ORDER": {
+        "mojiCode.sqlKeyword.ORDER": {
           "type": "boolean",
           "default": true,
           "description": "📶 ORDER – order results"
         },
-        "flashCode.sqlKeyword.BY": {
+        "mojiCode.sqlKeyword.BY": {
           "type": "boolean",
           "default": true,
           "description": "📌 BY – by column"
         },
-        "flashCode.sqlKeyword.ASC": {
+        "mojiCode.sqlKeyword.ASC": {
           "type": "boolean",
           "default": true,
           "description": "⬆️ ASC – ascending"
         },
-        "flashCode.sqlKeyword.DESC": {
+        "mojiCode.sqlKeyword.DESC": {
           "type": "boolean",
           "default": true,
           "description": "⬇️ DESC – descending"
         },
-        "flashCode.sqlKeyword.GROUP": {
+        "mojiCode.sqlKeyword.GROUP": {
           "type": "boolean",
           "default": true,
           "description": "👥 GROUP – group rows"
         },
-        "flashCode.sqlKeyword.HAVING": {
+        "mojiCode.sqlKeyword.HAVING": {
           "type": "boolean",
           "default": true,
           "description": "🔬 HAVING – group filter"
         },
-        "flashCode.sqlKeyword.LIMIT": {
+        "mojiCode.sqlKeyword.LIMIT": {
           "type": "boolean",
           "default": true,
           "description": "🛑 LIMIT – limit rows"
         },
-        "flashCode.sqlKeyword.OFFSET": {
+        "mojiCode.sqlKeyword.OFFSET": {
           "type": "boolean",
           "default": true,
           "description": "⏭️ OFFSET – skip rows"
         },
-        "flashCode.sqlKeyword.TOP": {
+        "mojiCode.sqlKeyword.TOP": {
           "type": "boolean",
           "default": true,
           "description": "🔝 TOP – top n rows"
         },
-        "flashCode.sqlKeyword.JOIN": {
+        "mojiCode.sqlKeyword.JOIN": {
           "type": "boolean",
           "default": true,
           "description": "🔗 JOIN – join tables"
         },
-        "flashCode.sqlKeyword.INNER": {
+        "mojiCode.sqlKeyword.INNER": {
           "type": "boolean",
           "default": true,
           "description": "🎯 INNER – inner join"
         },
-        "flashCode.sqlKeyword.LEFT": {
+        "mojiCode.sqlKeyword.LEFT": {
           "type": "boolean",
           "default": true,
           "description": "⬅️ LEFT – left join"
         },
-        "flashCode.sqlKeyword.RIGHT": {
+        "mojiCode.sqlKeyword.RIGHT": {
           "type": "boolean",
           "default": true,
           "description": "➡️ RIGHT – right join"
         },
-        "flashCode.sqlKeyword.FULL": {
+        "mojiCode.sqlKeyword.FULL": {
           "type": "boolean",
           "default": true,
           "description": "🔄 FULL – full join"
         },
-        "flashCode.sqlKeyword.OUTER": {
+        "mojiCode.sqlKeyword.OUTER": {
           "type": "boolean",
           "default": true,
           "description": "🌐 OUTER – outer join"
         },
-        "flashCode.sqlKeyword.CROSS": {
+        "mojiCode.sqlKeyword.CROSS": {
           "type": "boolean",
           "default": true,
           "description": "✖️ CROSS – cross join"
         },
-        "flashCode.sqlKeyword.ON": {
+        "mojiCode.sqlKeyword.ON": {
           "type": "boolean",
           "default": true,
           "description": "🔛 ON – join condition"
         },
-        "flashCode.sqlKeyword.USING": {
+        "mojiCode.sqlKeyword.USING": {
           "type": "boolean",
           "default": true,
           "description": "🔧 USING – using columns"
         },
-        "flashCode.sqlKeyword.INSERT": {
+        "mojiCode.sqlKeyword.INSERT": {
           "type": "boolean",
           "default": true,
           "description": "➕ INSERT – insert data"
         },
-        "flashCode.sqlKeyword.INTO": {
+        "mojiCode.sqlKeyword.INTO": {
           "type": "boolean",
           "default": true,
           "description": "📥 INTO – into table"
         },
-        "flashCode.sqlKeyword.VALUES": {
+        "mojiCode.sqlKeyword.VALUES": {
           "type": "boolean",
           "default": true,
           "description": "💎 VALUES – values"
         },
-        "flashCode.sqlKeyword.UPDATE": {
+        "mojiCode.sqlKeyword.UPDATE": {
           "type": "boolean",
           "default": true,
           "description": "✏️ UPDATE – update data"
         },
-        "flashCode.sqlKeyword.SET": {
+        "mojiCode.sqlKeyword.SET": {
           "type": "boolean",
           "default": true,
           "description": "📝 SET – set values"
         },
-        "flashCode.sqlKeyword.DELETE": {
+        "mojiCode.sqlKeyword.DELETE": {
           "type": "boolean",
           "default": true,
           "description": "🗑️ DELETE – delete data"
         },
-        "flashCode.sqlKeyword.TRUNCATE": {
+        "mojiCode.sqlKeyword.TRUNCATE": {
           "type": "boolean",
           "default": true,
           "description": "🧹 TRUNCATE – truncate table"
         },
-        "flashCode.sqlKeyword.MERGE": {
+        "mojiCode.sqlKeyword.MERGE": {
           "type": "boolean",
           "default": true,
           "description": "🔀 MERGE – merge data"
         },
-        "flashCode.sqlKeyword.CREATE": {
+        "mojiCode.sqlKeyword.CREATE": {
           "type": "boolean",
           "default": true,
           "description": "🏗️ CREATE – create object"
         },
-        "flashCode.sqlKeyword.ALTER": {
+        "mojiCode.sqlKeyword.ALTER": {
           "type": "boolean",
           "default": true,
           "description": "🔧 ALTER – alter object"
         },
-        "flashCode.sqlKeyword.DROP": {
+        "mojiCode.sqlKeyword.DROP": {
           "type": "boolean",
           "default": true,
           "description": "💥 DROP – drop object"
         },
-        "flashCode.sqlKeyword.TABLE": {
+        "mojiCode.sqlKeyword.TABLE": {
           "type": "boolean",
           "default": true,
           "description": "📊 TABLE – table"
         },
-        "flashCode.sqlKeyword.DATABASE": {
+        "mojiCode.sqlKeyword.DATABASE": {
           "type": "boolean",
           "default": true,
           "description": "🗄️ DATABASE – database"
         },
-        "flashCode.sqlKeyword.SCHEMA": {
+        "mojiCode.sqlKeyword.SCHEMA": {
           "type": "boolean",
           "default": true,
           "description": "📐 SCHEMA – schema"
         },
-        "flashCode.sqlKeyword.INDEX": {
+        "mojiCode.sqlKeyword.INDEX": {
           "type": "boolean",
           "default": true,
           "description": "📑 INDEX – index"
         },
-        "flashCode.sqlKeyword.VIEW": {
+        "mojiCode.sqlKeyword.VIEW": {
           "type": "boolean",
           "default": true,
           "description": "👁️ VIEW – view"
         },
-        "flashCode.sqlKeyword.SEQUENCE": {
+        "mojiCode.sqlKeyword.SEQUENCE": {
           "type": "boolean",
           "default": true,
           "description": "🔢 SEQUENCE – sequence"
         },
-        "flashCode.sqlKeyword.TRIGGER": {
+        "mojiCode.sqlKeyword.TRIGGER": {
           "type": "boolean",
           "default": true,
           "description": "⚡ TRIGGER – trigger"
         },
-        "flashCode.sqlKeyword.PROCEDURE": {
+        "mojiCode.sqlKeyword.PROCEDURE": {
           "type": "boolean",
           "default": true,
           "description": "📜 PROCEDURE – stored procedure"
         },
-        "flashCode.sqlKeyword.FUNCTION": {
+        "mojiCode.sqlKeyword.FUNCTION": {
           "type": "boolean",
           "default": true,
           "description": "⚙️ FUNCTION – function"
         },
-        "flashCode.sqlKeyword.PRIMARY": {
+        "mojiCode.sqlKeyword.PRIMARY": {
           "type": "boolean",
           "default": true,
           "description": "🔑 PRIMARY – primary key"
         },
-        "flashCode.sqlKeyword.FOREIGN": {
+        "mojiCode.sqlKeyword.FOREIGN": {
           "type": "boolean",
           "default": true,
           "description": "🔐 FOREIGN – foreign key"
         },
-        "flashCode.sqlKeyword.KEY": {
+        "mojiCode.sqlKeyword.KEY": {
           "type": "boolean",
           "default": true,
           "description": "🗝️ KEY – key"
         },
-        "flashCode.sqlKeyword.UNIQUE": {
+        "mojiCode.sqlKeyword.UNIQUE": {
           "type": "boolean",
           "default": true,
           "description": "🦄 UNIQUE – unique"
         },
-        "flashCode.sqlKeyword.CHECK": {
+        "mojiCode.sqlKeyword.CHECK": {
           "type": "boolean",
           "default": true,
           "description": "✔️ CHECK – check constraint"
         },
-        "flashCode.sqlKeyword.DEFAULT": {
+        "mojiCode.sqlKeyword.DEFAULT": {
           "type": "boolean",
           "default": true,
           "description": "📌 DEFAULT – default value"
         },
-        "flashCode.sqlKeyword.CONSTRAINT": {
+        "mojiCode.sqlKeyword.CONSTRAINT": {
           "type": "boolean",
           "default": true,
           "description": "🔒 CONSTRAINT – constraint"
         },
-        "flashCode.sqlKeyword.REFERENCES": {
+        "mojiCode.sqlKeyword.REFERENCES": {
           "type": "boolean",
           "default": true,
           "description": "🔗 REFERENCES – references"
         },
-        "flashCode.sqlKeyword.CASCADE": {
+        "mojiCode.sqlKeyword.CASCADE": {
           "type": "boolean",
           "default": true,
           "description": "🌊 CASCADE – cascade action"
         },
-        "flashCode.sqlKeyword.INT": {
+        "mojiCode.sqlKeyword.INT": {
           "type": "boolean",
           "default": true,
           "description": "🔢 INT – integer"
         },
-        "flashCode.sqlKeyword.INTEGER": {
+        "mojiCode.sqlKeyword.INTEGER": {
           "type": "boolean",
           "default": true,
           "description": "🔢 INTEGER – integer"
         },
-        "flashCode.sqlKeyword.BIGINT": {
+        "mojiCode.sqlKeyword.BIGINT": {
           "type": "boolean",
           "default": true,
           "description": "📐 BIGINT – big integer"
         },
-        "flashCode.sqlKeyword.SMALLINT": {
+        "mojiCode.sqlKeyword.SMALLINT": {
           "type": "boolean",
           "default": true,
           "description": "📏 SMALLINT – small integer"
         },
-        "flashCode.sqlKeyword.DECIMAL": {
+        "mojiCode.sqlKeyword.DECIMAL": {
           "type": "boolean",
           "default": true,
           "description": "💰 DECIMAL – decimal"
         },
-        "flashCode.sqlKeyword.NUMERIC": {
+        "mojiCode.sqlKeyword.NUMERIC": {
           "type": "boolean",
           "default": true,
           "description": "🔣 NUMERIC – numeric"
         },
-        "flashCode.sqlKeyword.FLOAT": {
+        "mojiCode.sqlKeyword.FLOAT": {
           "type": "boolean",
           "default": true,
           "description": "🎈 FLOAT – float"
         },
-        "flashCode.sqlKeyword.REAL": {
+        "mojiCode.sqlKeyword.REAL": {
           "type": "boolean",
           "default": true,
           "description": "🎭 REAL – real"
         },
-        "flashCode.sqlKeyword.DOUBLE": {
+        "mojiCode.sqlKeyword.DOUBLE": {
           "type": "boolean",
           "default": true,
           "description": "🎭 DOUBLE – double"
         },
-        "flashCode.sqlKeyword.VARCHAR": {
+        "mojiCode.sqlKeyword.VARCHAR": {
           "type": "boolean",
           "default": true,
           "description": "📝 VARCHAR – variable char"
         },
-        "flashCode.sqlKeyword.CHAR": {
+        "mojiCode.sqlKeyword.CHAR": {
           "type": "boolean",
           "default": true,
           "description": "🔤 CHAR – char"
         },
-        "flashCode.sqlKeyword.TEXT": {
+        "mojiCode.sqlKeyword.TEXT": {
           "type": "boolean",
           "default": true,
           "description": "📄 TEXT – text"
         },
-        "flashCode.sqlKeyword.DATE": {
+        "mojiCode.sqlKeyword.DATE": {
           "type": "boolean",
           "default": true,
           "description": "📅 DATE – date"
         },
-        "flashCode.sqlKeyword.TIME": {
+        "mojiCode.sqlKeyword.TIME": {
           "type": "boolean",
           "default": true,
           "description": "🕐 TIME – time"
         },
-        "flashCode.sqlKeyword.TIMESTAMP": {
+        "mojiCode.sqlKeyword.TIMESTAMP": {
           "type": "boolean",
           "default": true,
           "description": "⏰ TIMESTAMP – timestamp"
         },
-        "flashCode.sqlKeyword.DATETIME": {
+        "mojiCode.sqlKeyword.DATETIME": {
           "type": "boolean",
           "default": true,
           "description": "📆 DATETIME – datetime"
         },
-        "flashCode.sqlKeyword.BOOLEAN": {
+        "mojiCode.sqlKeyword.BOOLEAN": {
           "type": "boolean",
           "default": true,
           "description": "🔘 BOOLEAN – boolean"
         },
-        "flashCode.sqlKeyword.BLOB": {
+        "mojiCode.sqlKeyword.BLOB": {
           "type": "boolean",
           "default": true,
           "description": "📦 BLOB – binary blob"
         },
-        "flashCode.sqlKeyword.TRUE": {
+        "mojiCode.sqlKeyword.TRUE": {
           "type": "boolean",
           "default": true,
           "description": "✅ TRUE – true"
         },
-        "flashCode.sqlKeyword.FALSE": {
+        "mojiCode.sqlKeyword.FALSE": {
           "type": "boolean",
           "default": true,
           "description": "❌ FALSE – false"
         },
-        "flashCode.sqlKeyword.BEGIN": {
+        "mojiCode.sqlKeyword.BEGIN": {
           "type": "boolean",
           "default": true,
           "description": "🚀 BEGIN – begin"
         },
-        "flashCode.sqlKeyword.COMMIT": {
+        "mojiCode.sqlKeyword.COMMIT": {
           "type": "boolean",
           "default": true,
           "description": "💾 COMMIT – commit"
         },
-        "flashCode.sqlKeyword.ROLLBACK": {
+        "mojiCode.sqlKeyword.ROLLBACK": {
           "type": "boolean",
           "default": true,
           "description": "↩️ ROLLBACK – rollback"
         },
-        "flashCode.sqlKeyword.SAVEPOINT": {
+        "mojiCode.sqlKeyword.SAVEPOINT": {
           "type": "boolean",
           "default": true,
           "description": "📍 SAVEPOINT – savepoint"
         },
-        "flashCode.sqlKeyword.TRANSACTION": {
+        "mojiCode.sqlKeyword.TRANSACTION": {
           "type": "boolean",
           "default": true,
           "description": "💳 TRANSACTION – transaction"
         },
-        "flashCode.sqlKeyword.GRANT": {
+        "mojiCode.sqlKeyword.GRANT": {
           "type": "boolean",
           "default": true,
           "description": "🎁 GRANT – grant permission"
         },
-        "flashCode.sqlKeyword.REVOKE": {
+        "mojiCode.sqlKeyword.REVOKE": {
           "type": "boolean",
           "default": true,
           "description": "🚫 REVOKE – revoke permission"
         },
-        "flashCode.sqlKeyword.DENY": {
+        "mojiCode.sqlKeyword.DENY": {
           "type": "boolean",
           "default": true,
           "description": "⛔ DENY – deny access"
         },
-        "flashCode.sqlKeyword.WITH": {
+        "mojiCode.sqlKeyword.WITH": {
           "type": "boolean",
           "default": true,
           "description": "📎 WITH – CTE"
         },
-        "flashCode.sqlKeyword.RECURSIVE": {
+        "mojiCode.sqlKeyword.RECURSIVE": {
           "type": "boolean",
           "default": true,
           "description": "🔁 RECURSIVE – recursive"
         },
-        "flashCode.sqlKeyword.UNION": {
+        "mojiCode.sqlKeyword.UNION": {
           "type": "boolean",
           "default": true,
           "description": "🔗 UNION – union"
         },
-        "flashCode.sqlKeyword.INTERSECT": {
+        "mojiCode.sqlKeyword.INTERSECT": {
           "type": "boolean",
           "default": true,
           "description": "🎯 INTERSECT – intersect"
         },
-        "flashCode.sqlKeyword.EXCEPT": {
+        "mojiCode.sqlKeyword.EXCEPT": {
           "type": "boolean",
           "default": true,
           "description": "➖ EXCEPT – except"
         },
-        "flashCode.sqlKeyword.COUNT": {
+        "mojiCode.sqlKeyword.COUNT": {
           "type": "boolean",
           "default": true,
           "description": "🔢 COUNT – count"
         },
-        "flashCode.sqlKeyword.SUM": {
+        "mojiCode.sqlKeyword.SUM": {
           "type": "boolean",
           "default": true,
           "description": "➕ SUM – sum"
         },
-        "flashCode.sqlKeyword.AVG": {
+        "mojiCode.sqlKeyword.AVG": {
           "type": "boolean",
           "default": true,
           "description": "📊 AVG – average"
         },
-        "flashCode.sqlKeyword.MIN": {
+        "mojiCode.sqlKeyword.MIN": {
           "type": "boolean",
           "default": true,
           "description": "⬇️ MIN – minimum"
         },
-        "flashCode.sqlKeyword.MAX": {
+        "mojiCode.sqlKeyword.MAX": {
           "type": "boolean",
           "default": true,
           "description": "⬆️ MAX – maximum"
         },
-        "flashCode.sqlKeyword.OVER": {
+        "mojiCode.sqlKeyword.OVER": {
           "type": "boolean",
           "default": true,
           "description": "🪟 OVER – window function"
         },
-        "flashCode.sqlKeyword.PARTITION": {
+        "mojiCode.sqlKeyword.PARTITION": {
           "type": "boolean",
           "default": true,
           "description": "📂 PARTITION – partition by"
         },
-        "flashCode.sqlKeyword.ROWS": {
+        "mojiCode.sqlKeyword.ROWS": {
           "type": "boolean",
           "default": true,
           "description": "📋 ROWS – rows"
         },
-        "flashCode.sqlKeyword.RANGE": {
+        "mojiCode.sqlKeyword.RANGE": {
           "type": "boolean",
           "default": true,
           "description": "↔️ RANGE – range"
         },
-        "flashCode.sqlKeyword.CASE": {
+        "mojiCode.sqlKeyword.CASE": {
           "type": "boolean",
           "default": true,
           "description": "📋 CASE – case"
         },
-        "flashCode.sqlKeyword.WHEN": {
+        "mojiCode.sqlKeyword.WHEN": {
           "type": "boolean",
           "default": true,
           "description": "⏰ WHEN – when"
         },
-        "flashCode.sqlKeyword.THEN": {
+        "mojiCode.sqlKeyword.THEN": {
           "type": "boolean",
           "default": true,
           "description": "➡️ THEN – then"
         },
-        "flashCode.sqlKeyword.ELSE": {
+        "mojiCode.sqlKeyword.ELSE": {
           "type": "boolean",
           "default": true,
           "description": "↪️ ELSE – else"
         },
-        "flashCode.sqlKeyword.END": {
+        "mojiCode.sqlKeyword.END": {
           "type": "boolean",
           "default": true,
           "description": "🏁 END – end"
         },
-        "flashCode.sqlKeyword.COALESCE": {
+        "mojiCode.sqlKeyword.COALESCE": {
           "type": "boolean",
           "default": true,
           "description": "🔄 COALESCE – coalesce"
         },
-        "flashCode.sqlKeyword.NULLIF": {
+        "mojiCode.sqlKeyword.NULLIF": {
           "type": "boolean",
           "default": true,
           "description": "🚫 NULLIF – nullif"
         },
-        "flashCode.sqlKeyword.IFNULL": {
+        "mojiCode.sqlKeyword.IFNULL": {
           "type": "boolean",
           "default": true,
           "description": "❓ IFNULL – ifnull"
         },
-        "flashCode.sqlKeyword.NVL": {
+        "mojiCode.sqlKeyword.NVL": {
           "type": "boolean",
           "default": true,
           "description": "🔃 NVL – nvl"
         },
-        "flashCode.sqlKeyword.EXPLAIN": {
+        "mojiCode.sqlKeyword.EXPLAIN": {
           "type": "boolean",
           "default": true,
           "description": "📖 EXPLAIN – explain plan"
         },
-        "flashCode.sqlKeyword.ANALYZE": {
+        "mojiCode.sqlKeyword.ANALYZE": {
           "type": "boolean",
           "default": true,
           "description": "🔬 ANALYZE – analyze"
         },
-        "flashCode.sqlKeyword.EXECUTE": {
+        "mojiCode.sqlKeyword.EXECUTE": {
           "type": "boolean",
           "default": true,
           "description": "▶️ EXECUTE – execute"
         },
-        "flashCode.sqlKeyword.CALL": {
+        "mojiCode.sqlKeyword.CALL": {
           "type": "boolean",
           "default": true,
           "description": "📞 CALL – call procedure"
         },
-        "flashCode.sqlKeyword.DECLARE": {
+        "mojiCode.sqlKeyword.DECLARE": {
           "type": "boolean",
           "default": true,
           "description": "📢 DECLARE – declare variable"
         },
-        "flashCode.sqlKeyword.CURSOR": {
+        "mojiCode.sqlKeyword.CURSOR": {
           "type": "boolean",
           "default": true,
           "description": "👆 CURSOR – cursor"
         },
-        "flashCode.sqlKeyword.FETCH": {
+        "mojiCode.sqlKeyword.FETCH": {
           "type": "boolean",
           "default": true,
           "description": "🎣 FETCH – fetch"
         },
-        "flashCode.sqlKeyword.OPEN": {
+        "mojiCode.sqlKeyword.OPEN": {
           "type": "boolean",
           "default": true,
           "description": "📂 OPEN – open cursor"
         },
-        "flashCode.sqlKeyword.CLOSE": {
+        "mojiCode.sqlKeyword.CLOSE": {
           "type": "boolean",
           "default": true,
           "description": "📁 CLOSE – close cursor"
         },
-        "flashCode.sqlKeyword.IF": {
+        "mojiCode.sqlKeyword.IF": {
           "type": "boolean",
           "default": true,
           "description": "❓ IF – if"
         },
-        "flashCode.sqlKeyword.WHILE": {
+        "mojiCode.sqlKeyword.WHILE": {
           "type": "boolean",
           "default": true,
           "description": "🔂 WHILE – while loop"
         },
-        "flashCode.sqlKeyword.RETURN": {
+        "mojiCode.sqlKeyword.RETURN": {
           "type": "boolean",
           "default": true,
           "description": "🔙 RETURN – return"
         },
-        "flashCode.sqlKeyword.RETURNS": {
+        "mojiCode.sqlKeyword.RETURNS": {
           "type": "boolean",
           "default": true,
           "description": "🔙 RETURNS – returns"
         },
-        "flashCode.typescriptKeywords": {
+        "mojiCode.typescriptKeywords": {
           "type": "boolean",
           "default": true,
           "description": "Master toggle: show emojis for TypeScript keywords."
         },
-        "flashCode.tsKeyword.await": {
+        "mojiCode.tsKeyword.await": {
           "type": "boolean",
           "default": true,
           "description": "⏳ await – waiting for a promise"
         },
-        "flashCode.tsKeyword.break": {
+        "mojiCode.tsKeyword.break": {
           "type": "boolean",
           "default": true,
           "description": "🛑 break – exit loop/switch"
         },
-        "flashCode.tsKeyword.case": {
+        "mojiCode.tsKeyword.case": {
           "type": "boolean",
           "default": true,
           "description": "📋 case – pattern match branch"
         },
-        "flashCode.tsKeyword.catch": {
+        "mojiCode.tsKeyword.catch": {
           "type": "boolean",
           "default": true,
           "description": "🥅 catch – catch thrown errors"
         },
-        "flashCode.tsKeyword.class": {
+        "mojiCode.tsKeyword.class": {
           "type": "boolean",
           "default": true,
           "description": "🏛️ class – class declaration"
         },
-        "flashCode.tsKeyword.const": {
+        "mojiCode.tsKeyword.const": {
           "type": "boolean",
           "default": true,
           "description": "🔒 const – immutable binding"
         },
-        "flashCode.tsKeyword.continue": {
+        "mojiCode.tsKeyword.continue": {
           "type": "boolean",
           "default": true,
           "description": "⏭️ continue – next iteration"
         },
-        "flashCode.tsKeyword.debugger": {
+        "mojiCode.tsKeyword.debugger": {
           "type": "boolean",
           "default": true,
           "description": "🐛 debugger – breakpoint"
         },
-        "flashCode.tsKeyword.default": {
+        "mojiCode.tsKeyword.default": {
           "type": "boolean",
           "default": true,
           "description": "📌 default – fallback branch"
         },
-        "flashCode.tsKeyword.delete": {
+        "mojiCode.tsKeyword.delete": {
           "type": "boolean",
           "default": true,
           "description": "🗑️ delete – remove property"
         },
-        "flashCode.tsKeyword.do": {
+        "mojiCode.tsKeyword.do": {
           "type": "boolean",
           "default": true,
           "description": "🔄 do – do-while loop"
         },
-        "flashCode.tsKeyword.else": {
+        "mojiCode.tsKeyword.else": {
           "type": "boolean",
           "default": true,
           "description": "↪️ else – alternative branch"
         },
-        "flashCode.tsKeyword.export": {
+        "mojiCode.tsKeyword.export": {
           "type": "boolean",
           "default": true,
           "description": "📦 export – module export"
         },
-        "flashCode.tsKeyword.extends": {
+        "mojiCode.tsKeyword.extends": {
           "type": "boolean",
           "default": true,
           "description": "🧬 extends – inheritance"
         },
-        "flashCode.tsKeyword.finally": {
+        "mojiCode.tsKeyword.finally": {
           "type": "boolean",
           "default": true,
           "description": "🏁 finally – guaranteed cleanup"
         },
-        "flashCode.tsKeyword.for": {
+        "mojiCode.tsKeyword.for": {
           "type": "boolean",
           "default": true,
           "description": "🔁 for – for loop"
         },
-        "flashCode.tsKeyword.function": {
+        "mojiCode.tsKeyword.function": {
           "type": "boolean",
           "default": true,
           "description": "⚡ function – function declaration"
         },
-        "flashCode.tsKeyword.if": {
+        "mojiCode.tsKeyword.if": {
           "type": "boolean",
           "default": true,
           "description": "❓ if – conditional"
         },
-        "flashCode.tsKeyword.import": {
+        "mojiCode.tsKeyword.import": {
           "type": "boolean",
           "default": true,
           "description": "📥 import – module import"
         },
-        "flashCode.tsKeyword.in": {
+        "mojiCode.tsKeyword.in": {
           "type": "boolean",
           "default": true,
           "description": "📍 in – property membership"
         },
-        "flashCode.tsKeyword.instanceof": {
+        "mojiCode.tsKeyword.instanceof": {
           "type": "boolean",
           "default": true,
           "description": "🔎 instanceof – prototype check"
         },
-        "flashCode.tsKeyword.new": {
+        "mojiCode.tsKeyword.new": {
           "type": "boolean",
           "default": true,
           "description": "✨ new – instance creation"
         },
-        "flashCode.tsKeyword.return": {
+        "mojiCode.tsKeyword.return": {
           "type": "boolean",
           "default": true,
           "description": "🔙 return – return value"
         },
-        "flashCode.tsKeyword.super": {
+        "mojiCode.tsKeyword.super": {
           "type": "boolean",
           "default": true,
           "description": "🦸 super – parent class ref"
         },
-        "flashCode.tsKeyword.switch": {
+        "mojiCode.tsKeyword.switch": {
           "type": "boolean",
           "default": true,
           "description": "🎚️ switch – multi-branch"
         },
-        "flashCode.tsKeyword.this": {
+        "mojiCode.tsKeyword.this": {
           "type": "boolean",
           "default": true,
           "description": "👆 this – current context"
         },
-        "flashCode.tsKeyword.throw": {
+        "mojiCode.tsKeyword.throw": {
           "type": "boolean",
           "default": true,
           "description": "💥 throw – throw error"
         },
-        "flashCode.tsKeyword.try": {
+        "mojiCode.tsKeyword.try": {
           "type": "boolean",
           "default": true,
           "description": "🤞 try – attempt block"
         },
-        "flashCode.tsKeyword.typeof": {
+        "mojiCode.tsKeyword.typeof": {
           "type": "boolean",
           "default": true,
           "description": "🏷️ typeof – type check"
         },
-        "flashCode.tsKeyword.var": {
+        "mojiCode.tsKeyword.var": {
           "type": "boolean",
           "default": true,
           "description": "📝 var – variable (legacy)"
         },
-        "flashCode.tsKeyword.void": {
+        "mojiCode.tsKeyword.void": {
           "type": "boolean",
           "default": true,
           "description": "🕳️ void – discard value"
         },
-        "flashCode.tsKeyword.while": {
+        "mojiCode.tsKeyword.while": {
           "type": "boolean",
           "default": true,
           "description": "🔂 while – while loop"
         },
-        "flashCode.tsKeyword.with": {
+        "mojiCode.tsKeyword.with": {
           "type": "boolean",
           "default": true,
           "description": "🤝 with – with statement"
         },
-        "flashCode.tsKeyword.yield": {
+        "mojiCode.tsKeyword.yield": {
           "type": "boolean",
           "default": true,
           "description": "🌾 yield – generator yield"
         },
-        "flashCode.tsKeyword.type": {
+        "mojiCode.tsKeyword.type": {
           "type": "boolean",
           "default": true,
           "description": "📐 type – type alias"
         },
-        "flashCode.tsKeyword.interface": {
+        "mojiCode.tsKeyword.interface": {
           "type": "boolean",
           "default": true,
           "description": "🔌 interface – interface definition"
         },
-        "flashCode.tsKeyword.enum": {
+        "mojiCode.tsKeyword.enum": {
           "type": "boolean",
           "default": true,
           "description": "📊 enum – enumeration"
         },
-        "flashCode.tsKeyword.namespace": {
+        "mojiCode.tsKeyword.namespace": {
           "type": "boolean",
           "default": true,
           "description": "📁 namespace – namespace"
         },
-        "flashCode.tsKeyword.module": {
+        "mojiCode.tsKeyword.module": {
           "type": "boolean",
           "default": true,
           "description": "🧩 module – module declaration"
         },
-        "flashCode.tsKeyword.declare": {
+        "mojiCode.tsKeyword.declare": {
           "type": "boolean",
           "default": true,
           "description": "📢 declare – ambient declaration"
         },
-        "flashCode.tsKeyword.abstract": {
+        "mojiCode.tsKeyword.abstract": {
           "type": "boolean",
           "default": true,
           "description": "🎨 abstract – abstract class/method"
         },
-        "flashCode.tsKeyword.readonly": {
+        "mojiCode.tsKeyword.readonly": {
           "type": "boolean",
           "default": true,
           "description": "🔏 readonly – readonly property"
         },
-        "flashCode.tsKeyword.implements": {
+        "mojiCode.tsKeyword.implements": {
           "type": "boolean",
           "default": true,
           "description": "✅ implements – implements interface"
         },
-        "flashCode.tsKeyword.public": {
+        "mojiCode.tsKeyword.public": {
           "type": "boolean",
           "default": true,
           "description": "🌍 public – public access"
         },
-        "flashCode.tsKeyword.private": {
+        "mojiCode.tsKeyword.private": {
           "type": "boolean",
           "default": true,
           "description": "🔐 private – private access"
         },
-        "flashCode.tsKeyword.protected": {
+        "mojiCode.tsKeyword.protected": {
           "type": "boolean",
           "default": true,
           "description": "🛡️ protected – protected access"
         },
-        "flashCode.tsKeyword.keyof": {
+        "mojiCode.tsKeyword.keyof": {
           "type": "boolean",
           "default": true,
           "description": "🔑 keyof – keyof operator"
         },
-        "flashCode.tsKeyword.infer": {
+        "mojiCode.tsKeyword.infer": {
           "type": "boolean",
           "default": true,
           "description": "🔮 infer – type inference"
         },
-        "flashCode.tsKeyword.never": {
+        "mojiCode.tsKeyword.never": {
           "type": "boolean",
           "default": true,
           "description": "🚫 never – never type"
         },
-        "flashCode.tsKeyword.unknown": {
+        "mojiCode.tsKeyword.unknown": {
           "type": "boolean",
           "default": true,
           "description": "❔ unknown – unknown type"
         },
-        "flashCode.tsKeyword.any": {
+        "mojiCode.tsKeyword.any": {
           "type": "boolean",
           "default": true,
           "description": "🌀 any – any type"
         },
-        "flashCode.tsKeyword.is": {
+        "mojiCode.tsKeyword.is": {
           "type": "boolean",
           "default": true,
           "description": "🔍 is – type guard"
         },
-        "flashCode.tsKeyword.asserts": {
+        "mojiCode.tsKeyword.asserts": {
           "type": "boolean",
           "default": true,
           "description": "❗ asserts – assertion function"
         },
-        "flashCode.tsKeyword.as": {
+        "mojiCode.tsKeyword.as": {
           "type": "boolean",
           "default": true,
           "description": "🔀 as – type assertion"
         },
-        "flashCode.tsKeyword.satisfies": {
+        "mojiCode.tsKeyword.satisfies": {
           "type": "boolean",
           "default": true,
           "description": "✔️ satisfies – satisfies operator"
         },
-        "flashCode.tsKeyword.true": {
+        "mojiCode.tsKeyword.true": {
           "type": "boolean",
           "default": true,
           "description": "✅ true – true"
         },
-        "flashCode.tsKeyword.false": {
+        "mojiCode.tsKeyword.false": {
           "type": "boolean",
           "default": true,
           "description": "❌ false – false"
         },
-        "flashCode.tsKeyword.null": {
+        "mojiCode.tsKeyword.null": {
           "type": "boolean",
           "default": true,
           "description": "🚫 null – null value"
         },
-        "flashCode.tsKeyword.undefined": {
+        "mojiCode.tsKeyword.undefined": {
           "type": "boolean",
           "default": true,
           "description": "❓ undefined – undefined"
         },
-        "flashCode.tsKeyword.async": {
+        "mojiCode.tsKeyword.async": {
           "type": "boolean",
           "default": true,
           "description": "🔮 async – async function"
         },
-        "flashCode.tsKeyword.get": {
+        "mojiCode.tsKeyword.get": {
           "type": "boolean",
           "default": true,
           "description": "📖 get – getter"
         },
-        "flashCode.tsKeyword.set": {
+        "mojiCode.tsKeyword.set": {
           "type": "boolean",
           "default": true,
           "description": "📝 set – setter"
         },
-        "flashCode.tsKeyword.static": {
+        "mojiCode.tsKeyword.static": {
           "type": "boolean",
           "default": true,
           "description": "🏛️ static – static member"
         },
-        "flashCode.tsKeyword.constructor": {
+        "mojiCode.tsKeyword.constructor": {
           "type": "boolean",
           "default": true,
           "description": "🏗️ constructor – constructor"
         },
-        "flashCode.tsKeyword.override": {
+        "mojiCode.tsKeyword.override": {
           "type": "boolean",
           "default": true,
           "description": "🔄 override – override method"
         },
-        "flashCode.tsKeyword.out": {
+        "mojiCode.tsKeyword.out": {
           "type": "boolean",
           "default": true,
           "description": "📤 out – variance modifier"
         },
-        "flashCode.tsKeyword.using": {
+        "mojiCode.tsKeyword.using": {
           "type": "boolean",
           "default": true,
           "description": "🔗 using – using declaration"
         },
-        "flashCode.javaKeywords": {
+        "mojiCode.javaKeywords": {
           "type": "boolean",
           "default": true,
           "description": "Master toggle: show emojis for Java keywords."
         },
-        "flashCode.javaKeyword.if": {
+        "mojiCode.javaKeyword.if": {
           "type": "boolean",
           "default": true,
           "description": "❓ if – conditional"
         },
-        "flashCode.javaKeyword.else": {
+        "mojiCode.javaKeyword.else": {
           "type": "boolean",
           "default": true,
           "description": "↪️ else – alternative branch"
         },
-        "flashCode.javaKeyword.switch": {
+        "mojiCode.javaKeyword.switch": {
           "type": "boolean",
           "default": true,
           "description": "🎚️ switch – multi-branch"
         },
-        "flashCode.javaKeyword.case": {
+        "mojiCode.javaKeyword.case": {
           "type": "boolean",
           "default": true,
           "description": "📋 case – switch case"
         },
-        "flashCode.javaKeyword.default": {
+        "mojiCode.javaKeyword.default": {
           "type": "boolean",
           "default": true,
           "description": "📌 default – default case"
         },
-        "flashCode.javaKeyword.for": {
+        "mojiCode.javaKeyword.for": {
           "type": "boolean",
           "default": true,
           "description": "🔁 for – for loop"
         },
-        "flashCode.javaKeyword.while": {
+        "mojiCode.javaKeyword.while": {
           "type": "boolean",
           "default": true,
           "description": "🔂 while – while loop"
         },
-        "flashCode.javaKeyword.do": {
+        "mojiCode.javaKeyword.do": {
           "type": "boolean",
           "default": true,
           "description": "🔄 do – do-while loop"
         },
-        "flashCode.javaKeyword.break": {
+        "mojiCode.javaKeyword.break": {
           "type": "boolean",
           "default": true,
           "description": "🛑 break – exit loop"
         },
-        "flashCode.javaKeyword.continue": {
+        "mojiCode.javaKeyword.continue": {
           "type": "boolean",
           "default": true,
           "description": "⏭️ continue – next iteration"
         },
-        "flashCode.javaKeyword.return": {
+        "mojiCode.javaKeyword.return": {
           "type": "boolean",
           "default": true,
           "description": "🔙 return – return value"
         },
-        "flashCode.javaKeyword.yield": {
+        "mojiCode.javaKeyword.yield": {
           "type": "boolean",
           "default": true,
           "description": "🌾 yield – switch yield"
         },
-        "flashCode.javaKeyword.int": {
+        "mojiCode.javaKeyword.int": {
           "type": "boolean",
           "default": true,
           "description": "🔢 int – integer"
         },
-        "flashCode.javaKeyword.long": {
+        "mojiCode.javaKeyword.long": {
           "type": "boolean",
           "default": true,
           "description": "📐 long – long integer"
         },
-        "flashCode.javaKeyword.short": {
+        "mojiCode.javaKeyword.short": {
           "type": "boolean",
           "default": true,
           "description": "📏 short – short integer"
         },
-        "flashCode.javaKeyword.byte": {
+        "mojiCode.javaKeyword.byte": {
           "type": "boolean",
           "default": true,
           "description": "🔣 byte – byte"
         },
-        "flashCode.javaKeyword.float": {
+        "mojiCode.javaKeyword.float": {
           "type": "boolean",
           "default": true,
           "description": "🎈 float – floating point"
         },
-        "flashCode.javaKeyword.double": {
+        "mojiCode.javaKeyword.double": {
           "type": "boolean",
           "default": true,
           "description": "🎭 double – double precision"
         },
-        "flashCode.javaKeyword.char": {
+        "mojiCode.javaKeyword.char": {
           "type": "boolean",
           "default": true,
           "description": "🔤 char – character"
         },
-        "flashCode.javaKeyword.boolean": {
+        "mojiCode.javaKeyword.boolean": {
           "type": "boolean",
           "default": true,
           "description": "🔘 boolean – boolean"
         },
-        "flashCode.javaKeyword.void": {
+        "mojiCode.javaKeyword.void": {
           "type": "boolean",
           "default": true,
           "description": "🕳️ void – no return"
         },
-        "flashCode.javaKeyword.var": {
+        "mojiCode.javaKeyword.var": {
           "type": "boolean",
           "default": true,
           "description": "🏷️ var – local variable type inference"
         },
-        "flashCode.javaKeyword.true": {
+        "mojiCode.javaKeyword.true": {
           "type": "boolean",
           "default": true,
           "description": "✅ true – true"
         },
-        "flashCode.javaKeyword.false": {
+        "mojiCode.javaKeyword.false": {
           "type": "boolean",
           "default": true,
           "description": "❌ false – false"
         },
-        "flashCode.javaKeyword.null": {
+        "mojiCode.javaKeyword.null": {
           "type": "boolean",
           "default": true,
           "description": "🚫 null – null value"
         },
-        "flashCode.javaKeyword.public": {
+        "mojiCode.javaKeyword.public": {
           "type": "boolean",
           "default": true,
           "description": "🌍 public – public access"
         },
-        "flashCode.javaKeyword.private": {
+        "mojiCode.javaKeyword.private": {
           "type": "boolean",
           "default": true,
           "description": "🔐 private – private access"
         },
-        "flashCode.javaKeyword.protected": {
+        "mojiCode.javaKeyword.protected": {
           "type": "boolean",
           "default": true,
           "description": "🛡️ protected – protected access"
         },
-        "flashCode.javaKeyword.class": {
+        "mojiCode.javaKeyword.class": {
           "type": "boolean",
           "default": true,
           "description": "🏛️ class – class"
         },
-        "flashCode.javaKeyword.interface": {
+        "mojiCode.javaKeyword.interface": {
           "type": "boolean",
           "default": true,
           "description": "🔌 interface – interface"
         },
-        "flashCode.javaKeyword.enum": {
+        "mojiCode.javaKeyword.enum": {
           "type": "boolean",
           "default": true,
           "description": "📊 enum – enumeration"
         },
-        "flashCode.javaKeyword.record": {
+        "mojiCode.javaKeyword.record": {
           "type": "boolean",
           "default": true,
           "description": "📀 record – record type"
         },
-        "flashCode.javaKeyword.abstract": {
+        "mojiCode.javaKeyword.abstract": {
           "type": "boolean",
           "default": true,
           "description": "🎨 abstract – abstract"
         },
-        "flashCode.javaKeyword.final": {
+        "mojiCode.javaKeyword.final": {
           "type": "boolean",
           "default": true,
           "description": "🏁 final – final/immutable"
         },
-        "flashCode.javaKeyword.static": {
+        "mojiCode.javaKeyword.static": {
           "type": "boolean",
           "default": true,
           "description": "🏛️ static – static member"
         },
-        "flashCode.javaKeyword.sealed": {
+        "mojiCode.javaKeyword.sealed": {
           "type": "boolean",
           "default": true,
           "description": "🔐 sealed – sealed class"
         },
-        "flashCode.javaKeyword.permits": {
+        "mojiCode.javaKeyword.permits": {
           "type": "boolean",
           "default": true,
           "description": "✅ permits – permits clause"
         },
-        "flashCode.javaKeyword.extends": {
+        "mojiCode.javaKeyword.extends": {
           "type": "boolean",
           "default": true,
           "description": "🧬 extends – inheritance"
         },
-        "flashCode.javaKeyword.implements": {
+        "mojiCode.javaKeyword.implements": {
           "type": "boolean",
           "default": true,
           "description": "✅ implements – implements interface"
         },
-        "flashCode.javaKeyword.new": {
+        "mojiCode.javaKeyword.new": {
           "type": "boolean",
           "default": true,
           "description": "✨ new – instance creation"
         },
-        "flashCode.javaKeyword.this": {
+        "mojiCode.javaKeyword.this": {
           "type": "boolean",
           "default": true,
           "description": "👆 this – current instance"
         },
-        "flashCode.javaKeyword.super": {
+        "mojiCode.javaKeyword.super": {
           "type": "boolean",
           "default": true,
           "description": "🦸 super – parent class ref"
         },
-        "flashCode.javaKeyword.instanceof": {
+        "mojiCode.javaKeyword.instanceof": {
           "type": "boolean",
           "default": true,
           "description": "🔎 instanceof – type check"
         },
-        "flashCode.javaKeyword.try": {
+        "mojiCode.javaKeyword.try": {
           "type": "boolean",
           "default": true,
           "description": "🤞 try – try block"
         },
-        "flashCode.javaKeyword.catch": {
+        "mojiCode.javaKeyword.catch": {
           "type": "boolean",
           "default": true,
           "description": "🥅 catch – catch exception"
         },
-        "flashCode.javaKeyword.finally": {
+        "mojiCode.javaKeyword.finally": {
           "type": "boolean",
           "default": true,
           "description": "🏁 finally – finally block"
         },
-        "flashCode.javaKeyword.throw": {
+        "mojiCode.javaKeyword.throw": {
           "type": "boolean",
           "default": true,
           "description": "💥 throw – throw exception"
         },
-        "flashCode.javaKeyword.throws": {
+        "mojiCode.javaKeyword.throws": {
           "type": "boolean",
           "default": true,
           "description": "⚠️ throws – throws declaration"
         },
-        "flashCode.javaKeyword.package": {
+        "mojiCode.javaKeyword.package": {
           "type": "boolean",
           "default": true,
           "description": "📦 package – package declaration"
         },
-        "flashCode.javaKeyword.import": {
+        "mojiCode.javaKeyword.import": {
           "type": "boolean",
           "default": true,
           "description": "📥 import – import"
         },
-        "flashCode.javaKeyword.synchronized": {
+        "mojiCode.javaKeyword.synchronized": {
           "type": "boolean",
           "default": true,
           "description": "🔒 synchronized – synchronized block"
         },
-        "flashCode.javaKeyword.volatile": {
+        "mojiCode.javaKeyword.volatile": {
           "type": "boolean",
           "default": true,
           "description": "⚠️ volatile – volatile field"
         },
-        "flashCode.javaKeyword.transient": {
+        "mojiCode.javaKeyword.transient": {
           "type": "boolean",
           "default": true,
           "description": "💨 transient – transient field"
         },
-        "flashCode.javaKeyword.native": {
+        "mojiCode.javaKeyword.native": {
           "type": "boolean",
           "default": true,
           "description": "⚙️ native – native method"
         },
-        "flashCode.javaKeyword.strictfp": {
+        "mojiCode.javaKeyword.strictfp": {
           "type": "boolean",
           "default": true,
           "description": "📐 strictfp – strict floating point"
         },
-        "flashCode.javaKeyword.assert": {
+        "mojiCode.javaKeyword.assert": {
           "type": "boolean",
           "default": true,
           "description": "🔍 assert – assertion"
         },
-        "flashCode.javaKeyword.module": {
+        "mojiCode.javaKeyword.module": {
           "type": "boolean",
           "default": true,
           "description": "🧩 module – module"
         },
-        "flashCode.javaKeyword.requires": {
+        "mojiCode.javaKeyword.requires": {
           "type": "boolean",
           "default": true,
           "description": "📋 requires – requires"
         },
-        "flashCode.javaKeyword.exports": {
+        "mojiCode.javaKeyword.exports": {
           "type": "boolean",
           "default": true,
           "description": "📤 exports – exports"
         },
-        "flashCode.javaKeyword.opens": {
+        "mojiCode.javaKeyword.opens": {
           "type": "boolean",
           "default": true,
           "description": "🔓 opens – opens"
         },
-        "flashCode.javaKeyword.uses": {
+        "mojiCode.javaKeyword.uses": {
           "type": "boolean",
           "default": true,
           "description": "🔧 uses – uses"
         },
-        "flashCode.javaKeyword.provides": {
+        "mojiCode.javaKeyword.provides": {
           "type": "boolean",
           "default": true,
           "description": "🎁 provides – provides"
         },
-        "flashCode.javaKeyword.with": {
+        "mojiCode.javaKeyword.with": {
           "type": "boolean",
           "default": true,
           "description": "🤝 with – with"
         },
-        "flashCode.javaKeyword.to": {
+        "mojiCode.javaKeyword.to": {
           "type": "boolean",
           "default": true,
           "description": "➡️ to – to"

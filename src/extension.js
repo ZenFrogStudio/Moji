@@ -8,7 +8,7 @@ const { openSettingsPanel } = require('./settingsPanel');
 let decorator;
 
 function activate(context) {
-  const config = vscode.workspace.getConfiguration('flashCode');
+  const config = vscode.workspace.getConfiguration('mojiCode');
   const enabled = config.get('enabled', true);
 
   decorator = new KeywordDecorator();
@@ -23,13 +23,13 @@ function activate(context) {
   // ── Commands ───────────────────────────────────────────────────────────
 
   context.subscriptions.push(
-    vscode.commands.registerCommand('flashCode.toggle', () => {
+    vscode.commands.registerCommand('mojiCode.toggle', () => {
       decorator.toggle();
     }),
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand('flashCode.openSettings', () => {
+    vscode.commands.registerCommand('mojiCode.openSettings', () => {
       // No callback needed - debounced config change handler handles updates
       openSettingsPanel(context);
     }),
@@ -63,7 +63,7 @@ function activate(context) {
   context.subscriptions.push(
     vscode.workspace.onDidChangeConfiguration((event) => {
       if (
-        event.affectsConfiguration('flashCode') ||
+        event.affectsConfiguration('mojiCode') ||
         event.affectsConfiguration('editor.fontSize')
       ) {
         // Debounce to batch rapid config changes (e.g., "Select All" updates 30+ settings)
@@ -71,7 +71,7 @@ function activate(context) {
         configTimer = setTimeout(() => {
           // Read the enabled setting explicitly so toggling via settings works.
           const newEnabled = vscode.workspace
-            .getConfiguration('flashCode')
+            .getConfiguration('mojiCode')
             .get('enabled', true);
 
           decorator.reloadConfig();

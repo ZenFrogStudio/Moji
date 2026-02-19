@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to FlashCode Pro will be documented in this file.
+All notable changes to MojiCode Pro will be documented in this file.
 
 ## [1.0.0] - 2026-02-19
 

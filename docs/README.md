@@ -1,4 +1,4 @@
-# FlashCode Pro
+# MojiCode Pro
 
 > **Visual cues for faster code comprehension**
 > Supplement code keywords with emojis across 10 languages to reduce cognitive load and enhance pattern recognition.
@@ -29,7 +29,7 @@ Programming forces you to work against your brain's strengths.
 
 ## 💡 The Solution
 
-**FlashCode Pro** supplements each keyword with a visual symbol:
+**MojiCode Pro** supplements each keyword with a visual symbol:
 
 ```javascript
 🔙 return user;
@@ -402,7 +402,7 @@ Visual symbols trigger stronger recall than abstract tokens:
 
 1. Open VS Code
 2. Go to **Extensions** (`Cmd+Shift+X` / `Ctrl+Shift+X`)
-3. Search for **"FlashCode Pro"**
+3. Search for **"MojiCode Pro"**
 4. Click **Install**
 
 ---
@@ -413,11 +413,11 @@ Once installed, emojis appear automatically in supported language files.
 
 **Toggle the extension:**
 - Open Command Palette (`Cmd+Shift+P` / `Ctrl+Shift+P`)
-- Type: `FlashCode Pro: Toggle`
+- Type: `MojiCode Pro: Toggle`
 
 **Configure emojis:**
 - Open Command Palette (`Cmd+Shift+P` / `Ctrl+Shift+P`)
-- Type: `FlashCode Pro: Settings`
+- Type: `MojiCode Pro: Settings`
 - Use the visual settings panel to enable/disable individual emojis
 
 **Display modes:**
@@ -466,7 +466,7 @@ Open an issue or submit a PR on [GitHub](https://github.com/lucidiancreative).
 
 ## 📄 License
 
-FlashCode Pro is proprietary software licensed under the FlashCode Pro End User License Agreement. See the LICENSE file included with this extension for details.
+MojiCode Pro is proprietary software licensed under the MojiCode Pro End User License Agreement. See the LICENSE file included with this extension for details.
 
 ---
 
@@ -489,10 +489,10 @@ Emojis are:
 - Lightweight (no performance impact)
 
 **Can I disable specific emojis?**
-Yes! Open the Settings panel (`FlashCode Pro: Settings` command) to toggle individual emojis on/off for each language.
+Yes! Open the Settings panel (`MojiCode Pro: Settings` command) to toggle individual emojis on/off for each language.
 
 **Which languages are supported?**
-FlashCode Pro supports 10 languages: JavaScript, TypeScript, Python, C, C++, C#, Java, SQL, HTML, and CSS.
+MojiCode Pro supports 10 languages: JavaScript, TypeScript, Python, C, C++, C#, Java, SQL, HTML, and CSS.
 
 **Is this scientifically proven?**
 The cognitive science behind visual processing, dual coding theory, and reduced working memory load is well-established. This extension applies those principles to code reading.
