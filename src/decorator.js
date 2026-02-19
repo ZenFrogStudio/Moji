@@ -61,7 +61,7 @@ class KeywordDecorator {
   _buildDecorationTypes() {
     this._disposeDecorationTypes();
 
-    const config     = vscode.workspace.getConfiguration('emojiCode');
+    const config     = vscode.workspace.getConfiguration('flashCode');
     const mode       = config.get('displayMode', 'overlay');
     const opacity    = config.get('overlayOpacity', 1);
     const editorFont = vscode.workspace.getConfiguration('editor').get('fontSize', 14);
@@ -98,23 +98,23 @@ class KeywordDecorator {
     // ── Language/Category Configuration Table ─────────────────────────────
     // Unified configuration for all language categories to eliminate code duplication
     const CATEGORY_CONFIG = [
-      { masterKey: 'javascriptKeywords', configNs: 'emojiCode.jsKeyword', map: KEYWORD_EMOJI_MAP, prefix: '' },
-      { masterKey: 'htmlTags', configNs: 'emojiCode.htmlTag', map: HTML_TAG_EMOJI_MAP, prefix: 'tag:' },
-      { masterKey: 'htmlVoidElements', configNs: 'emojiCode.htmlVoid', map: HTML_VOID_EMOJI_MAP, prefix: 'void:' },
-      { masterKey: 'htmlAttributes', configNs: 'emojiCode.htmlAttr', map: HTML_ATTR_EMOJI_MAP, prefix: 'attr:' },
-      { masterKey: 'cssAtRules', configNs: 'emojiCode.cssAtRule', map: CSS_ATRULE_EMOJI_MAP, prefix: 'cssAtRule:' },
-      { masterKey: 'cssLayout', configNs: 'emojiCode.cssLayout', map: CSS_LAYOUT_EMOJI_MAP, prefix: 'cssLayout:' },
-      { masterKey: 'cssBox', configNs: 'emojiCode.cssBox', map: CSS_BOX_EMOJI_MAP, prefix: 'cssBox:' },
-      { masterKey: 'cssVisual', configNs: 'emojiCode.cssVisual', map: CSS_VISUAL_EMOJI_MAP, prefix: 'cssVisual:' },
-      { masterKey: 'cssPseudo', configNs: 'emojiCode.cssPseudo', map: CSS_PSEUDO_EMOJI_MAP, prefix: 'cssPseudo:' },
-      { masterKey: 'cssValues', configNs: 'emojiCode.cssValue', map: CSS_VALUE_EMOJI_MAP, prefix: 'cssValue:' },
-      { masterKey: 'pythonKeywords', configNs: 'emojiCode.pyKeyword', map: PYTHON_KEYWORD_EMOJI_MAP, prefix: 'py:' },
-      { masterKey: 'cKeywords', configNs: 'emojiCode.cKeyword', map: C_KEYWORD_EMOJI_MAP, prefix: 'c:' },
-      { masterKey: 'cppKeywords', configNs: 'emojiCode.cppKeyword', map: CPP_KEYWORD_EMOJI_MAP, prefix: 'cpp:' },
-      { masterKey: 'csharpKeywords', configNs: 'emojiCode.csharpKeyword', map: CSHARP_KEYWORD_EMOJI_MAP, prefix: 'csharp:' },
-      { masterKey: 'sqlKeywords', configNs: 'emojiCode.sqlKeyword', map: SQL_KEYWORD_EMOJI_MAP, prefix: 'sql:' },
-      { masterKey: 'typescriptKeywords', configNs: 'emojiCode.tsKeyword', map: TYPESCRIPT_KEYWORD_EMOJI_MAP, prefix: 'ts:' },
-      { masterKey: 'javaKeywords', configNs: 'emojiCode.javaKeyword', map: JAVA_KEYWORD_EMOJI_MAP, prefix: 'java:' },
+      { masterKey: 'javascriptKeywords', configNs: 'flashCode.jsKeyword', map: KEYWORD_EMOJI_MAP, prefix: '' },
+      { masterKey: 'htmlTags', configNs: 'flashCode.htmlTag', map: HTML_TAG_EMOJI_MAP, prefix: 'tag:' },
+      { masterKey: 'htmlVoidElements', configNs: 'flashCode.htmlVoid', map: HTML_VOID_EMOJI_MAP, prefix: 'void:' },
+      { masterKey: 'htmlAttributes', configNs: 'flashCode.htmlAttr', map: HTML_ATTR_EMOJI_MAP, prefix: 'attr:' },
+      { masterKey: 'cssAtRules', configNs: 'flashCode.cssAtRule', map: CSS_ATRULE_EMOJI_MAP, prefix: 'cssAtRule:' },
+      { masterKey: 'cssLayout', configNs: 'flashCode.cssLayout', map: CSS_LAYOUT_EMOJI_MAP, prefix: 'cssLayout:' },
+      { masterKey: 'cssBox', configNs: 'flashCode.cssBox', map: CSS_BOX_EMOJI_MAP, prefix: 'cssBox:' },
+      { masterKey: 'cssVisual', configNs: 'flashCode.cssVisual', map: CSS_VISUAL_EMOJI_MAP, prefix: 'cssVisual:' },
+      { masterKey: 'cssPseudo', configNs: 'flashCode.cssPseudo', map: CSS_PSEUDO_EMOJI_MAP, prefix: 'cssPseudo:' },
+      { masterKey: 'cssValues', configNs: 'flashCode.cssValue', map: CSS_VALUE_EMOJI_MAP, prefix: 'cssValue:' },
+      { masterKey: 'pythonKeywords', configNs: 'flashCode.pyKeyword', map: PYTHON_KEYWORD_EMOJI_MAP, prefix: 'py:' },
+      { masterKey: 'cKeywords', configNs: 'flashCode.cKeyword', map: C_KEYWORD_EMOJI_MAP, prefix: 'c:' },
+      { masterKey: 'cppKeywords', configNs: 'flashCode.cppKeyword', map: CPP_KEYWORD_EMOJI_MAP, prefix: 'cpp:' },
+      { masterKey: 'csharpKeywords', configNs: 'flashCode.csharpKeyword', map: CSHARP_KEYWORD_EMOJI_MAP, prefix: 'csharp:' },
+      { masterKey: 'sqlKeywords', configNs: 'flashCode.sqlKeyword', map: SQL_KEYWORD_EMOJI_MAP, prefix: 'sql:' },
+      { masterKey: 'typescriptKeywords', configNs: 'flashCode.tsKeyword', map: TYPESCRIPT_KEYWORD_EMOJI_MAP, prefix: 'ts:' },
+      { masterKey: 'javaKeywords', configNs: 'flashCode.javaKeyword', map: JAVA_KEYWORD_EMOJI_MAP, prefix: 'java:' },
     ];
 
     // Process all categories using the configuration table
@@ -215,7 +215,7 @@ class KeywordDecorator {
     }
 
     vscode.window.showInformationMessage(
-      `EmojiCode-Pro: ${this.enabled ? 'Enabled' : 'Disabled'}`,
+      `FlashCode Pro: ${this.enabled ? 'Enabled' : 'Disabled'}`,
     );
   }
 

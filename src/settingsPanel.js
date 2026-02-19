@@ -1,4 +1,4 @@
-// Custom webview panel for configuring EmojiCode-Pro settings with a language-based tabbed interface.
+// Custom webview panel for configuring FlashCode Pro settings with a language-based tabbed interface.
 // Uses server-side rendering - all interactions handled via postMessage, no client-side DOM manipulation.
 
 const vscode = require('vscode');
@@ -29,7 +29,7 @@ let currentPanel = undefined;
 let currentTab = 'javascript'; // Track active tab server-side
 
 /**
- * Opens (or focuses) the EmojiCode-Pro settings panel.
+ * Opens (or focuses) the FlashCode Pro settings panel.
  * @param {vscode.ExtensionContext} context
  */
 function openSettingsPanel(context) {
@@ -46,8 +46,8 @@ function openSettingsPanel(context) {
 
   // Create new panel
   currentPanel = vscode.window.createWebviewPanel(
-    'emojiCodeSettings',
-    'EmojiCode-Pro Settings',
+    'flashCodeSettings',
+    'FlashCode Pro Settings',
     column || vscode.ViewColumn.One,
     {
       enableScripts: true,
@@ -75,55 +75,55 @@ function openSettingsPanel(context) {
         let map, prefix;
         if (category === 'javascript') {
           map = KEYWORD_EMOJI_MAP;
-          prefix = 'emojiCode.jsKeyword';
+          prefix = 'flashCode.jsKeyword';
         } else if (category === 'tags') {
           map = HTML_TAG_EMOJI_MAP;
-          prefix = 'emojiCode.htmlTag';
+          prefix = 'flashCode.htmlTag';
         } else if (category === 'void') {
           map = HTML_VOID_EMOJI_MAP;
-          prefix = 'emojiCode.htmlVoid';
+          prefix = 'flashCode.htmlVoid';
         } else if (category === 'attr') {
           map = HTML_ATTR_EMOJI_MAP;
-          prefix = 'emojiCode.htmlAttr';
+          prefix = 'flashCode.htmlAttr';
         } else if (category === 'cssAtRule') {
           map = CSS_ATRULE_EMOJI_MAP;
-          prefix = 'emojiCode.cssAtRule';
+          prefix = 'flashCode.cssAtRule';
         } else if (category === 'cssLayout') {
           map = CSS_LAYOUT_EMOJI_MAP;
-          prefix = 'emojiCode.cssLayout';
+          prefix = 'flashCode.cssLayout';
         } else if (category === 'cssBox') {
           map = CSS_BOX_EMOJI_MAP;
-          prefix = 'emojiCode.cssBox';
+          prefix = 'flashCode.cssBox';
         } else if (category === 'cssVisual') {
           map = CSS_VISUAL_EMOJI_MAP;
-          prefix = 'emojiCode.cssVisual';
+          prefix = 'flashCode.cssVisual';
         } else if (category === 'cssPseudo') {
           map = CSS_PSEUDO_EMOJI_MAP;
-          prefix = 'emojiCode.cssPseudo';
+          prefix = 'flashCode.cssPseudo';
         } else if (category === 'cssValue') {
           map = CSS_VALUE_EMOJI_MAP;
-          prefix = 'emojiCode.cssValue';
+          prefix = 'flashCode.cssValue';
         } else if (category === 'python') {
           map = PYTHON_KEYWORD_EMOJI_MAP;
-          prefix = 'emojiCode.pyKeyword';
+          prefix = 'flashCode.pyKeyword';
         } else if (category === 'c') {
           map = C_KEYWORD_EMOJI_MAP;
-          prefix = 'emojiCode.cKeyword';
+          prefix = 'flashCode.cKeyword';
         } else if (category === 'cpp') {
           map = CPP_KEYWORD_EMOJI_MAP;
-          prefix = 'emojiCode.cppKeyword';
+          prefix = 'flashCode.cppKeyword';
         } else if (category === 'csharp') {
           map = CSHARP_KEYWORD_EMOJI_MAP;
-          prefix = 'emojiCode.csharpKeyword';
+          prefix = 'flashCode.csharpKeyword';
         } else if (category === 'sql') {
           map = SQL_KEYWORD_EMOJI_MAP;
-          prefix = 'emojiCode.sqlKeyword';
+          prefix = 'flashCode.sqlKeyword';
         } else if (category === 'typescript') {
           map = TYPESCRIPT_KEYWORD_EMOJI_MAP;
-          prefix = 'emojiCode.tsKeyword';
+          prefix = 'flashCode.tsKeyword';
         } else if (category === 'java') {
           map = JAVA_KEYWORD_EMOJI_MAP;
-          prefix = 'emojiCode.javaKeyword';
+          prefix = 'flashCode.javaKeyword';
         } else {
           return; // Unknown category
         }
@@ -155,24 +155,24 @@ function openSettingsPanel(context) {
  * Get current settings state for all emojis.
  */
 function getCurrentSettings() {
-  const mainCfg = vscode.workspace.getConfiguration('emojiCode');
-  const jsCfg = vscode.workspace.getConfiguration('emojiCode.jsKeyword');
-  const tagCfg = vscode.workspace.getConfiguration('emojiCode.htmlTag');
-  const voidCfg = vscode.workspace.getConfiguration('emojiCode.htmlVoid');
-  const attrCfg = vscode.workspace.getConfiguration('emojiCode.htmlAttr');
-  const cssAtRuleCfg = vscode.workspace.getConfiguration('emojiCode.cssAtRule');
-  const cssLayoutCfg = vscode.workspace.getConfiguration('emojiCode.cssLayout');
-  const cssBoxCfg = vscode.workspace.getConfiguration('emojiCode.cssBox');
-  const cssVisualCfg = vscode.workspace.getConfiguration('emojiCode.cssVisual');
-  const cssPseudoCfg = vscode.workspace.getConfiguration('emojiCode.cssPseudo');
-  const cssValueCfg = vscode.workspace.getConfiguration('emojiCode.cssValue');
-  const pyCfg = vscode.workspace.getConfiguration('emojiCode.pyKeyword');
-  const cCfg = vscode.workspace.getConfiguration('emojiCode.cKeyword');
-  const cppCfg = vscode.workspace.getConfiguration('emojiCode.cppKeyword');
-  const csharpCfg = vscode.workspace.getConfiguration('emojiCode.csharpKeyword');
-  const sqlCfg = vscode.workspace.getConfiguration('emojiCode.sqlKeyword');
-  const tsCfg = vscode.workspace.getConfiguration('emojiCode.tsKeyword');
-  const javaCfg = vscode.workspace.getConfiguration('emojiCode.javaKeyword');
+  const mainCfg = vscode.workspace.getConfiguration('flashCode');
+  const jsCfg = vscode.workspace.getConfiguration('flashCode.jsKeyword');
+  const tagCfg = vscode.workspace.getConfiguration('flashCode.htmlTag');
+  const voidCfg = vscode.workspace.getConfiguration('flashCode.htmlVoid');
+  const attrCfg = vscode.workspace.getConfiguration('flashCode.htmlAttr');
+  const cssAtRuleCfg = vscode.workspace.getConfiguration('flashCode.cssAtRule');
+  const cssLayoutCfg = vscode.workspace.getConfiguration('flashCode.cssLayout');
+  const cssBoxCfg = vscode.workspace.getConfiguration('flashCode.cssBox');
+  const cssVisualCfg = vscode.workspace.getConfiguration('flashCode.cssVisual');
+  const cssPseudoCfg = vscode.workspace.getConfiguration('flashCode.cssPseudo');
+  const cssValueCfg = vscode.workspace.getConfiguration('flashCode.cssValue');
+  const pyCfg = vscode.workspace.getConfiguration('flashCode.pyKeyword');
+  const cCfg = vscode.workspace.getConfiguration('flashCode.cKeyword');
+  const cppCfg = vscode.workspace.getConfiguration('flashCode.cppKeyword');
+  const csharpCfg = vscode.workspace.getConfiguration('flashCode.csharpKeyword');
+  const sqlCfg = vscode.workspace.getConfiguration('flashCode.sqlKeyword');
+  const tsCfg = vscode.workspace.getConfiguration('flashCode.tsKeyword');
+  const javaCfg = vscode.workspace.getConfiguration('flashCode.javaKeyword');
 
   const settings = {
     masterToggles: {
@@ -398,7 +398,7 @@ function getWebviewContent() {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EmojiCode-Pro Settings</title>
+  <title>FlashCode Pro Settings</title>
   <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'nonce-${nonce}';">
   <style>
     :root {
@@ -559,7 +559,7 @@ function getWebviewContent() {
   </style>
 </head>
 <body>
-  <h1>EmojiCode-Pro Settings</h1>
+  <h1>FlashCode Pro Settings</h1>
 
   <div class="tabs">
     <button class="tab ${jsTabActive}" data-tab="javascript" type="button">
@@ -597,7 +597,7 @@ function getWebviewContent() {
   <!-- JavaScript Tab -->
   <div id="javascript" class="tab-content ${jsContentActive}">
     <div class="master-toggle">
-      <input type="checkbox" id="master-javascript" data-setting-key="emojiCode.javascriptKeywords" ${settings.masterToggles.javascriptKeywords ? 'checked' : ''}>
+      <input type="checkbox" id="master-javascript" data-setting-key="flashCode.javascriptKeywords" ${settings.masterToggles.javascriptKeywords ? 'checked' : ''}>
       <label for="master-javascript">Enable JavaScript keyword emojis</label>
     </div>
     <div class="bulk-actions">
@@ -613,7 +613,7 @@ function getWebviewContent() {
     <div class="section">
       <div class="section-title">Tags <span class="count">(${tagCount})</span></div>
       <div class="master-toggle">
-        <input type="checkbox" id="master-tags" data-setting-key="emojiCode.htmlTags" ${settings.masterToggles.htmlTags ? 'checked' : ''}>
+        <input type="checkbox" id="master-tags" data-setting-key="flashCode.htmlTags" ${settings.masterToggles.htmlTags ? 'checked' : ''}>
         <label for="master-tags">Enable tag emojis</label>
       </div>
       <div class="bulk-actions">
@@ -627,7 +627,7 @@ function getWebviewContent() {
     <div class="section">
       <div class="section-title">Void Elements <span class="count">(${voidCount})</span></div>
       <div class="master-toggle">
-        <input type="checkbox" id="master-void" data-setting-key="emojiCode.htmlVoidElements" ${settings.masterToggles.htmlVoidElements ? 'checked' : ''}>
+        <input type="checkbox" id="master-void" data-setting-key="flashCode.htmlVoidElements" ${settings.masterToggles.htmlVoidElements ? 'checked' : ''}>
         <label for="master-void">Enable void element emojis</label>
       </div>
       <div class="bulk-actions">
@@ -641,7 +641,7 @@ function getWebviewContent() {
     <div class="section">
       <div class="section-title">Attributes <span class="count">(${attrCount})</span></div>
       <div class="master-toggle">
-        <input type="checkbox" id="master-attr" data-setting-key="emojiCode.htmlAttributes" ${settings.masterToggles.htmlAttributes ? 'checked' : ''}>
+        <input type="checkbox" id="master-attr" data-setting-key="flashCode.htmlAttributes" ${settings.masterToggles.htmlAttributes ? 'checked' : ''}>
         <label for="master-attr">Enable attribute emojis</label>
       </div>
       <div class="bulk-actions">
@@ -658,7 +658,7 @@ function getWebviewContent() {
     <div class="section">
       <div class="section-title">At-Rules <span class="count">(${cssAtRuleCount})</span></div>
       <div class="master-toggle">
-        <input type="checkbox" id="master-cssAtRule" data-setting-key="emojiCode.cssAtRules" ${settings.masterToggles.cssAtRules ? 'checked' : ''}>
+        <input type="checkbox" id="master-cssAtRule" data-setting-key="flashCode.cssAtRules" ${settings.masterToggles.cssAtRules ? 'checked' : ''}>
         <label for="master-cssAtRule">Enable at-rule emojis</label>
       </div>
       <div class="bulk-actions">
@@ -672,7 +672,7 @@ function getWebviewContent() {
     <div class="section">
       <div class="section-title">Layout Properties <span class="count">(${cssLayoutCount})</span></div>
       <div class="master-toggle">
-        <input type="checkbox" id="master-cssLayout" data-setting-key="emojiCode.cssLayout" ${settings.masterToggles.cssLayout ? 'checked' : ''}>
+        <input type="checkbox" id="master-cssLayout" data-setting-key="flashCode.cssLayout" ${settings.masterToggles.cssLayout ? 'checked' : ''}>
         <label for="master-cssLayout">Enable layout emojis</label>
       </div>
       <div class="bulk-actions">
@@ -686,7 +686,7 @@ function getWebviewContent() {
     <div class="section">
       <div class="section-title">Box Model <span class="count">(${cssBoxCount})</span></div>
       <div class="master-toggle">
-        <input type="checkbox" id="master-cssBox" data-setting-key="emojiCode.cssBox" ${settings.masterToggles.cssBox ? 'checked' : ''}>
+        <input type="checkbox" id="master-cssBox" data-setting-key="flashCode.cssBox" ${settings.masterToggles.cssBox ? 'checked' : ''}>
         <label for="master-cssBox">Enable box model emojis</label>
       </div>
       <div class="bulk-actions">
@@ -700,7 +700,7 @@ function getWebviewContent() {
     <div class="section">
       <div class="section-title">Visual Properties <span class="count">(${cssVisualCount})</span></div>
       <div class="master-toggle">
-        <input type="checkbox" id="master-cssVisual" data-setting-key="emojiCode.cssVisual" ${settings.masterToggles.cssVisual ? 'checked' : ''}>
+        <input type="checkbox" id="master-cssVisual" data-setting-key="flashCode.cssVisual" ${settings.masterToggles.cssVisual ? 'checked' : ''}>
         <label for="master-cssVisual">Enable visual emojis</label>
       </div>
       <div class="bulk-actions">
@@ -714,7 +714,7 @@ function getWebviewContent() {
     <div class="section">
       <div class="section-title">Pseudo-classes <span class="count">(${cssPseudoCount})</span></div>
       <div class="master-toggle">
-        <input type="checkbox" id="master-cssPseudo" data-setting-key="emojiCode.cssPseudo" ${settings.masterToggles.cssPseudo ? 'checked' : ''}>
+        <input type="checkbox" id="master-cssPseudo" data-setting-key="flashCode.cssPseudo" ${settings.masterToggles.cssPseudo ? 'checked' : ''}>
         <label for="master-cssPseudo">Enable pseudo-class emojis</label>
       </div>
       <div class="bulk-actions">
@@ -728,7 +728,7 @@ function getWebviewContent() {
     <div class="section">
       <div class="section-title">Important Values <span class="count">(${cssValueCount})</span></div>
       <div class="master-toggle">
-        <input type="checkbox" id="master-cssValue" data-setting-key="emojiCode.cssValues" ${settings.masterToggles.cssValues ? 'checked' : ''}>
+        <input type="checkbox" id="master-cssValue" data-setting-key="flashCode.cssValues" ${settings.masterToggles.cssValues ? 'checked' : ''}>
         <label for="master-cssValue">Enable value emojis</label>
       </div>
       <div class="bulk-actions">
@@ -742,7 +742,7 @@ function getWebviewContent() {
   <!-- Python Tab -->
   <div id="python" class="tab-content ${pythonContentActive}">
     <div class="master-toggle">
-      <input type="checkbox" id="master-python" data-setting-key="emojiCode.pythonKeywords" ${settings.masterToggles.pythonKeywords ? 'checked' : ''}>
+      <input type="checkbox" id="master-python" data-setting-key="flashCode.pythonKeywords" ${settings.masterToggles.pythonKeywords ? 'checked' : ''}>
       <label for="master-python">Enable Python keyword emojis</label>
     </div>
     <div class="bulk-actions">
@@ -755,7 +755,7 @@ function getWebviewContent() {
   <!-- C Tab -->
   <div id="c" class="tab-content ${cContentActive}">
     <div class="master-toggle">
-      <input type="checkbox" id="master-c" data-setting-key="emojiCode.cKeywords" ${settings.masterToggles.cKeywords ? 'checked' : ''}>
+      <input type="checkbox" id="master-c" data-setting-key="flashCode.cKeywords" ${settings.masterToggles.cKeywords ? 'checked' : ''}>
       <label for="master-c">Enable C keyword emojis</label>
     </div>
     <div class="bulk-actions">
@@ -768,7 +768,7 @@ function getWebviewContent() {
   <!-- C++ Tab -->
   <div id="cpp" class="tab-content ${cppContentActive}">
     <div class="master-toggle">
-      <input type="checkbox" id="master-cpp" data-setting-key="emojiCode.cppKeywords" ${settings.masterToggles.cppKeywords ? 'checked' : ''}>
+      <input type="checkbox" id="master-cpp" data-setting-key="flashCode.cppKeywords" ${settings.masterToggles.cppKeywords ? 'checked' : ''}>
       <label for="master-cpp">Enable C++ keyword emojis</label>
     </div>
     <div class="bulk-actions">
@@ -781,7 +781,7 @@ function getWebviewContent() {
   <!-- C# Tab -->
   <div id="csharp" class="tab-content ${csharpContentActive}">
     <div class="master-toggle">
-      <input type="checkbox" id="master-csharp" data-setting-key="emojiCode.csharpKeywords" ${settings.masterToggles.csharpKeywords ? 'checked' : ''}>
+      <input type="checkbox" id="master-csharp" data-setting-key="flashCode.csharpKeywords" ${settings.masterToggles.csharpKeywords ? 'checked' : ''}>
       <label for="master-csharp">Enable C# keyword emojis</label>
     </div>
     <div class="bulk-actions">
@@ -794,7 +794,7 @@ function getWebviewContent() {
   <!-- SQL Tab -->
   <div id="sql" class="tab-content ${sqlContentActive}">
     <div class="master-toggle">
-      <input type="checkbox" id="master-sql" data-setting-key="emojiCode.sqlKeywords" ${settings.masterToggles.sqlKeywords ? 'checked' : ''}>
+      <input type="checkbox" id="master-sql" data-setting-key="flashCode.sqlKeywords" ${settings.masterToggles.sqlKeywords ? 'checked' : ''}>
       <label for="master-sql">Enable SQL keyword emojis</label>
     </div>
     <div class="bulk-actions">
@@ -807,7 +807,7 @@ function getWebviewContent() {
   <!-- TypeScript Tab -->
   <div id="typescript" class="tab-content ${typescriptContentActive}">
     <div class="master-toggle">
-      <input type="checkbox" id="master-typescript" data-setting-key="emojiCode.typescriptKeywords" ${settings.masterToggles.typescriptKeywords ? 'checked' : ''}>
+      <input type="checkbox" id="master-typescript" data-setting-key="flashCode.typescriptKeywords" ${settings.masterToggles.typescriptKeywords ? 'checked' : ''}>
       <label for="master-typescript">Enable TypeScript keyword emojis</label>
     </div>
     <div class="bulk-actions">
@@ -820,7 +820,7 @@ function getWebviewContent() {
   <!-- Java Tab -->
   <div id="java" class="tab-content ${javaContentActive}">
     <div class="master-toggle">
-      <input type="checkbox" id="master-java" data-setting-key="emojiCode.javaKeywords" ${settings.masterToggles.javaKeywords ? 'checked' : ''}>
+      <input type="checkbox" id="master-java" data-setting-key="flashCode.javaKeywords" ${settings.masterToggles.javaKeywords ? 'checked' : ''}>
       <label for="master-java">Enable Java keyword emojis</label>
     </div>
     <div class="bulk-actions">
@@ -834,23 +834,23 @@ function getWebviewContent() {
     const vscode = acquireVsCodeApi();
 
     const CONFIG_MAP = {
-      javascript: 'emojiCode.jsKeyword.',
-      tags: 'emojiCode.htmlTag.',
-      void: 'emojiCode.htmlVoid.',
-      attr: 'emojiCode.htmlAttr.',
-      cssAtRule: 'emojiCode.cssAtRule.',
-      cssLayout: 'emojiCode.cssLayout.',
-      cssBox: 'emojiCode.cssBox.',
-      cssVisual: 'emojiCode.cssVisual.',
-      cssPseudo: 'emojiCode.cssPseudo.',
-      cssValue: 'emojiCode.cssValue.',
-      python: 'emojiCode.pyKeyword.',
-      c: 'emojiCode.cKeyword.',
-      cpp: 'emojiCode.cppKeyword.',
-      csharp: 'emojiCode.csharpKeyword.',
-      sql: 'emojiCode.sqlKeyword.',
-      typescript: 'emojiCode.tsKeyword.',
-      java: 'emojiCode.javaKeyword.'
+      javascript: 'flashCode.jsKeyword.',
+      tags: 'flashCode.htmlTag.',
+      void: 'flashCode.htmlVoid.',
+      attr: 'flashCode.htmlAttr.',
+      cssAtRule: 'flashCode.cssAtRule.',
+      cssLayout: 'flashCode.cssLayout.',
+      cssBox: 'flashCode.cssBox.',
+      cssVisual: 'flashCode.cssVisual.',
+      cssPseudo: 'flashCode.cssPseudo.',
+      cssValue: 'flashCode.cssValue.',
+      python: 'flashCode.pyKeyword.',
+      c: 'flashCode.cKeyword.',
+      cpp: 'flashCode.cppKeyword.',
+      csharp: 'flashCode.csharpKeyword.',
+      sql: 'flashCode.sqlKeyword.',
+      typescript: 'flashCode.tsKeyword.',
+      java: 'flashCode.javaKeyword.'
     };
 
     // Tab buttons
