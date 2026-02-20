@@ -5,7 +5,7 @@
   "version": "1.0.0",
   "publisher": "Lucidian",
   "license": "SEE LICENSE IN LICENSE",
-  "icon": "src/img/icon.png",
+  "icon": "src/img/icon-sm.png",
   "repository": {
     "type": "git",
     "url": "https://github.com/lucidiancreative/MojiCode-Pro"
@@ -65,6 +65,14 @@
       {
         "command": "mojiCode.openSettings",
         "title": "Customize"
+      },
+      {
+        "command": "mojiCode.activateLicense",
+        "title": "MojiCode Pro: Activate License"
+      },
+      {
+        "command": "mojiCode.deactivateLicense",
+        "title": "MojiCode Pro: Deactivate License"
       }
     ],
     "menus": {

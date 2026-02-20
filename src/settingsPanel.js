@@ -25,14 +25,18 @@ function getNonce() {
   return crypto.randomBytes(16).toString('base64');
 }
 
-let currentPanel = undefined;
-let currentTab = 'javascript'; // Track active tab server-side
+let currentPanel      = undefined;
+let currentTab        = 'javascript'; // Track active tab server-side
+let currentLicenseManager = undefined; // Reference held for message handler access
 
 /**
  * Opens (or focuses) the MojiCode Pro settings panel.
  * @param {vscode.ExtensionContext} context
+ * @param {import('./licenseManager').LicenseManager} licenseManager
  */
-function openSettingsPanel(context) {
+async function openSettingsPanel(context, licenseManager) {
+  currentLicenseManager = licenseManager;
+
   const column = vscode.window.activeTextEditor
     ? vscode.window.activeTextEditor.viewColumn
     : undefined;
@@ -40,7 +44,7 @@ function openSettingsPanel(context) {
   // If panel already exists, reveal it AND refresh content
   if (currentPanel) {
     currentPanel.reveal(column);
-    currentPanel.webview.html = getWebviewContent();
+    currentPanel.webview.html = await getWebviewContent();
     return;
   }
 
@@ -55,19 +59,31 @@ function openSettingsPanel(context) {
     }
   );
 
-  currentPanel.webview.html = getWebviewContent();
+  currentPanel.webview.html = await getWebviewContent();
 
   // Handle messages from the webview
   currentPanel.webview.onDidReceiveMessage(
     async (message) => {
       if (message.command === 'switchTab') {
         currentTab = message.tab;
-        currentPanel.webview.html = getWebviewContent();
+        currentPanel.webview.html = await getWebviewContent();
       } else if (message.command === 'toggleSetting') {
         const config = vscode.workspace.getConfiguration();
         await config.update(message.key, message.value, vscode.ConfigurationTarget.Global);
         // Re-render to show updated state
-        currentPanel.webview.html = getWebviewContent();
+        currentPanel.webview.html = await getWebviewContent();
+      } else if (message.command === 'activateLicense') {
+        const result = await currentLicenseManager.activate(message.key);
+        if (result.success) {
+          currentPanel.webview.html = await getWebviewContent();
+          vscode.commands.executeCommand('mojiCode._refreshDecorator');
+        } else {
+          currentPanel.webview.postMessage({ command: 'licenseError', error: result.error });
+        }
+      } else if (message.command === 'deactivateLicense') {
+        await currentLicenseManager.deactivate();
+        currentPanel.webview.html = await getWebviewContent();
+        vscode.commands.executeCommand('mojiCode._refreshDecorator');
       } else if (message.command === 'toggleAll') {
         const config = vscode.workspace.getConfiguration();
         const { category, value } = message;
@@ -271,9 +287,12 @@ function getCurrentSettings() {
 /**
  * Generate the HTML content for the webview.
  */
-function getWebviewContent() {
-  const nonce = getNonce();
+async function getWebviewContent() {
+  const nonce    = getNonce();
   const settings = getCurrentSettings();
+
+  const licenseValid     = currentLicenseManager ? currentLicenseManager.isValid : false;
+  const licenseMaskedKey = currentLicenseManager ? (await currentLicenseManager.getMaskedKey()) : null;
 
   // Build checkbox lists for each category
   const jsItems = Object.entries(KEYWORD_EMOJI_MAP)
@@ -556,10 +575,100 @@ function getWebviewContent() {
       margin-bottom: 15px;
       font-size: 1.1em;
     }
+
+    /* ── License section ──────────────────────────────────────────────── */
+
+    .license-section {
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 14px 18px;
+      margin-bottom: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .license-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .license-badge {
+      font-weight: 600;
+      font-size: 0.9em;
+      padding: 3px 10px;
+      border-radius: 12px;
+    }
+
+    .license-badge.active {
+      background: rgba(50, 200, 100, 0.18);
+      color: #3dc57a;
+    }
+
+    .license-badge.inactive {
+      background: rgba(220, 80, 80, 0.15);
+      color: #e06060;
+    }
+
+    .license-key-display {
+      font-family: var(--vscode-editor-font-family), monospace;
+      font-size: 0.9em;
+      opacity: 0.7;
+    }
+
+    .license-input-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .license-input-row input[type="password"] {
+      flex: 1;
+      padding: 6px 10px;
+      background: var(--vscode-input-background, var(--tab-inactive-bg));
+      color: var(--vscode-input-foreground, var(--fg-color));
+      border: 1px solid var(--vscode-input-border, var(--border-color));
+      border-radius: 4px;
+      font-family: monospace;
+      font-size: 0.9em;
+    }
+
+    .license-error {
+      color: #e06060;
+      font-size: 0.85em;
+    }
   </style>
 </head>
 <body>
   <h1>MojiCode Pro Settings</h1>
+
+  ${licenseValid ? `
+  <div class="license-section">
+    <div class="license-header">
+      <span class="license-badge active">&#10003; Active</span>
+      ${licenseMaskedKey ? `<span class="license-key-display">${licenseMaskedKey}</span>` : ''}
+    </div>
+    <div>
+      <button class="bulk-btn" type="button" id="btn-deactivate">Deactivate License</button>
+    </div>
+  </div>
+  ` : `
+  <div class="license-section">
+    <div class="license-header">
+      <span class="license-badge inactive">&#10007; Not activated</span>
+    </div>
+    <div class="license-input-row" id="license-input-row" style="display:none">
+      <input type="password" id="license-key-input" placeholder="Enter license key" autocomplete="off" spellcheck="false">
+      <button class="bulk-btn" type="button" id="btn-submit-key">Submit</button>
+      <button class="bulk-btn" type="button" id="btn-cancel-key">Cancel</button>
+    </div>
+    <div>
+      <button class="bulk-btn" type="button" id="btn-activate">Activate License</button>
+    </div>
+    <div class="license-error" id="license-error" style="display:none"></div>
+  </div>
+  `}
 
   <div class="tabs">
     <button class="tab ${jsTabActive}" data-tab="javascript" type="button">
@@ -888,6 +997,66 @@ function getWebviewContent() {
         vscode.postMessage({ command: 'toggleSetting', key: prefix + this.dataset.key, value: this.checked });
       });
     });
+
+    // ── License section interactions ────────────────────────────────────
+    (function() {
+      var btnActivate = document.getElementById('btn-activate');
+      var btnDeactivate = document.getElementById('btn-deactivate');
+      var btnSubmit = document.getElementById('btn-submit-key');
+      var btnCancel = document.getElementById('btn-cancel-key');
+      var inputRow = document.getElementById('license-input-row');
+      var keyInput = document.getElementById('license-key-input');
+      var errorDiv = document.getElementById('license-error');
+
+      if (btnActivate) {
+        btnActivate.addEventListener('click', function() {
+          btnActivate.style.display = 'none';
+          inputRow.style.display = 'flex';
+          keyInput.focus();
+        });
+      }
+      if (btnCancel) {
+        btnCancel.addEventListener('click', function() {
+          inputRow.style.display = 'none';
+          btnActivate.style.display = '';
+          errorDiv.style.display = 'none';
+          keyInput.value = '';
+        });
+      }
+      if (btnSubmit) {
+        btnSubmit.addEventListener('click', function() {
+          var key = keyInput.value.trim();
+          if (!key) {
+            errorDiv.textContent = 'Please enter a license key.';
+            errorDiv.style.display = '';
+            return;
+          }
+          btnSubmit.disabled = true;
+          btnSubmit.textContent = 'Activating\u2026';
+          vscode.postMessage({ command: 'activateLicense', key: key });
+        });
+      }
+      if (btnDeactivate) {
+        btnDeactivate.addEventListener('click', function() {
+          vscode.postMessage({ command: 'deactivateLicense' });
+        });
+      }
+
+      // Handle error messages sent back from the extension host
+      window.addEventListener('message', function(event) {
+        var msg = event.data;
+        if (msg.command === 'licenseError') {
+          if (errorDiv) {
+            errorDiv.textContent = msg.error;
+            errorDiv.style.display = '';
+          }
+          if (btnSubmit) {
+            btnSubmit.disabled = false;
+            btnSubmit.textContent = 'Submit';
+          }
+        }
+      });
+    })();
   </script>
 </body>
 </html>`;
