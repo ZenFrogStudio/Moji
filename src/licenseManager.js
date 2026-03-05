@@ -4,8 +4,8 @@ const https = require('https');
 const os    = require('os');
 
 const LS_HOST     = 'api.lemonsqueezy.com';
-const SECRET_KEY  = 'mojicode_license_key';
-const SECRET_INST = 'mojicode_instance_id';
+const SECRET_KEY  = 'moji_license_key';
+const SECRET_INST = 'moji_instance_id';
 
 class LicenseManager {
   constructor(secrets) {

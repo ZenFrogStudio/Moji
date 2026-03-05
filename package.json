@@ -1,6 +1,6 @@
 {
-  "name": "MojiCode-Pro",
-  "displayName": "MojiCode Pro",
+  "name": "Moji-Pro",
+  "displayName": "Moji Pro",
   "description": "Adds visual symbols to your coding experience for enhanced memorability and comprehension.",
   "version": "1.0.0",
   "publisher": "Lucidian",
@@ -8,7 +8,7 @@
   "icon": "src/img/icon-sm.png",
   "repository": {
     "type": "git",
-    "url": "https://github.com/lucidiancreative/MojiCode-Pro"
+    "url": "https://github.com/lucidiancreative/Moji-Pro"
   },
   "engines": {
     "vscode": "^1.75.0"
@@ -55,43 +55,47 @@
     "onLanguage:typescriptreact",
     "onLanguage:java"
   ],
+  "scripts": {
+    "package": "vsce package",
+    "publish": "vsce publish"
+  },
   "main": "./src/extension.js",
   "contributes": {
     "commands": [
       {
-        "command": "mojiCode.toggle",
-        "title": "MojiCode Pro: Toggle"
+        "command": "mojiPro.toggle",
+        "title": "Moji Pro: Toggle"
       },
       {
-        "command": "mojiCode.openSettings",
+        "command": "mojiPro.openSettings",
         "title": "Customize"
       },
       {
-        "command": "mojiCode.activateLicense",
-        "title": "MojiCode Pro: Activate License"
+        "command": "mojiPro.activateLicense",
+        "title": "Moji Pro: Activate License"
       },
       {
-        "command": "mojiCode.deactivateLicense",
-        "title": "MojiCode Pro: Deactivate License"
+        "command": "mojiPro.deactivateLicense",
+        "title": "Moji Pro: Deactivate License"
       }
     ],
     "menus": {
       "extension/context": [
         {
-          "command": "mojiCode.openSettings",
+          "command": "mojiPro.openSettings",
           "group": "navigation"
         }
       ]
     },
     "configuration": {
-      "title": "MojiCode Pro",
+      "title": "Moji Pro",
       "properties": {
-        "mojiCode.enabled": {
+        "mojiPro.enabled": {
           "type": "boolean",
           "default": true,
           "description": "Enable or disable emoji keyword decorations."
         },
-        "mojiCode.displayMode": {
+        "mojiPro.displayMode": {
           "type": "string",
           "enum": [
             "replace",
@@ -104,3564 +108,3564 @@
           "default": "overlay",
           "description": "How emojis are rendered relative to keywords."
         },
-        "mojiCode.overlayOpacity": {
+        "mojiPro.overlayOpacity": {
           "type": "number",
           "default": 1,
           "minimum": 0,
           "maximum": 1,
           "description": "Opacity of keyword text in overlay mode (0 = invisible, 1 = fully visible)."
         },
-        "mojiCode.htmlTags": {
+        "mojiPro.htmlTags": {
           "type": "boolean",
           "default": true,
           "description": "Master toggle: show emojis for HTML tag names."
         },
-        "mojiCode.htmlVoidElements": {
+        "mojiPro.htmlVoidElements": {
           "type": "boolean",
           "default": true,
           "description": "Master toggle: show emojis for HTML void elements."
         },
-        "mojiCode.htmlAttributes": {
+        "mojiPro.htmlAttributes": {
           "type": "boolean",
           "default": true,
           "description": "Master toggle: show emojis for HTML attribute names."
         },
-        "mojiCode.javascriptKeywords": {
+        "mojiPro.javascriptKeywords": {
           "type": "boolean",
           "default": true,
           "description": "Master toggle: show emojis for JavaScript keywords."
         },
-        "mojiCode.jsKeyword.await": {
+        "mojiPro.jsKeyword.await": {
           "type": "boolean",
           "default": true,
           "description": "⏳ await – waiting for a promise"
         },
-        "mojiCode.jsKeyword.break": {
+        "mojiPro.jsKeyword.break": {
           "type": "boolean",
           "default": true,
           "description": "🛑 break – exit loop / switch"
         },
-        "mojiCode.jsKeyword.case": {
+        "mojiPro.jsKeyword.case": {
           "type": "boolean",
           "default": true,
           "description": "📋 case – pattern match branch"
         },
-        "mojiCode.jsKeyword.catch": {
+        "mojiPro.jsKeyword.catch": {
           "type": "boolean",
           "default": true,
           "description": "🥅 catch – catch thrown errors"
         },
-        "mojiCode.jsKeyword.class": {
+        "mojiPro.jsKeyword.class": {
           "type": "boolean",
           "default": true,
           "description": "🏛️ class – class declaration"
         },
-        "mojiCode.jsKeyword.const": {
+        "mojiPro.jsKeyword.const": {
           "type": "boolean",
           "default": true,
           "description": "🔒 const – immutable binding"
         },
-        "mojiCode.jsKeyword.continue": {
+        "mojiPro.jsKeyword.continue": {
           "type": "boolean",
           "default": true,
           "description": "⏭️ continue – next iteration"
         },
-        "mojiCode.jsKeyword.debugger": {
+        "mojiPro.jsKeyword.debugger": {
           "type": "boolean",
           "default": true,
           "description": "🐛 debugger – breakpoint"
         },
-        "mojiCode.jsKeyword.default": {
+        "mojiPro.jsKeyword.default": {
           "type": "boolean",
           "default": true,
           "description": "📌 default – fallback branch"
         },
-        "mojiCode.jsKeyword.delete": {
+        "mojiPro.jsKeyword.delete": {
           "type": "boolean",
           "default": true,
           "description": "🗑️ delete – remove property"
         },
-        "mojiCode.jsKeyword.do": {
+        "mojiPro.jsKeyword.do": {
           "type": "boolean",
           "default": true,
           "description": "🔄 do – do-while loop"
         },
-        "mojiCode.jsKeyword.else": {
+        "mojiPro.jsKeyword.else": {
           "type": "boolean",
           "default": true,
           "description": "↪️ else – alternative branch"
         },
-        "mojiCode.jsKeyword.enum": {
+        "mojiPro.jsKeyword.enum": {
           "type": "boolean",
           "default": true,
           "description": "📊 enum – enumeration (reserved)"
         },
-        "mojiCode.jsKeyword.export": {
+        "mojiPro.jsKeyword.export": {
           "type": "boolean",
           "default": true,
           "description": "📦 export – module export"
         },
-        "mojiCode.jsKeyword.extends": {
+        "mojiPro.jsKeyword.extends": {
           "type": "boolean",
           "default": true,
           "description": "🧬 extends – inheritance"
         },
-        "mojiCode.jsKeyword.finally": {
+        "mojiPro.jsKeyword.finally": {
           "type": "boolean",
           "default": true,
           "description": "🏁 finally – guaranteed cleanup"
         },
-        "mojiCode.jsKeyword.for": {
+        "mojiPro.jsKeyword.for": {
           "type": "boolean",
           "default": true,
           "description": "🔁 for – for loop"
         },
-        "mojiCode.jsKeyword.function": {
+        "mojiPro.jsKeyword.function": {
           "type": "boolean",
           "default": true,
           "description": "⚡ function – function declaration"
         },
-        "mojiCode.jsKeyword.if": {
+        "mojiPro.jsKeyword.if": {
           "type": "boolean",
           "default": true,
           "description": "❓ if – conditional"
         },
-        "mojiCode.jsKeyword.import": {
+        "mojiPro.jsKeyword.import": {
           "type": "boolean",
           "default": true,
           "description": "📥 import – module import"
         },
-        "mojiCode.jsKeyword.in": {
+        "mojiPro.jsKeyword.in": {
           "type": "boolean",
           "default": true,
           "description": "📍 in – property membership"
         },
-        "mojiCode.jsKeyword.instanceof": {
+        "mojiPro.jsKeyword.instanceof": {
           "type": "boolean",
           "default": true,
           "description": "🔎 instanceof – prototype check"
         },
-        "mojiCode.jsKeyword.new": {
+        "mojiPro.jsKeyword.new": {
           "type": "boolean",
           "default": true,
           "description": "✨ new – instance creation"
         },
-        "mojiCode.jsKeyword.return": {
+        "mojiPro.jsKeyword.return": {
           "type": "boolean",
           "default": true,
           "description": "🔙 return – return value"
         },
-        "mojiCode.jsKeyword.super": {
+        "mojiPro.jsKeyword.super": {
           "type": "boolean",
           "default": true,
           "description": "🦸 super – parent class ref"
         },
-        "mojiCode.jsKeyword.switch": {
+        "mojiPro.jsKeyword.switch": {
           "type": "boolean",
           "default": true,
           "description": "🎚️ switch – multi-branch"
         },
-        "mojiCode.jsKeyword.this": {
+        "mojiPro.jsKeyword.this": {
           "type": "boolean",
           "default": true,
           "description": "👆 this – current context"
         },
-        "mojiCode.jsKeyword.throw": {
+        "mojiPro.jsKeyword.throw": {
           "type": "boolean",
           "default": true,
           "description": "💥 throw – throw error"
         },
-        "mojiCode.jsKeyword.try": {
+        "mojiPro.jsKeyword.try": {
           "type": "boolean",
           "default": true,
           "description": "🤞 try – attempt block"
         },
-        "mojiCode.jsKeyword.typeof": {
+        "mojiPro.jsKeyword.typeof": {
           "type": "boolean",
           "default": true,
           "description": "🏷️ typeof – type check"
         },
-        "mojiCode.jsKeyword.var": {
+        "mojiPro.jsKeyword.var": {
           "type": "boolean",
           "default": true,
           "description": "📝 var – variable (legacy)"
         },
-        "mojiCode.jsKeyword.void": {
+        "mojiPro.jsKeyword.void": {
           "type": "boolean",
           "default": true,
           "description": "🕳️ void – discard value"
         },
-        "mojiCode.jsKeyword.while": {
+        "mojiPro.jsKeyword.while": {
           "type": "boolean",
           "default": true,
           "description": "🔂 while – while loop"
         },
-        "mojiCode.jsKeyword.with": {
+        "mojiPro.jsKeyword.with": {
           "type": "boolean",
           "default": true,
           "description": "🤝 with – with statement"
         },
-        "mojiCode.jsKeyword.yield": {
+        "mojiPro.jsKeyword.yield": {
           "type": "boolean",
           "default": true,
           "description": "🌾 yield – generator yield"
         },
-        "mojiCode.htmlTag.html": {
+        "mojiPro.htmlTag.html": {
           "type": "boolean",
           "default": true,
           "description": "🌐 <html> – root document element"
         },
-        "mojiCode.htmlTag.head": {
+        "mojiPro.htmlTag.head": {
           "type": "boolean",
           "default": true,
           "description": "🧠 <head> – document metadata container"
         },
-        "mojiCode.htmlTag.body": {
+        "mojiPro.htmlTag.body": {
           "type": "boolean",
           "default": true,
           "description": "🦴 <body> – document body"
         },
-        "mojiCode.htmlTag.div": {
+        "mojiPro.htmlTag.div": {
           "type": "boolean",
           "default": true,
           "description": "📦 <div> – generic block container"
         },
-        "mojiCode.htmlTag.span": {
+        "mojiPro.htmlTag.span": {
           "type": "boolean",
           "default": true,
           "description": "🔖 <span> – generic inline container"
         },
-        "mojiCode.htmlTag.p": {
+        "mojiPro.htmlTag.p": {
           "type": "boolean",
           "default": true,
           "description": "📄 <p> – paragraph"
         },
-        "mojiCode.htmlTag.a": {
+        "mojiPro.htmlTag.a": {
           "type": "boolean",
           "default": true,
           "description": "🔗 <a> – anchor / hyperlink"
         },
-        "mojiCode.htmlTag.h1": {
+        "mojiPro.htmlTag.h1": {
           "type": "boolean",
           "default": true,
           "description": "1️⃣ <h1> – heading level 1"
         },
-        "mojiCode.htmlTag.h2": {
+        "mojiPro.htmlTag.h2": {
           "type": "boolean",
           "default": true,
           "description": "2️⃣ <h2> – heading level 2"
         },
-        "mojiCode.htmlTag.h3": {
+        "mojiPro.htmlTag.h3": {
           "type": "boolean",
           "default": true,
           "description": "3️⃣ <h3> – heading level 3"
         },
-        "mojiCode.htmlTag.h4": {
+        "mojiPro.htmlTag.h4": {
           "type": "boolean",
           "default": true,
           "description": "4️⃣ <h4> – heading level 4"
         },
-        "mojiCode.htmlTag.h5": {
+        "mojiPro.htmlTag.h5": {
           "type": "boolean",
           "default": true,
           "description": "5️⃣ <h5> – heading level 5"
         },
-        "mojiCode.htmlTag.h6": {
+        "mojiPro.htmlTag.h6": {
           "type": "boolean",
           "default": true,
           "description": "6️⃣ <h6> – heading level 6"
         },
-        "mojiCode.htmlTag.ul": {
+        "mojiPro.htmlTag.ul": {
           "type": "boolean",
           "default": true,
           "description": "📝 <ul> – unordered list"
         },
-        "mojiCode.htmlTag.ol": {
+        "mojiPro.htmlTag.ol": {
           "type": "boolean",
           "default": true,
           "description": "🔢 <ol> – ordered list"
         },
-        "mojiCode.htmlTag.li": {
+        "mojiPro.htmlTag.li": {
           "type": "boolean",
           "default": true,
           "description": "▪️ <li> – list item"
         },
-        "mojiCode.htmlTag.table": {
+        "mojiPro.htmlTag.table": {
           "type": "boolean",
           "default": true,
           "description": "📊 <table> – data table"
         },
-        "mojiCode.htmlTag.tr": {
+        "mojiPro.htmlTag.tr": {
           "type": "boolean",
           "default": true,
           "description": "➡️ <tr> – table row"
         },
-        "mojiCode.htmlTag.td": {
+        "mojiPro.htmlTag.td": {
           "type": "boolean",
           "default": true,
           "description": "📎 <td> – table data cell"
         },
-        "mojiCode.htmlTag.th": {
+        "mojiPro.htmlTag.th": {
           "type": "boolean",
           "default": true,
           "description": "🏷️ <th> – table header cell"
         },
-        "mojiCode.htmlTag.thead": {
+        "mojiPro.htmlTag.thead": {
           "type": "boolean",
           "default": true,
           "description": "🔝 <thead> – table head group"
         },
-        "mojiCode.htmlTag.tbody": {
+        "mojiPro.htmlTag.tbody": {
           "type": "boolean",
           "default": true,
           "description": "📋 <tbody> – table body group"
         },
-        "mojiCode.htmlTag.tfoot": {
+        "mojiPro.htmlTag.tfoot": {
           "type": "boolean",
           "default": true,
           "description": "🔚 <tfoot> – table foot group"
         },
-        "mojiCode.htmlTag.form": {
+        "mojiPro.htmlTag.form": {
           "type": "boolean",
           "default": true,
           "description": "📑 <form> – input form"
         },
-        "mojiCode.htmlTag.button": {
+        "mojiPro.htmlTag.button": {
           "type": "boolean",
           "default": true,
           "description": "🔘 <button> – clickable button"
         },
-        "mojiCode.htmlTag.select": {
+        "mojiPro.htmlTag.select": {
           "type": "boolean",
           "default": true,
           "description": "📂 <select> – dropdown select"
         },
-        "mojiCode.htmlTag.option": {
+        "mojiPro.htmlTag.option": {
           "type": "boolean",
           "default": true,
           "description": "☑️ <option> – select option"
         },
-        "mojiCode.htmlTag.textarea": {
+        "mojiPro.htmlTag.textarea": {
           "type": "boolean",
           "default": true,
           "description": "✏️ <textarea> – multiline text input"
         },
-        "mojiCode.htmlTag.label": {
+        "mojiPro.htmlTag.label": {
           "type": "boolean",
           "default": true,
           "description": "🪧 <label> – form control label"
         },
-        "mojiCode.htmlTag.nav": {
+        "mojiPro.htmlTag.nav": {
           "type": "boolean",
           "default": true,
           "description": "🧭 <nav> – navigation section"
         },
-        "mojiCode.htmlTag.header": {
+        "mojiPro.htmlTag.header": {
           "type": "boolean",
           "default": true,
           "description": "📰 <header> – page header"
         },
-        "mojiCode.htmlTag.footer": {
+        "mojiPro.htmlTag.footer": {
           "type": "boolean",
           "default": true,
           "description": "👟 <footer> – page footer"
         },
-        "mojiCode.htmlTag.main": {
+        "mojiPro.htmlTag.main": {
           "type": "boolean",
           "default": true,
           "description": "🏠 <main> – main content area"
         },
-        "mojiCode.htmlTag.section": {
+        "mojiPro.htmlTag.section": {
           "type": "boolean",
           "default": true,
           "description": "📐 <section> – thematic section"
         },
-        "mojiCode.htmlTag.article": {
+        "mojiPro.htmlTag.article": {
           "type": "boolean",
           "default": true,
           "description": "📓 <article> – self-contained article"
         },
-        "mojiCode.htmlTag.aside": {
+        "mojiPro.htmlTag.aside": {
           "type": "boolean",
           "default": true,
           "description": "📌 <aside> – tangential content"
         },
-        "mojiCode.htmlTag.script": {
+        "mojiPro.htmlTag.script": {
           "type": "boolean",
           "default": true,
           "description": "⚡ <script> – executable script"
         },
-        "mojiCode.htmlTag.style": {
+        "mojiPro.htmlTag.style": {
           "type": "boolean",
           "default": true,
           "description": "🎨 <style> – embedded stylesheet"
         },
-        "mojiCode.htmlTag.title": {
+        "mojiPro.htmlTag.title": {
           "type": "boolean",
           "default": true,
           "description": "👑 <title> – document title"
         },
-        "mojiCode.htmlTag.video": {
+        "mojiPro.htmlTag.video": {
           "type": "boolean",
           "default": true,
           "description": "🎬 <video> – video player"
         },
-        "mojiCode.htmlTag.audio": {
+        "mojiPro.htmlTag.audio": {
           "type": "boolean",
           "default": true,
           "description": "🔊 <audio> – audio player"
         },
-        "mojiCode.htmlTag.canvas": {
+        "mojiPro.htmlTag.canvas": {
           "type": "boolean",
           "default": true,
           "description": "🖌️ <canvas> – drawing surface"
         },
-        "mojiCode.htmlTag.iframe": {
+        "mojiPro.htmlTag.iframe": {
           "type": "boolean",
           "default": true,
           "description": "🪟 <iframe> – nested browsing context"
         },
-        "mojiCode.htmlTag.picture": {
+        "mojiPro.htmlTag.picture": {
           "type": "boolean",
           "default": true,
           "description": "📸 <picture> – responsive image container"
         },
-        "mojiCode.htmlTag.pre": {
+        "mojiPro.htmlTag.pre": {
           "type": "boolean",
           "default": true,
           "description": "📟 <pre> – preformatted text"
         },
-        "mojiCode.htmlTag.code": {
+        "mojiPro.htmlTag.code": {
           "type": "boolean",
           "default": true,
           "description": "💻 <code> – code fragment"
         },
-        "mojiCode.htmlTag.strong": {
+        "mojiPro.htmlTag.strong": {
           "type": "boolean",
           "default": true,
           "description": "💪 <strong> – strong importance"
         },
-        "mojiCode.htmlTag.em": {
+        "mojiPro.htmlTag.em": {
           "type": "boolean",
           "default": true,
           "description": "✍️ <em> – stress emphasis"
         },
-        "mojiCode.htmlTag.blockquote": {
+        "mojiPro.htmlTag.blockquote": {
           "type": "boolean",
           "default": true,
           "description": "🗨️ <blockquote> – extended quotation"
         },
-        "mojiCode.htmlTag.mark": {
+        "mojiPro.htmlTag.mark": {
           "type": "boolean",
           "default": true,
           "description": "🖍️ <mark> – highlighted text"
         },
-        "mojiCode.htmlTag.del": {
+        "mojiPro.htmlTag.del": {
           "type": "boolean",
           "default": true,
           "description": "❌ <del> – deleted text"
         },
-        "mojiCode.htmlTag.ins": {
+        "mojiPro.htmlTag.ins": {
           "type": "boolean",
           "default": true,
           "description": "➕ <ins> – inserted text"
         },
-        "mojiCode.htmlTag.small": {
+        "mojiPro.htmlTag.small": {
           "type": "boolean",
           "default": true,
           "description": "🔹 <small> – side comment"
         },
-        "mojiCode.htmlTag.sub": {
+        "mojiPro.htmlTag.sub": {
           "type": "boolean",
           "default": true,
           "description": "⬇️ <sub> – subscript"
         },
-        "mojiCode.htmlTag.sup": {
+        "mojiPro.htmlTag.sup": {
           "type": "boolean",
           "default": true,
           "description": "⬆️ <sup> – superscript"
         },
-        "mojiCode.htmlTag.figure": {
+        "mojiPro.htmlTag.figure": {
           "type": "boolean",
           "default": true,
           "description": "🎞️ <figure> – figure with optional caption"
         },
-        "mojiCode.htmlTag.figcaption": {
+        "mojiPro.htmlTag.figcaption": {
           "type": "boolean",
           "default": true,
           "description": "💬 <figcaption> – figure caption"
         },
-        "mojiCode.htmlTag.details": {
+        "mojiPro.htmlTag.details": {
           "type": "boolean",
           "default": true,
           "description": "🔍 <details> – disclosure widget"
         },
-        "mojiCode.htmlTag.summary": {
+        "mojiPro.htmlTag.summary": {
           "type": "boolean",
           "default": true,
           "description": "📖 <summary> – disclosure summary"
         },
-        "mojiCode.htmlTag.dialog": {
+        "mojiPro.htmlTag.dialog": {
           "type": "boolean",
           "default": true,
           "description": "💭 <dialog> – dialog box"
         },
-        "mojiCode.htmlTag.template": {
+        "mojiPro.htmlTag.template": {
           "type": "boolean",
           "default": true,
           "description": "🧩 <template> – content template"
         },
-        "mojiCode.htmlTag.slot": {
+        "mojiPro.htmlTag.slot": {
           "type": "boolean",
           "default": true,
           "description": "🔌 <slot> – shadow DOM slot"
         },
-        "mojiCode.htmlTag.fieldset": {
+        "mojiPro.htmlTag.fieldset": {
           "type": "boolean",
           "default": true,
           "description": "🔲 <fieldset> – field grouping"
         },
-        "mojiCode.htmlTag.legend": {
+        "mojiPro.htmlTag.legend": {
           "type": "boolean",
           "default": true,
           "description": "🏆 <legend> – fieldset caption"
         },
-        "mojiCode.htmlTag.output": {
+        "mojiPro.htmlTag.output": {
           "type": "boolean",
           "default": true,
           "description": "📤 <output> – calculation result"
         },
-        "mojiCode.htmlTag.progress": {
+        "mojiPro.htmlTag.progress": {
           "type": "boolean",
           "default": true,
           "description": "⏳ <progress> – progress indicator"
         },
-        "mojiCode.htmlTag.meter": {
+        "mojiPro.htmlTag.meter": {
           "type": "boolean",
           "default": true,
           "description": "📏 <meter> – scalar gauge"
         },
-        "mojiCode.htmlTag.datalist": {
+        "mojiPro.htmlTag.datalist": {
           "type": "boolean",
           "default": true,
           "description": "📃 <datalist> – predefined options"
         },
-        "mojiCode.htmlTag.map": {
+        "mojiPro.htmlTag.map": {
           "type": "boolean",
           "default": true,
           "description": "🗺️ <map> – image map"
         },
-        "mojiCode.htmlVoid.img": {
+        "mojiPro.htmlVoid.img": {
           "type": "boolean",
           "default": true,
           "description": "🖼️ <img> – image"
         },
-        "mojiCode.htmlVoid.input": {
+        "mojiPro.htmlVoid.input": {
           "type": "boolean",
           "default": true,
           "description": "⌨️ <input> – form input"
         },
-        "mojiCode.htmlVoid.br": {
+        "mojiPro.htmlVoid.br": {
           "type": "boolean",
           "default": true,
           "description": "↩️ <br> – line break"
         },
-        "mojiCode.htmlVoid.hr": {
+        "mojiPro.htmlVoid.hr": {
           "type": "boolean",
           "default": true,
           "description": "➖ <hr> – horizontal rule"
         },
-        "mojiCode.htmlVoid.meta": {
+        "mojiPro.htmlVoid.meta": {
           "type": "boolean",
           "default": true,
           "description": "ℹ️ <meta> – document metadata"
         },
-        "mojiCode.htmlVoid.link": {
+        "mojiPro.htmlVoid.link": {
           "type": "boolean",
           "default": true,
           "description": "⛓️ <link> – external resource link"
         },
-        "mojiCode.htmlVoid.source": {
+        "mojiPro.htmlVoid.source": {
           "type": "boolean",
           "default": true,
           "description": "📡 <source> – media source"
         },
-        "mojiCode.htmlVoid.embed": {
+        "mojiPro.htmlVoid.embed": {
           "type": "boolean",
           "default": true,
           "description": "📼 <embed> – embedded content"
         },
-        "mojiCode.htmlVoid.area": {
+        "mojiPro.htmlVoid.area": {
           "type": "boolean",
           "default": true,
           "description": "📍 <area> – image map clickable area"
         },
-        "mojiCode.htmlVoid.track": {
+        "mojiPro.htmlVoid.track": {
           "type": "boolean",
           "default": true,
           "description": "🎵 <track> – text track"
         },
-        "mojiCode.htmlVoid.wbr": {
+        "mojiPro.htmlVoid.wbr": {
           "type": "boolean",
           "default": true,
           "description": "✂️ <wbr> – word break opportunity"
         },
-        "mojiCode.htmlVoid.col": {
+        "mojiPro.htmlVoid.col": {
           "type": "boolean",
           "default": true,
           "description": "🗄️ <col> – table column"
         },
-        "mojiCode.htmlVoid.base": {
+        "mojiPro.htmlVoid.base": {
           "type": "boolean",
           "default": true,
           "description": "⚓ <base> – base URL"
         },
-        "mojiCode.htmlAttr.class": {
+        "mojiPro.htmlAttr.class": {
           "type": "boolean",
           "default": true,
           "description": "🏛️ class – CSS class name"
         },
-        "mojiCode.htmlAttr.id": {
+        "mojiPro.htmlAttr.id": {
           "type": "boolean",
           "default": true,
           "description": "🆔 id – unique identifier"
         },
-        "mojiCode.htmlAttr.href": {
+        "mojiPro.htmlAttr.href": {
           "type": "boolean",
           "default": true,
           "description": "🌍 href – hyperlink reference"
         },
-        "mojiCode.htmlAttr.src": {
+        "mojiPro.htmlAttr.src": {
           "type": "boolean",
           "default": true,
           "description": "📥 src – source URL"
         },
-        "mojiCode.htmlAttr.alt": {
+        "mojiPro.htmlAttr.alt": {
           "type": "boolean",
           "default": true,
           "description": "🗣️ alt – alternative text"
         },
-        "mojiCode.htmlAttr.style": {
+        "mojiPro.htmlAttr.style": {
           "type": "boolean",
           "default": true,
           "description": "🎭 style – inline CSS styles"
         },
-        "mojiCode.htmlAttr.type": {
+        "mojiPro.htmlAttr.type": {
           "type": "boolean",
           "default": true,
           "description": "🔤 type – input / mime type"
         },
-        "mojiCode.htmlAttr.name": {
+        "mojiPro.htmlAttr.name": {
           "type": "boolean",
           "default": true,
           "description": "📛 name – element name"
         },
-        "mojiCode.htmlAttr.value": {
+        "mojiPro.htmlAttr.value": {
           "type": "boolean",
           "default": true,
           "description": "💎 value – element value"
         },
-        "mojiCode.htmlAttr.placeholder": {
+        "mojiPro.htmlAttr.placeholder": {
           "type": "boolean",
           "default": true,
           "description": "💡 placeholder – placeholder hint"
         },
-        "mojiCode.htmlAttr.action": {
+        "mojiPro.htmlAttr.action": {
           "type": "boolean",
           "default": true,
           "description": "🎯 action – form submission URL"
         },
-        "mojiCode.htmlAttr.method": {
+        "mojiPro.htmlAttr.method": {
           "type": "boolean",
           "default": true,
           "description": "📮 method – HTTP method"
         },
-        "mojiCode.htmlAttr.target": {
+        "mojiPro.htmlAttr.target": {
           "type": "boolean",
           "default": true,
           "description": "🏹 target – link target"
         },
-        "mojiCode.htmlAttr.rel": {
+        "mojiPro.htmlAttr.rel": {
           "type": "boolean",
           "default": true,
           "description": "🤝 rel – link relationship"
         },
-        "mojiCode.htmlAttr.width": {
+        "mojiPro.htmlAttr.width": {
           "type": "boolean",
           "default": true,
           "description": "↔️ width – element width"
         },
-        "mojiCode.htmlAttr.height": {
+        "mojiPro.htmlAttr.height": {
           "type": "boolean",
           "default": true,
           "description": "↕️ height – element height"
         },
-        "mojiCode.htmlAttr.disabled": {
+        "mojiPro.htmlAttr.disabled": {
           "type": "boolean",
           "default": true,
           "description": "🚫 disabled – disabled state"
         },
-        "mojiCode.htmlAttr.required": {
+        "mojiPro.htmlAttr.required": {
           "type": "boolean",
           "default": true,
           "description": "❗ required – required field"
         },
-        "mojiCode.htmlAttr.checked": {
+        "mojiPro.htmlAttr.checked": {
           "type": "boolean",
           "default": true,
           "description": "✅ checked – checked state"
         },
-        "mojiCode.htmlAttr.readonly": {
+        "mojiPro.htmlAttr.readonly": {
           "type": "boolean",
           "default": true,
           "description": "🔒 readonly – read-only field"
         },
-        "mojiCode.htmlAttr.hidden": {
+        "mojiPro.htmlAttr.hidden": {
           "type": "boolean",
           "default": true,
           "description": "👻 hidden – hidden element"
         },
-        "mojiCode.htmlAttr.autofocus": {
+        "mojiPro.htmlAttr.autofocus": {
           "type": "boolean",
           "default": true,
           "description": "🔦 autofocus – automatic focus"
         },
-        "mojiCode.htmlAttr.defer": {
+        "mojiPro.htmlAttr.defer": {
           "type": "boolean",
           "default": true,
           "description": "⏱️ defer – deferred script loading"
         },
-        "mojiCode.htmlAttr.async": {
+        "mojiPro.htmlAttr.async": {
           "type": "boolean",
           "default": true,
           "description": "🔄 async – asynchronous loading"
         },
-        "mojiCode.htmlAttr.charset": {
+        "mojiPro.htmlAttr.charset": {
           "type": "boolean",
           "default": true,
           "description": "🔠 charset – character encoding"
         },
-        "mojiCode.htmlAttr.lang": {
+        "mojiPro.htmlAttr.lang": {
           "type": "boolean",
           "default": true,
           "description": "🌎 lang – language code"
         },
-        "mojiCode.htmlAttr.role": {
+        "mojiPro.htmlAttr.role": {
           "type": "boolean",
           "default": true,
           "description": "🎪 role – ARIA role"
         },
-        "mojiCode.htmlAttr.tabindex": {
+        "mojiPro.htmlAttr.tabindex": {
           "type": "boolean",
           "default": true,
           "description": "#️⃣ tabindex – tab order index"
         },
-        "mojiCode.htmlAttr.for": {
+        "mojiPro.htmlAttr.for": {
           "type": "boolean",
           "default": true,
           "description": "🔁 for – associated control id"
         },
-        "mojiCode.htmlAttr.loading": {
+        "mojiPro.htmlAttr.loading": {
           "type": "boolean",
           "default": true,
           "description": "⏰ loading – lazy / eager loading"
         },
-        "mojiCode.htmlAttr.content": {
+        "mojiPro.htmlAttr.content": {
           "type": "boolean",
           "default": true,
           "description": "📜 content – meta content value"
         },
-        "mojiCode.cssAtRules": {
+        "mojiPro.cssAtRules": {
           "type": "boolean",
           "default": true,
           "description": "Master toggle: show emojis for CSS at-rules (@media, @keyframes, etc.)"
         },
-        "mojiCode.cssLayout": {
+        "mojiPro.cssLayout": {
           "type": "boolean",
           "default": true,
           "description": "Master toggle: show emojis for CSS layout properties."
         },
-        "mojiCode.cssBox": {
+        "mojiPro.cssBox": {
           "type": "boolean",
           "default": true,
           "description": "Master toggle: show emojis for CSS box model properties."
         },
-        "mojiCode.cssVisual": {
+        "mojiPro.cssVisual": {
           "type": "boolean",
           "default": true,
           "description": "Master toggle: show emojis for CSS visual properties."
         },
-        "mojiCode.cssPseudo": {
+        "mojiPro.cssPseudo": {
           "type": "boolean",
           "default": true,
           "description": "Master toggle: show emojis for CSS pseudo-classes."
         },
-        "mojiCode.cssValues": {
+        "mojiPro.cssValues": {
           "type": "boolean",
           "default": true,
           "description": "Master toggle: show emojis for CSS important values."
         },
-        "mojiCode.cssAtRule.media": {
+        "mojiPro.cssAtRule.media": {
           "type": "boolean",
           "default": true,
           "description": "📺 @media – media queries"
         },
-        "mojiCode.cssAtRule.keyframes": {
+        "mojiPro.cssAtRule.keyframes": {
           "type": "boolean",
           "default": true,
           "description": "🎬 @keyframes – animation keyframes"
         },
-        "mojiCode.cssAtRule.import": {
+        "mojiPro.cssAtRule.import": {
           "type": "boolean",
           "default": true,
           "description": "📥 @import – import stylesheet"
         },
-        "mojiCode.cssAtRule.font-face": {
+        "mojiPro.cssAtRule.font-face": {
           "type": "boolean",
           "default": true,
           "description": "🔤 @font-face – custom fonts"
         },
-        "mojiCode.cssAtRule.supports": {
+        "mojiPro.cssAtRule.supports": {
           "type": "boolean",
           "default": true,
           "description": "✅ @supports – feature detection"
         },
-        "mojiCode.cssLayout.display": {
+        "mojiPro.cssLayout.display": {
           "type": "boolean",
           "default": true,
           "description": "🖥️ display – display mode"
         },
-        "mojiCode.cssLayout.flex": {
+        "mojiPro.cssLayout.flex": {
           "type": "boolean",
           "default": true,
           "description": "📦 flex – flexbox"
         },
-        "mojiCode.cssLayout.grid": {
+        "mojiPro.cssLayout.grid": {
           "type": "boolean",
           "default": true,
           "description": "🔲 grid – grid layout"
         },
-        "mojiCode.cssLayout.position": {
+        "mojiPro.cssLayout.position": {
           "type": "boolean",
           "default": true,
           "description": "📍 position – positioning"
         },
-        "mojiCode.cssLayout.float": {
+        "mojiPro.cssLayout.float": {
           "type": "boolean",
           "default": true,
           "description": "🎈 float – float"
         },
-        "mojiCode.cssBox.margin": {
+        "mojiPro.cssBox.margin": {
           "type": "boolean",
           "default": true,
           "description": "⬜ margin – outer spacing"
         },
-        "mojiCode.cssBox.padding": {
+        "mojiPro.cssBox.padding": {
           "type": "boolean",
           "default": true,
           "description": "🔳 padding – inner spacing"
         },
-        "mojiCode.cssBox.border": {
+        "mojiPro.cssBox.border": {
           "type": "boolean",
           "default": true,
           "description": "🔲 border – border"
         },
-        "mojiCode.cssBox.width": {
+        "mojiPro.cssBox.width": {
           "type": "boolean",
           "default": true,
           "description": "↔️ width – width"
         },
-        "mojiCode.cssBox.height": {
+        "mojiPro.cssBox.height": {
           "type": "boolean",
           "default": true,
           "description": "↕️ height – height"
         },
-        "mojiCode.cssVisual.background": {
+        "mojiPro.cssVisual.background": {
           "type": "boolean",
           "default": true,
           "description": "🖼️ background – background"
         },
-        "mojiCode.cssVisual.color": {
+        "mojiPro.cssVisual.color": {
           "type": "boolean",
           "default": true,
           "description": "🎨 color – color"
         },
-        "mojiCode.cssVisual.opacity": {
+        "mojiPro.cssVisual.opacity": {
           "type": "boolean",
           "default": true,
           "description": "👻 opacity – transparency"
         },
-        "mojiCode.cssVisual.transform": {
+        "mojiPro.cssVisual.transform": {
           "type": "boolean",
           "default": true,
           "description": "🔄 transform – transform"
         },
-        "mojiCode.cssVisual.animation": {
+        "mojiPro.cssVisual.animation": {
           "type": "boolean",
           "default": true,
           "description": "🎬 animation – animation"
         },
-        "mojiCode.cssVisual.transition": {
+        "mojiPro.cssVisual.transition": {
           "type": "boolean",
           "default": true,
           "description": "⏳ transition – transition"
         },
-        "mojiCode.cssVisual.visibility": {
+        "mojiPro.cssVisual.visibility": {
           "type": "boolean",
           "default": true,
           "description": "👁️ visibility – visibility"
         },
-        "mojiCode.cssVisual.cursor": {
+        "mojiPro.cssVisual.cursor": {
           "type": "boolean",
           "default": true,
           "description": "👆 cursor – cursor"
         },
-        "mojiCode.cssPseudo.hover": {
+        "mojiPro.cssPseudo.hover": {
           "type": "boolean",
           "default": true,
           "description": "🖱️ :hover – mouse hover"
         },
-        "mojiCode.cssPseudo.focus": {
+        "mojiPro.cssPseudo.focus": {
           "type": "boolean",
           "default": true,
           "description": "🎯 :focus – focus state"
         },
-        "mojiCode.cssPseudo.active": {
+        "mojiPro.cssPseudo.active": {
           "type": "boolean",
           "default": true,
           "description": "⚡ :active – active/click state"
         },
-        "mojiCode.cssPseudo.first-child": {
+        "mojiPro.cssPseudo.first-child": {
           "type": "boolean",
           "default": true,
           "description": "👒 :first-child – first child"
         },
-        "mojiCode.cssPseudo.last-child": {
+        "mojiPro.cssPseudo.last-child": {
           "type": "boolean",
           "default": true,
           "description": "👴 :last-child – last child"
         },
-        "mojiCode.cssValue.important": {
+        "mojiPro.cssValue.important": {
           "type": "boolean",
           "default": true,
           "description": "❗ !important – important override"
         },
-        "mojiCode.cssValue.none": {
+        "mojiPro.cssValue.none": {
           "type": "boolean",
           "default": true,
           "description": "🚫 none – none value"
         },
-        "mojiCode.cssValue.auto": {
+        "mojiPro.cssValue.auto": {
           "type": "boolean",
           "default": true,
           "description": "🤖 auto – auto value"
         },
-        "mojiCode.cssValue.inherit": {
+        "mojiPro.cssValue.inherit": {
           "type": "boolean",
           "default": true,
           "description": "👪 inherit – inherit value"
         },
-        "mojiCode.pythonKeywords": {
+        "mojiPro.pythonKeywords": {
           "type": "boolean",
           "default": true,
           "description": "Master toggle: show emojis for Python keywords."
         },
-        "mojiCode.pyKeyword.True": {
+        "mojiPro.pyKeyword.True": {
           "type": "boolean",
           "default": true,
           "description": "✅ True – boolean true"
         },
-        "mojiCode.pyKeyword.False": {
+        "mojiPro.pyKeyword.False": {
           "type": "boolean",
           "default": true,
           "description": "❌ False – boolean false"
         },
-        "mojiCode.pyKeyword.None": {
+        "mojiPro.pyKeyword.None": {
           "type": "boolean",
           "default": true,
           "description": "🚫 None – null/nothing"
         },
-        "mojiCode.pyKeyword.if": {
+        "mojiPro.pyKeyword.if": {
           "type": "boolean",
           "default": true,
           "description": "❓ if – conditional"
         },
-        "mojiCode.pyKeyword.elif": {
+        "mojiPro.pyKeyword.elif": {
           "type": "boolean",
           "default": true,
           "description": "🔀 elif – else if branch"
         },
-        "mojiCode.pyKeyword.else": {
+        "mojiPro.pyKeyword.else": {
           "type": "boolean",
           "default": true,
           "description": "↪️ else – alternative branch"
         },
-        "mojiCode.pyKeyword.for": {
+        "mojiPro.pyKeyword.for": {
           "type": "boolean",
           "default": true,
           "description": "🔁 for – for loop"
         },
-        "mojiCode.pyKeyword.while": {
+        "mojiPro.pyKeyword.while": {
           "type": "boolean",
           "default": true,
           "description": "🔂 while – while loop"
         },
-        "mojiCode.pyKeyword.break": {
+        "mojiPro.pyKeyword.break": {
           "type": "boolean",
           "default": true,
           "description": "🛑 break – exit loop"
         },
-        "mojiCode.pyKeyword.continue": {
+        "mojiPro.pyKeyword.continue": {
           "type": "boolean",
           "default": true,
           "description": "⏭️ continue – next iteration"
         },
-        "mojiCode.pyKeyword.pass": {
+        "mojiPro.pyKeyword.pass": {
           "type": "boolean",
           "default": true,
           "description": "⏩ pass – placeholder/no-op"
         },
-        "mojiCode.pyKeyword.match": {
+        "mojiPro.pyKeyword.match": {
           "type": "boolean",
           "default": true,
           "description": "🎯 match – pattern matching"
         },
-        "mojiCode.pyKeyword.case": {
+        "mojiPro.pyKeyword.case": {
           "type": "boolean",
           "default": true,
           "description": "📋 case – match case branch"
         },
-        "mojiCode.pyKeyword.def": {
+        "mojiPro.pyKeyword.def": {
           "type": "boolean",
           "default": true,
           "description": "⚡ def – function definition"
         },
-        "mojiCode.pyKeyword.return": {
+        "mojiPro.pyKeyword.return": {
           "type": "boolean",
           "default": true,
           "description": "🔙 return – return value"
         },
-        "mojiCode.pyKeyword.yield": {
+        "mojiPro.pyKeyword.yield": {
           "type": "boolean",
           "default": true,
           "description": "🌾 yield – generator yield"
         },
-        "mojiCode.pyKeyword.lambda": {
+        "mojiPro.pyKeyword.lambda": {
           "type": "boolean",
           "default": true,
           "description": "λ lambda – anonymous function"
         },
-        "mojiCode.pyKeyword.class": {
+        "mojiPro.pyKeyword.class": {
           "type": "boolean",
           "default": true,
           "description": "🏛️ class – class declaration"
         },
-        "mojiCode.pyKeyword.try": {
+        "mojiPro.pyKeyword.try": {
           "type": "boolean",
           "default": true,
           "description": "🤞 try – attempt block"
         },
-        "mojiCode.pyKeyword.except": {
+        "mojiPro.pyKeyword.except": {
           "type": "boolean",
           "default": true,
           "description": "🥅 except – catch exception"
         },
-        "mojiCode.pyKeyword.finally": {
+        "mojiPro.pyKeyword.finally": {
           "type": "boolean",
           "default": true,
           "description": "🏁 finally – guaranteed cleanup"
         },
-        "mojiCode.pyKeyword.raise": {
+        "mojiPro.pyKeyword.raise": {
           "type": "boolean",
           "default": true,
           "description": "💥 raise – raise exception"
         },
-        "mojiCode.pyKeyword.assert": {
+        "mojiPro.pyKeyword.assert": {
           "type": "boolean",
           "default": true,
           "description": "🔍 assert – assertion check"
         },
-        "mojiCode.pyKeyword.import": {
+        "mojiPro.pyKeyword.import": {
           "type": "boolean",
           "default": true,
           "description": "📥 import – module import"
         },
-        "mojiCode.pyKeyword.from": {
+        "mojiPro.pyKeyword.from": {
           "type": "boolean",
           "default": true,
           "description": "📤 from – import source"
         },
-        "mojiCode.pyKeyword.as": {
+        "mojiPro.pyKeyword.as": {
           "type": "boolean",
           "default": true,
           "description": "🏷️ as – alias"
         },
-        "mojiCode.pyKeyword.global": {
+        "mojiPro.pyKeyword.global": {
           "type": "boolean",
           "default": true,
           "description": "🌐 global – global scope"
         },
-        "mojiCode.pyKeyword.nonlocal": {
+        "mojiPro.pyKeyword.nonlocal": {
           "type": "boolean",
           "default": true,
           "description": "📡 nonlocal – enclosing scope"
         },
-        "mojiCode.pyKeyword.and": {
+        "mojiPro.pyKeyword.and": {
           "type": "boolean",
           "default": true,
           "description": "🤝 and – logical and"
         },
-        "mojiCode.pyKeyword.or": {
+        "mojiPro.pyKeyword.or": {
           "type": "boolean",
           "default": true,
           "description": "🔀 or – logical or"
         },
-        "mojiCode.pyKeyword.not": {
+        "mojiPro.pyKeyword.not": {
           "type": "boolean",
           "default": true,
           "description": "🚷 not – logical negation"
         },
-        "mojiCode.pyKeyword.in": {
+        "mojiPro.pyKeyword.in": {
           "type": "boolean",
           "default": true,
           "description": "📍 in – membership test"
         },
-        "mojiCode.pyKeyword.is": {
+        "mojiPro.pyKeyword.is": {
           "type": "boolean",
           "default": true,
           "description": "🔗 is – identity test"
         },
-        "mojiCode.pyKeyword.async": {
+        "mojiPro.pyKeyword.async": {
           "type": "boolean",
           "default": true,
           "description": "🔮 async – async definition"
         },
-        "mojiCode.pyKeyword.await": {
+        "mojiPro.pyKeyword.await": {
           "type": "boolean",
           "default": true,
           "description": "⏳ await – await coroutine"
         },
-        "mojiCode.pyKeyword.with": {
+        "mojiPro.pyKeyword.with": {
           "type": "boolean",
           "default": true,
           "description": "🎁 with – context manager"
         },
-        "mojiCode.pyKeyword.del": {
+        "mojiPro.pyKeyword.del": {
           "type": "boolean",
           "default": true,
           "description": "🗑️ del – delete reference"
         },
-        "mojiCode.cKeywords": {
+        "mojiPro.cKeywords": {
           "type": "boolean",
           "default": true,
           "description": "Master toggle: show emojis for C keywords."
         },
-        "mojiCode.cKeyword.if": {
+        "mojiPro.cKeyword.if": {
           "type": "boolean",
           "default": true,
           "description": "❓ if – conditional"
         },
-        "mojiCode.cKeyword.else": {
+        "mojiPro.cKeyword.else": {
           "type": "boolean",
           "default": true,
           "description": "↪️ else – alternative branch"
         },
-        "mojiCode.cKeyword.switch": {
+        "mojiPro.cKeyword.switch": {
           "type": "boolean",
           "default": true,
           "description": "🎚️ switch – multi-branch"
         },
-        "mojiCode.cKeyword.case": {
+        "mojiPro.cKeyword.case": {
           "type": "boolean",
           "default": true,
           "description": "📋 case – switch case branch"
         },
-        "mojiCode.cKeyword.default": {
+        "mojiPro.cKeyword.default": {
           "type": "boolean",
           "default": true,
           "description": "📌 default – fallback branch"
         },
-        "mojiCode.cKeyword.for": {
+        "mojiPro.cKeyword.for": {
           "type": "boolean",
           "default": true,
           "description": "🔁 for – for loop"
         },
-        "mojiCode.cKeyword.while": {
+        "mojiPro.cKeyword.while": {
           "type": "boolean",
           "default": true,
           "description": "🔂 while – while loop"
         },
-        "mojiCode.cKeyword.do": {
+        "mojiPro.cKeyword.do": {
           "type": "boolean",
           "default": true,
           "description": "🔄 do – do-while loop"
         },
-        "mojiCode.cKeyword.break": {
+        "mojiPro.cKeyword.break": {
           "type": "boolean",
           "default": true,
           "description": "🛑 break – exit loop/switch"
         },
-        "mojiCode.cKeyword.continue": {
+        "mojiPro.cKeyword.continue": {
           "type": "boolean",
           "default": true,
           "description": "⏭️ continue – next iteration"
         },
-        "mojiCode.cKeyword.goto": {
+        "mojiPro.cKeyword.goto": {
           "type": "boolean",
           "default": true,
           "description": "🚀 goto – unconditional jump"
         },
-        "mojiCode.cKeyword.return": {
+        "mojiPro.cKeyword.return": {
           "type": "boolean",
           "default": true,
           "description": "🔙 return – return value"
         },
-        "mojiCode.cKeyword.int": {
+        "mojiPro.cKeyword.int": {
           "type": "boolean",
           "default": true,
           "description": "🔢 int – integer type"
         },
-        "mojiCode.cKeyword.char": {
+        "mojiPro.cKeyword.char": {
           "type": "boolean",
           "default": true,
           "description": "🔤 char – character type"
         },
-        "mojiCode.cKeyword.float": {
+        "mojiPro.cKeyword.float": {
           "type": "boolean",
           "default": true,
           "description": "🎈 float – floating point"
         },
-        "mojiCode.cKeyword.double": {
+        "mojiPro.cKeyword.double": {
           "type": "boolean",
           "default": true,
           "description": "🎭 double – double precision"
         },
-        "mojiCode.cKeyword.void": {
+        "mojiPro.cKeyword.void": {
           "type": "boolean",
           "default": true,
           "description": "🕳️ void – no type/value"
         },
-        "mojiCode.cKeyword.short": {
+        "mojiPro.cKeyword.short": {
           "type": "boolean",
           "default": true,
           "description": "📏 short – short integer"
         },
-        "mojiCode.cKeyword.long": {
+        "mojiPro.cKeyword.long": {
           "type": "boolean",
           "default": true,
           "description": "📐 long – long integer"
         },
-        "mojiCode.cKeyword.signed": {
+        "mojiPro.cKeyword.signed": {
           "type": "boolean",
           "default": true,
           "description": "➕ signed – signed type"
         },
-        "mojiCode.cKeyword.unsigned": {
+        "mojiPro.cKeyword.unsigned": {
           "type": "boolean",
           "default": true,
           "description": "➖ unsigned – unsigned type"
         },
-        "mojiCode.cKeyword.const": {
+        "mojiPro.cKeyword.const": {
           "type": "boolean",
           "default": true,
           "description": "🔒 const – constant/immutable"
         },
-        "mojiCode.cKeyword.volatile": {
+        "mojiPro.cKeyword.volatile": {
           "type": "boolean",
           "default": true,
           "description": "⚠️ volatile – volatile memory"
         },
-        "mojiCode.cKeyword.static": {
+        "mojiPro.cKeyword.static": {
           "type": "boolean",
           "default": true,
           "description": "🏛️ static – static storage"
         },
-        "mojiCode.cKeyword.extern": {
+        "mojiPro.cKeyword.extern": {
           "type": "boolean",
           "default": true,
           "description": "🌐 extern – external linkage"
         },
-        "mojiCode.cKeyword.register": {
+        "mojiPro.cKeyword.register": {
           "type": "boolean",
           "default": true,
           "description": "⚡ register – register storage"
         },
-        "mojiCode.cKeyword.auto": {
+        "mojiPro.cKeyword.auto": {
           "type": "boolean",
           "default": true,
           "description": "🤖 auto – automatic storage"
         },
-        "mojiCode.cKeyword.struct": {
+        "mojiPro.cKeyword.struct": {
           "type": "boolean",
           "default": true,
           "description": "🏗️ struct – structure type"
         },
-        "mojiCode.cKeyword.union": {
+        "mojiPro.cKeyword.union": {
           "type": "boolean",
           "default": true,
           "description": "🤝 union – union type"
         },
-        "mojiCode.cKeyword.enum": {
+        "mojiPro.cKeyword.enum": {
           "type": "boolean",
           "default": true,
           "description": "📊 enum – enumeration"
         },
-        "mojiCode.cKeyword.typedef": {
+        "mojiPro.cKeyword.typedef": {
           "type": "boolean",
           "default": true,
           "description": "🏷️ typedef – type definition"
         },
-        "mojiCode.cKeyword.sizeof": {
+        "mojiPro.cKeyword.sizeof": {
           "type": "boolean",
           "default": true,
           "description": "📐 sizeof – size operator"
         },
-        "mojiCode.cppKeywords": {
+        "mojiPro.cppKeywords": {
           "type": "boolean",
           "default": true,
           "description": "Master toggle: show emojis for C++ keywords."
         },
-        "mojiCode.cppKeyword.if": {
+        "mojiPro.cppKeyword.if": {
           "type": "boolean",
           "default": true,
           "description": "❓ if – conditional"
         },
-        "mojiCode.cppKeyword.else": {
+        "mojiPro.cppKeyword.else": {
           "type": "boolean",
           "default": true,
           "description": "↪️ else – alternative branch"
         },
-        "mojiCode.cppKeyword.switch": {
+        "mojiPro.cppKeyword.switch": {
           "type": "boolean",
           "default": true,
           "description": "🎚️ switch – multi-branch"
         },
-        "mojiCode.cppKeyword.case": {
+        "mojiPro.cppKeyword.case": {
           "type": "boolean",
           "default": true,
           "description": "📋 case – switch case branch"
         },
-        "mojiCode.cppKeyword.default": {
+        "mojiPro.cppKeyword.default": {
           "type": "boolean",
           "default": true,
           "description": "📌 default – fallback branch"
         },
-        "mojiCode.cppKeyword.for": {
+        "mojiPro.cppKeyword.for": {
           "type": "boolean",
           "default": true,
           "description": "🔁 for – for loop"
         },
-        "mojiCode.cppKeyword.while": {
+        "mojiPro.cppKeyword.while": {
           "type": "boolean",
           "default": true,
           "description": "🔂 while – while loop"
         },
-        "mojiCode.cppKeyword.do": {
+        "mojiPro.cppKeyword.do": {
           "type": "boolean",
           "default": true,
           "description": "🔄 do – do-while loop"
         },
-        "mojiCode.cppKeyword.break": {
+        "mojiPro.cppKeyword.break": {
           "type": "boolean",
           "default": true,
           "description": "🛑 break – exit loop/switch"
         },
-        "mojiCode.cppKeyword.continue": {
+        "mojiPro.cppKeyword.continue": {
           "type": "boolean",
           "default": true,
           "description": "⏭️ continue – next iteration"
         },
-        "mojiCode.cppKeyword.goto": {
+        "mojiPro.cppKeyword.goto": {
           "type": "boolean",
           "default": true,
           "description": "🚀 goto – unconditional jump"
         },
-        "mojiCode.cppKeyword.return": {
+        "mojiPro.cppKeyword.return": {
           "type": "boolean",
           "default": true,
           "description": "🔙 return – return value"
         },
-        "mojiCode.cppKeyword.int": {
+        "mojiPro.cppKeyword.int": {
           "type": "boolean",
           "default": true,
           "description": "🔢 int – integer type"
         },
-        "mojiCode.cppKeyword.char": {
+        "mojiPro.cppKeyword.char": {
           "type": "boolean",
           "default": true,
           "description": "🔤 char – character type"
         },
-        "mojiCode.cppKeyword.float": {
+        "mojiPro.cppKeyword.float": {
           "type": "boolean",
           "default": true,
           "description": "🎈 float – floating point"
         },
-        "mojiCode.cppKeyword.double": {
+        "mojiPro.cppKeyword.double": {
           "type": "boolean",
           "default": true,
           "description": "🎭 double – double precision"
         },
-        "mojiCode.cppKeyword.void": {
+        "mojiPro.cppKeyword.void": {
           "type": "boolean",
           "default": true,
           "description": "🕳️ void – no type/value"
         },
-        "mojiCode.cppKeyword.short": {
+        "mojiPro.cppKeyword.short": {
           "type": "boolean",
           "default": true,
           "description": "📏 short – short integer"
         },
-        "mojiCode.cppKeyword.long": {
+        "mojiPro.cppKeyword.long": {
           "type": "boolean",
           "default": true,
           "description": "📐 long – long integer"
         },
-        "mojiCode.cppKeyword.signed": {
+        "mojiPro.cppKeyword.signed": {
           "type": "boolean",
           "default": true,
           "description": "➕ signed – signed type"
         },
-        "mojiCode.cppKeyword.unsigned": {
+        "mojiPro.cppKeyword.unsigned": {
           "type": "boolean",
           "default": true,
           "description": "➖ unsigned – unsigned type"
         },
-        "mojiCode.cppKeyword.bool": {
+        "mojiPro.cppKeyword.bool": {
           "type": "boolean",
           "default": true,
           "description": "🔘 bool – boolean type"
         },
-        "mojiCode.cppKeyword.true": {
+        "mojiPro.cppKeyword.true": {
           "type": "boolean",
           "default": true,
           "description": "✅ true – boolean true"
         },
-        "mojiCode.cppKeyword.false": {
+        "mojiPro.cppKeyword.false": {
           "type": "boolean",
           "default": true,
           "description": "❌ false – boolean false"
         },
-        "mojiCode.cppKeyword.nullptr": {
+        "mojiPro.cppKeyword.nullptr": {
           "type": "boolean",
           "default": true,
           "description": "🚫 nullptr – null pointer"
         },
-        "mojiCode.cppKeyword.auto": {
+        "mojiPro.cppKeyword.auto": {
           "type": "boolean",
           "default": true,
           "description": "🤖 auto – type inference"
         },
-        "mojiCode.cppKeyword.wchar_t": {
+        "mojiPro.cppKeyword.wchar_t": {
           "type": "boolean",
           "default": true,
           "description": "🔠 wchar_t – wide character"
         },
-        "mojiCode.cppKeyword.char16_t": {
+        "mojiPro.cppKeyword.char16_t": {
           "type": "boolean",
           "default": true,
           "description": "🔡 char16_t – UTF-16 character"
         },
-        "mojiCode.cppKeyword.char32_t": {
+        "mojiPro.cppKeyword.char32_t": {
           "type": "boolean",
           "default": true,
           "description": "🔣 char32_t – UTF-32 character"
         },
-        "mojiCode.cppKeyword.const": {
+        "mojiPro.cppKeyword.const": {
           "type": "boolean",
           "default": true,
           "description": "🔒 const – constant/immutable"
         },
-        "mojiCode.cppKeyword.volatile": {
+        "mojiPro.cppKeyword.volatile": {
           "type": "boolean",
           "default": true,
           "description": "⚠️ volatile – volatile memory"
         },
-        "mojiCode.cppKeyword.static": {
+        "mojiPro.cppKeyword.static": {
           "type": "boolean",
           "default": true,
           "description": "🏛️ static – static storage"
         },
-        "mojiCode.cppKeyword.extern": {
+        "mojiPro.cppKeyword.extern": {
           "type": "boolean",
           "default": true,
           "description": "🌐 extern – external linkage"
         },
-        "mojiCode.cppKeyword.register": {
+        "mojiPro.cppKeyword.register": {
           "type": "boolean",
           "default": true,
           "description": "⚡ register – register storage"
         },
-        "mojiCode.cppKeyword.mutable": {
+        "mojiPro.cppKeyword.mutable": {
           "type": "boolean",
           "default": true,
           "description": "🔓 mutable – mutable member"
         },
-        "mojiCode.cppKeyword.constexpr": {
+        "mojiPro.cppKeyword.constexpr": {
           "type": "boolean",
           "default": true,
           "description": "🔐 constexpr – compile-time const"
         },
-        "mojiCode.cppKeyword.consteval": {
+        "mojiPro.cppKeyword.consteval": {
           "type": "boolean",
           "default": true,
           "description": "🗝️ consteval – immediate function"
         },
-        "mojiCode.cppKeyword.constinit": {
+        "mojiPro.cppKeyword.constinit": {
           "type": "boolean",
           "default": true,
           "description": "🔑 constinit – constant init"
         },
-        "mojiCode.cppKeyword.inline": {
+        "mojiPro.cppKeyword.inline": {
           "type": "boolean",
           "default": true,
           "description": "📎 inline – inline function"
         },
-        "mojiCode.cppKeyword.class": {
+        "mojiPro.cppKeyword.class": {
           "type": "boolean",
           "default": true,
           "description": "🏛️ class – class definition"
         },
-        "mojiCode.cppKeyword.struct": {
+        "mojiPro.cppKeyword.struct": {
           "type": "boolean",
           "default": true,
           "description": "🏗️ struct – structure type"
         },
-        "mojiCode.cppKeyword.union": {
+        "mojiPro.cppKeyword.union": {
           "type": "boolean",
           "default": true,
           "description": "🤝 union – union type"
         },
-        "mojiCode.cppKeyword.enum": {
+        "mojiPro.cppKeyword.enum": {
           "type": "boolean",
           "default": true,
           "description": "📊 enum – enumeration"
         },
-        "mojiCode.cppKeyword.public": {
+        "mojiPro.cppKeyword.public": {
           "type": "boolean",
           "default": true,
           "description": "🌍 public – public access"
         },
-        "mojiCode.cppKeyword.private": {
+        "mojiPro.cppKeyword.private": {
           "type": "boolean",
           "default": true,
           "description": "🔐 private – private access"
         },
-        "mojiCode.cppKeyword.protected": {
+        "mojiPro.cppKeyword.protected": {
           "type": "boolean",
           "default": true,
           "description": "🛡️ protected – protected access"
         },
-        "mojiCode.cppKeyword.virtual": {
+        "mojiPro.cppKeyword.virtual": {
           "type": "boolean",
           "default": true,
           "description": "👻 virtual – virtual function"
         },
-        "mojiCode.cppKeyword.override": {
+        "mojiPro.cppKeyword.override": {
           "type": "boolean",
           "default": true,
           "description": "🔄 override – override method"
         },
-        "mojiCode.cppKeyword.final": {
+        "mojiPro.cppKeyword.final": {
           "type": "boolean",
           "default": true,
           "description": "🏁 final – prevent override"
         },
-        "mojiCode.cppKeyword.friend": {
+        "mojiPro.cppKeyword.friend": {
           "type": "boolean",
           "default": true,
           "description": "🤗 friend – friend access"
         },
-        "mojiCode.cppKeyword.this": {
+        "mojiPro.cppKeyword.this": {
           "type": "boolean",
           "default": true,
           "description": "👆 this – current object"
         },
-        "mojiCode.cppKeyword.explicit": {
+        "mojiPro.cppKeyword.explicit": {
           "type": "boolean",
           "default": true,
           "description": "❗ explicit – explicit conversion"
         },
-        "mojiCode.cppKeyword.template": {
+        "mojiPro.cppKeyword.template": {
           "type": "boolean",
           "default": true,
           "description": "📝 template – template definition"
         },
-        "mojiCode.cppKeyword.typename": {
+        "mojiPro.cppKeyword.typename": {
           "type": "boolean",
           "default": true,
           "description": "🏷️ typename – type parameter"
         },
-        "mojiCode.cppKeyword.concept": {
+        "mojiPro.cppKeyword.concept": {
           "type": "boolean",
           "default": true,
           "description": "💡 concept – concept definition"
         },
-        "mojiCode.cppKeyword.requires": {
+        "mojiPro.cppKeyword.requires": {
           "type": "boolean",
           "default": true,
           "description": "📋 requires – requires clause"
         },
-        "mojiCode.cppKeyword.namespace": {
+        "mojiPro.cppKeyword.namespace": {
           "type": "boolean",
           "default": true,
           "description": "📁 namespace – namespace"
         },
-        "mojiCode.cppKeyword.using": {
+        "mojiPro.cppKeyword.using": {
           "type": "boolean",
           "default": true,
           "description": "🔗 using – using directive"
         },
-        "mojiCode.cppKeyword.new": {
+        "mojiPro.cppKeyword.new": {
           "type": "boolean",
           "default": true,
           "description": "✨ new – allocate memory"
         },
-        "mojiCode.cppKeyword.delete": {
+        "mojiPro.cppKeyword.delete": {
           "type": "boolean",
           "default": true,
           "description": "🗑️ delete – deallocate memory"
         },
-        "mojiCode.cppKeyword.sizeof": {
+        "mojiPro.cppKeyword.sizeof": {
           "type": "boolean",
           "default": true,
           "description": "📐 sizeof – size operator"
         },
-        "mojiCode.cppKeyword.alignof": {
+        "mojiPro.cppKeyword.alignof": {
           "type": "boolean",
           "default": true,
           "description": "📏 alignof – alignment"
         },
-        "mojiCode.cppKeyword.alignas": {
+        "mojiPro.cppKeyword.alignas": {
           "type": "boolean",
           "default": true,
           "description": "↔️ alignas – align specifier"
         },
-        "mojiCode.cppKeyword.typedef": {
+        "mojiPro.cppKeyword.typedef": {
           "type": "boolean",
           "default": true,
           "description": "🏷️ typedef – type alias"
         },
-        "mojiCode.cppKeyword.try": {
+        "mojiPro.cppKeyword.try": {
           "type": "boolean",
           "default": true,
           "description": "🤞 try – try block"
         },
-        "mojiCode.cppKeyword.catch": {
+        "mojiPro.cppKeyword.catch": {
           "type": "boolean",
           "default": true,
           "description": "🥅 catch – catch exception"
         },
-        "mojiCode.cppKeyword.throw": {
+        "mojiPro.cppKeyword.throw": {
           "type": "boolean",
           "default": true,
           "description": "💥 throw – throw exception"
         },
-        "mojiCode.cppKeyword.noexcept": {
+        "mojiPro.cppKeyword.noexcept": {
           "type": "boolean",
           "default": true,
           "description": "🛡️ noexcept – no exceptions"
         },
-        "mojiCode.cppKeyword.static_cast": {
+        "mojiPro.cppKeyword.static_cast": {
           "type": "boolean",
           "default": true,
           "description": "🎯 static_cast – static cast"
         },
-        "mojiCode.cppKeyword.dynamic_cast": {
+        "mojiPro.cppKeyword.dynamic_cast": {
           "type": "boolean",
           "default": true,
           "description": "🔮 dynamic_cast – dynamic cast"
         },
-        "mojiCode.cppKeyword.const_cast": {
+        "mojiPro.cppKeyword.const_cast": {
           "type": "boolean",
           "default": true,
           "description": "🔓 const_cast – const cast"
         },
-        "mojiCode.cppKeyword.reinterpret_cast": {
+        "mojiPro.cppKeyword.reinterpret_cast": {
           "type": "boolean",
           "default": true,
           "description": "🔀 reinterpret_cast – reinterpret cast"
         },
-        "mojiCode.cppKeyword.operator": {
+        "mojiPro.cppKeyword.operator": {
           "type": "boolean",
           "default": true,
           "description": "🔧 operator – operator overload"
         },
-        "mojiCode.cppKeyword.typeid": {
+        "mojiPro.cppKeyword.typeid": {
           "type": "boolean",
           "default": true,
           "description": "🆔 typeid – type identification"
         },
-        "mojiCode.cppKeyword.decltype": {
+        "mojiPro.cppKeyword.decltype": {
           "type": "boolean",
           "default": true,
           "description": "🔍 decltype – declared type"
         },
-        "mojiCode.cppKeyword.asm": {
+        "mojiPro.cppKeyword.asm": {
           "type": "boolean",
           "default": true,
           "description": "⚙️ asm – inline assembly"
         },
-        "mojiCode.cppKeyword.export": {
+        "mojiPro.cppKeyword.export": {
           "type": "boolean",
           "default": true,
           "description": "📦 export – module export"
         },
-        "mojiCode.cppKeyword.import": {
+        "mojiPro.cppKeyword.import": {
           "type": "boolean",
           "default": true,
           "description": "📥 import – module import"
         },
-        "mojiCode.cppKeyword.module": {
+        "mojiPro.cppKeyword.module": {
           "type": "boolean",
           "default": true,
           "description": "🧩 module – module"
         },
-        "mojiCode.cppKeyword.co_await": {
+        "mojiPro.cppKeyword.co_await": {
           "type": "boolean",
           "default": true,
           "description": "⏳ co_await – coroutine await"
         },
-        "mojiCode.cppKeyword.co_return": {
+        "mojiPro.cppKeyword.co_return": {
           "type": "boolean",
           "default": true,
           "description": "↩️ co_return – coroutine return"
         },
-        "mojiCode.cppKeyword.co_yield": {
+        "mojiPro.cppKeyword.co_yield": {
           "type": "boolean",
           "default": true,
           "description": "🌾 co_yield – coroutine yield"
         },
-        "mojiCode.csharpKeywords": {
+        "mojiPro.csharpKeywords": {
           "type": "boolean",
           "default": true,
           "description": "Master toggle: show emojis for C# keywords."
         },
-        "mojiCode.csharpKeyword.if": {
+        "mojiPro.csharpKeyword.if": {
           "type": "boolean",
           "default": true,
           "description": "❓ if – conditional"
         },
-        "mojiCode.csharpKeyword.else": {
+        "mojiPro.csharpKeyword.else": {
           "type": "boolean",
           "default": true,
           "description": "↪️ else – alternative branch"
         },
-        "mojiCode.csharpKeyword.switch": {
+        "mojiPro.csharpKeyword.switch": {
           "type": "boolean",
           "default": true,
           "description": "🎚️ switch – multi-branch"
         },
-        "mojiCode.csharpKeyword.case": {
+        "mojiPro.csharpKeyword.case": {
           "type": "boolean",
           "default": true,
           "description": "📋 case – switch case"
         },
-        "mojiCode.csharpKeyword.default": {
+        "mojiPro.csharpKeyword.default": {
           "type": "boolean",
           "default": true,
           "description": "📌 default – default case"
         },
-        "mojiCode.csharpKeyword.for": {
+        "mojiPro.csharpKeyword.for": {
           "type": "boolean",
           "default": true,
           "description": "🔁 for – for loop"
         },
-        "mojiCode.csharpKeyword.foreach": {
+        "mojiPro.csharpKeyword.foreach": {
           "type": "boolean",
           "default": true,
           "description": "🔂 foreach – foreach loop"
         },
-        "mojiCode.csharpKeyword.while": {
+        "mojiPro.csharpKeyword.while": {
           "type": "boolean",
           "default": true,
           "description": "🔄 while – while loop"
         },
-        "mojiCode.csharpKeyword.do": {
+        "mojiPro.csharpKeyword.do": {
           "type": "boolean",
           "default": true,
           "description": "🔃 do – do-while loop"
         },
-        "mojiCode.csharpKeyword.break": {
+        "mojiPro.csharpKeyword.break": {
           "type": "boolean",
           "default": true,
           "description": "🛑 break – exit loop"
         },
-        "mojiCode.csharpKeyword.continue": {
+        "mojiPro.csharpKeyword.continue": {
           "type": "boolean",
           "default": true,
           "description": "⏭️ continue – next iteration"
         },
-        "mojiCode.csharpKeyword.goto": {
+        "mojiPro.csharpKeyword.goto": {
           "type": "boolean",
           "default": true,
           "description": "🚀 goto – unconditional jump"
         },
-        "mojiCode.csharpKeyword.return": {
+        "mojiPro.csharpKeyword.return": {
           "type": "boolean",
           "default": true,
           "description": "🔙 return – return value"
         },
-        "mojiCode.csharpKeyword.yield": {
+        "mojiPro.csharpKeyword.yield": {
           "type": "boolean",
           "default": true,
           "description": "🌾 yield – yield return"
         },
-        "mojiCode.csharpKeyword.when": {
+        "mojiPro.csharpKeyword.when": {
           "type": "boolean",
           "default": true,
           "description": "⏰ when – pattern guard"
         },
-        "mojiCode.csharpKeyword.int": {
+        "mojiPro.csharpKeyword.int": {
           "type": "boolean",
           "default": true,
           "description": "🔢 int – integer"
         },
-        "mojiCode.csharpKeyword.long": {
+        "mojiPro.csharpKeyword.long": {
           "type": "boolean",
           "default": true,
           "description": "📐 long – long integer"
         },
-        "mojiCode.csharpKeyword.short": {
+        "mojiPro.csharpKeyword.short": {
           "type": "boolean",
           "default": true,
           "description": "📏 short – short integer"
         },
-        "mojiCode.csharpKeyword.byte": {
+        "mojiPro.csharpKeyword.byte": {
           "type": "boolean",
           "default": true,
           "description": "🔣 byte – byte"
         },
-        "mojiCode.csharpKeyword.sbyte": {
+        "mojiPro.csharpKeyword.sbyte": {
           "type": "boolean",
           "default": true,
           "description": "🔤 sbyte – signed byte"
         },
-        "mojiCode.csharpKeyword.uint": {
+        "mojiPro.csharpKeyword.uint": {
           "type": "boolean",
           "default": true,
           "description": "➕ uint – unsigned int"
         },
-        "mojiCode.csharpKeyword.ulong": {
+        "mojiPro.csharpKeyword.ulong": {
           "type": "boolean",
           "default": true,
           "description": "➖ ulong – unsigned long"
         },
-        "mojiCode.csharpKeyword.ushort": {
+        "mojiPro.csharpKeyword.ushort": {
           "type": "boolean",
           "default": true,
           "description": "✖️ ushort – unsigned short"
         },
-        "mojiCode.csharpKeyword.float": {
+        "mojiPro.csharpKeyword.float": {
           "type": "boolean",
           "default": true,
           "description": "🎈 float – floating point"
         },
-        "mojiCode.csharpKeyword.double": {
+        "mojiPro.csharpKeyword.double": {
           "type": "boolean",
           "default": true,
           "description": "🎭 double – double precision"
         },
-        "mojiCode.csharpKeyword.decimal": {
+        "mojiPro.csharpKeyword.decimal": {
           "type": "boolean",
           "default": true,
           "description": "💰 decimal – decimal"
         },
-        "mojiCode.csharpKeyword.bool": {
+        "mojiPro.csharpKeyword.bool": {
           "type": "boolean",
           "default": true,
           "description": "🔘 bool – boolean"
         },
-        "mojiCode.csharpKeyword.char": {
+        "mojiPro.csharpKeyword.char": {
           "type": "boolean",
           "default": true,
           "description": "🔡 char – character"
         },
-        "mojiCode.csharpKeyword.string": {
+        "mojiPro.csharpKeyword.string": {
           "type": "boolean",
           "default": true,
           "description": "📝 string – string type"
         },
-        "mojiCode.csharpKeyword.object": {
+        "mojiPro.csharpKeyword.object": {
           "type": "boolean",
           "default": true,
           "description": "📦 object – object type"
         },
-        "mojiCode.csharpKeyword.void": {
+        "mojiPro.csharpKeyword.void": {
           "type": "boolean",
           "default": true,
           "description": "🕳️ void – no return"
         },
-        "mojiCode.csharpKeyword.var": {
+        "mojiPro.csharpKeyword.var": {
           "type": "boolean",
           "default": true,
           "description": "🏷️ var – implicit type"
         },
-        "mojiCode.csharpKeyword.dynamic": {
+        "mojiPro.csharpKeyword.dynamic": {
           "type": "boolean",
           "default": true,
           "description": "🌊 dynamic – dynamic type"
         },
-        "mojiCode.csharpKeyword.true": {
+        "mojiPro.csharpKeyword.true": {
           "type": "boolean",
           "default": true,
           "description": "✅ true – true"
         },
-        "mojiCode.csharpKeyword.false": {
+        "mojiPro.csharpKeyword.false": {
           "type": "boolean",
           "default": true,
           "description": "❌ false – false"
         },
-        "mojiCode.csharpKeyword.null": {
+        "mojiPro.csharpKeyword.null": {
           "type": "boolean",
           "default": true,
           "description": "🚫 null – null value"
         },
-        "mojiCode.csharpKeyword.public": {
+        "mojiPro.csharpKeyword.public": {
           "type": "boolean",
           "default": true,
           "description": "🌍 public – public access"
         },
-        "mojiCode.csharpKeyword.private": {
+        "mojiPro.csharpKeyword.private": {
           "type": "boolean",
           "default": true,
           "description": "🔐 private – private access"
         },
-        "mojiCode.csharpKeyword.protected": {
+        "mojiPro.csharpKeyword.protected": {
           "type": "boolean",
           "default": true,
           "description": "🛡️ protected – protected access"
         },
-        "mojiCode.csharpKeyword.internal": {
+        "mojiPro.csharpKeyword.internal": {
           "type": "boolean",
           "default": true,
           "description": "🏠 internal – internal access"
         },
-        "mojiCode.csharpKeyword.static": {
+        "mojiPro.csharpKeyword.static": {
           "type": "boolean",
           "default": true,
           "description": "🏛️ static – static member"
         },
-        "mojiCode.csharpKeyword.readonly": {
+        "mojiPro.csharpKeyword.readonly": {
           "type": "boolean",
           "default": true,
           "description": "🔒 readonly – read only"
         },
-        "mojiCode.csharpKeyword.const": {
+        "mojiPro.csharpKeyword.const": {
           "type": "boolean",
           "default": true,
           "description": "🔏 const – constant"
         },
-        "mojiCode.csharpKeyword.volatile": {
+        "mojiPro.csharpKeyword.volatile": {
           "type": "boolean",
           "default": true,
           "description": "⚠️ volatile – volatile"
         },
-        "mojiCode.csharpKeyword.sealed": {
+        "mojiPro.csharpKeyword.sealed": {
           "type": "boolean",
           "default": true,
           "description": "🔐 sealed – sealed class"
         },
-        "mojiCode.csharpKeyword.abstract": {
+        "mojiPro.csharpKeyword.abstract": {
           "type": "boolean",
           "default": true,
           "description": "🎨 abstract – abstract"
         },
-        "mojiCode.csharpKeyword.virtual": {
+        "mojiPro.csharpKeyword.virtual": {
           "type": "boolean",
           "default": true,
           "description": "👻 virtual – virtual method"
         },
-        "mojiCode.csharpKeyword.override": {
+        "mojiPro.csharpKeyword.override": {
           "type": "boolean",
           "default": true,
           "description": "🔄 override – override method"
         },
-        "mojiCode.csharpKeyword.extern": {
+        "mojiPro.csharpKeyword.extern": {
           "type": "boolean",
           "default": true,
           "description": "🌐 extern – external"
         },
-        "mojiCode.csharpKeyword.unsafe": {
+        "mojiPro.csharpKeyword.unsafe": {
           "type": "boolean",
           "default": true,
           "description": "☢️ unsafe – unsafe code"
         },
-        "mojiCode.csharpKeyword.partial": {
+        "mojiPro.csharpKeyword.partial": {
           "type": "boolean",
           "default": true,
           "description": "🧩 partial – partial class"
         },
-        "mojiCode.csharpKeyword.class": {
+        "mojiPro.csharpKeyword.class": {
           "type": "boolean",
           "default": true,
           "description": "🏛️ class – class"
         },
-        "mojiCode.csharpKeyword.struct": {
+        "mojiPro.csharpKeyword.struct": {
           "type": "boolean",
           "default": true,
           "description": "🏗️ struct – struct"
         },
-        "mojiCode.csharpKeyword.interface": {
+        "mojiPro.csharpKeyword.interface": {
           "type": "boolean",
           "default": true,
           "description": "🔌 interface – interface"
         },
-        "mojiCode.csharpKeyword.enum": {
+        "mojiPro.csharpKeyword.enum": {
           "type": "boolean",
           "default": true,
           "description": "📊 enum – enumeration"
         },
-        "mojiCode.csharpKeyword.record": {
+        "mojiPro.csharpKeyword.record": {
           "type": "boolean",
           "default": true,
           "description": "📀 record – record type"
         },
-        "mojiCode.csharpKeyword.delegate": {
+        "mojiPro.csharpKeyword.delegate": {
           "type": "boolean",
           "default": true,
           "description": "📨 delegate – delegate"
         },
-        "mojiCode.csharpKeyword.event": {
+        "mojiPro.csharpKeyword.event": {
           "type": "boolean",
           "default": true,
           "description": "🎉 event – event"
         },
-        "mojiCode.csharpKeyword.this": {
+        "mojiPro.csharpKeyword.this": {
           "type": "boolean",
           "default": true,
           "description": "👆 this – current instance"
         },
-        "mojiCode.csharpKeyword.base": {
+        "mojiPro.csharpKeyword.base": {
           "type": "boolean",
           "default": true,
           "description": "👇 base – base class"
         },
-        "mojiCode.csharpKeyword.new": {
+        "mojiPro.csharpKeyword.new": {
           "type": "boolean",
           "default": true,
           "description": "✨ new – new instance"
         },
-        "mojiCode.csharpKeyword.try": {
+        "mojiPro.csharpKeyword.try": {
           "type": "boolean",
           "default": true,
           "description": "🤞 try – try block"
         },
-        "mojiCode.csharpKeyword.catch": {
+        "mojiPro.csharpKeyword.catch": {
           "type": "boolean",
           "default": true,
           "description": "🥅 catch – catch exception"
         },
-        "mojiCode.csharpKeyword.finally": {
+        "mojiPro.csharpKeyword.finally": {
           "type": "boolean",
           "default": true,
           "description": "🏁 finally – finally block"
         },
-        "mojiCode.csharpKeyword.throw": {
+        "mojiPro.csharpKeyword.throw": {
           "type": "boolean",
           "default": true,
           "description": "💥 throw – throw exception"
         },
-        "mojiCode.csharpKeyword.async": {
+        "mojiPro.csharpKeyword.async": {
           "type": "boolean",
           "default": true,
           "description": "🔮 async – async method"
         },
-        "mojiCode.csharpKeyword.await": {
+        "mojiPro.csharpKeyword.await": {
           "type": "boolean",
           "default": true,
           "description": "⏳ await – await task"
         },
-        "mojiCode.csharpKeyword.namespace": {
+        "mojiPro.csharpKeyword.namespace": {
           "type": "boolean",
           "default": true,
           "description": "📁 namespace – namespace"
         },
-        "mojiCode.csharpKeyword.using": {
+        "mojiPro.csharpKeyword.using": {
           "type": "boolean",
           "default": true,
           "description": "🔗 using – using directive"
         },
-        "mojiCode.csharpKeyword.typeof": {
+        "mojiPro.csharpKeyword.typeof": {
           "type": "boolean",
           "default": true,
           "description": "🏷️ typeof – type of"
         },
-        "mojiCode.csharpKeyword.sizeof": {
+        "mojiPro.csharpKeyword.sizeof": {
           "type": "boolean",
           "default": true,
           "description": "📐 sizeof – size of"
         },
-        "mojiCode.csharpKeyword.is": {
+        "mojiPro.csharpKeyword.is": {
           "type": "boolean",
           "default": true,
           "description": "🔍 is – is type"
         },
-        "mojiCode.csharpKeyword.as": {
+        "mojiPro.csharpKeyword.as": {
           "type": "boolean",
           "default": true,
           "description": "🔀 as – as type"
         },
-        "mojiCode.csharpKeyword.nameof": {
+        "mojiPro.csharpKeyword.nameof": {
           "type": "boolean",
           "default": true,
           "description": "📛 nameof – name of"
         },
-        "mojiCode.csharpKeyword.ref": {
+        "mojiPro.csharpKeyword.ref": {
           "type": "boolean",
           "default": true,
           "description": "📎 ref – reference"
         },
-        "mojiCode.csharpKeyword.out": {
+        "mojiPro.csharpKeyword.out": {
           "type": "boolean",
           "default": true,
           "description": "📤 out – out parameter"
         },
-        "mojiCode.csharpKeyword.in": {
+        "mojiPro.csharpKeyword.in": {
           "type": "boolean",
           "default": true,
           "description": "📥 in – in parameter"
         },
-        "mojiCode.csharpKeyword.params": {
+        "mojiPro.csharpKeyword.params": {
           "type": "boolean",
           "default": true,
           "description": "📋 params – params array"
         },
-        "mojiCode.csharpKeyword.stackalloc": {
+        "mojiPro.csharpKeyword.stackalloc": {
           "type": "boolean",
           "default": true,
           "description": "🗃️ stackalloc – stack allocate"
         },
-        "mojiCode.csharpKeyword.fixed": {
+        "mojiPro.csharpKeyword.fixed": {
           "type": "boolean",
           "default": true,
           "description": "📍 fixed – fixed pointer"
         },
-        "mojiCode.csharpKeyword.lock": {
+        "mojiPro.csharpKeyword.lock": {
           "type": "boolean",
           "default": true,
           "description": "🔒 lock – thread lock"
         },
-        "mojiCode.csharpKeyword.checked": {
+        "mojiPro.csharpKeyword.checked": {
           "type": "boolean",
           "default": true,
           "description": "✔️ checked – checked context"
         },
-        "mojiCode.csharpKeyword.unchecked": {
+        "mojiPro.csharpKeyword.unchecked": {
           "type": "boolean",
           "default": true,
           "description": "✖️ unchecked – unchecked context"
         },
-        "mojiCode.csharpKeyword.from": {
+        "mojiPro.csharpKeyword.from": {
           "type": "boolean",
           "default": true,
           "description": "📤 from – LINQ from"
         },
-        "mojiCode.csharpKeyword.where": {
+        "mojiPro.csharpKeyword.where": {
           "type": "boolean",
           "default": true,
           "description": "🔎 where – LINQ where"
         },
-        "mojiCode.csharpKeyword.select": {
+        "mojiPro.csharpKeyword.select": {
           "type": "boolean",
           "default": true,
           "description": "✅ select – LINQ select"
         },
-        "mojiCode.csharpKeyword.orderby": {
+        "mojiPro.csharpKeyword.orderby": {
           "type": "boolean",
           "default": true,
           "description": "📶 orderby – LINQ order by"
         },
-        "mojiCode.csharpKeyword.group": {
+        "mojiPro.csharpKeyword.group": {
           "type": "boolean",
           "default": true,
           "description": "👥 group – LINQ group"
         },
-        "mojiCode.csharpKeyword.join": {
+        "mojiPro.csharpKeyword.join": {
           "type": "boolean",
           "default": true,
           "description": "🤝 join – LINQ join"
         },
-        "mojiCode.csharpKeyword.let": {
+        "mojiPro.csharpKeyword.let": {
           "type": "boolean",
           "default": true,
           "description": "📝 let – LINQ let"
         },
-        "mojiCode.csharpKeyword.into": {
+        "mojiPro.csharpKeyword.into": {
           "type": "boolean",
           "default": true,
           "description": "➡️ into – LINQ into"
         },
-        "mojiCode.csharpKeyword.ascending": {
+        "mojiPro.csharpKeyword.ascending": {
           "type": "boolean",
           "default": true,
           "description": "⬆️ ascending – ascending order"
         },
-        "mojiCode.csharpKeyword.descending": {
+        "mojiPro.csharpKeyword.descending": {
           "type": "boolean",
           "default": true,
           "description": "⬇️ descending – descending order"
         },
-        "mojiCode.csharpKeyword.on": {
+        "mojiPro.csharpKeyword.on": {
           "type": "boolean",
           "default": true,
           "description": "🔛 on – join condition"
         },
-        "mojiCode.csharpKeyword.equals": {
+        "mojiPro.csharpKeyword.equals": {
           "type": "boolean",
           "default": true,
           "description": "⚖️ equals – equality"
         },
-        "mojiCode.csharpKeyword.by": {
+        "mojiPro.csharpKeyword.by": {
           "type": "boolean",
           "default": true,
           "description": "📌 by – group by"
         },
-        "mojiCode.csharpKeyword.get": {
+        "mojiPro.csharpKeyword.get": {
           "type": "boolean",
           "default": true,
           "description": "📖 get – getter"
         },
-        "mojiCode.csharpKeyword.set": {
+        "mojiPro.csharpKeyword.set": {
           "type": "boolean",
           "default": true,
           "description": "📝 set – setter"
         },
-        "mojiCode.csharpKeyword.init": {
+        "mojiPro.csharpKeyword.init": {
           "type": "boolean",
           "default": true,
           "description": "🎬 init – init-only setter"
         },
-        "mojiCode.csharpKeyword.value": {
+        "mojiPro.csharpKeyword.value": {
           "type": "boolean",
           "default": true,
           "description": "💎 value – property value"
         },
-        "mojiCode.csharpKeyword.add": {
+        "mojiPro.csharpKeyword.add": {
           "type": "boolean",
           "default": true,
           "description": "➕ add – event add"
         },
-        "mojiCode.csharpKeyword.remove": {
+        "mojiPro.csharpKeyword.remove": {
           "type": "boolean",
           "default": true,
           "description": "➖ remove – event remove"
         },
-        "mojiCode.csharpKeyword.with": {
+        "mojiPro.csharpKeyword.with": {
           "type": "boolean",
           "default": true,
           "description": "🎁 with – with expression"
         },
-        "mojiCode.csharpKeyword.required": {
+        "mojiPro.csharpKeyword.required": {
           "type": "boolean",
           "default": true,
           "description": "❗ required – required member"
         },
-        "mojiCode.csharpKeyword.global": {
+        "mojiPro.csharpKeyword.global": {
           "type": "boolean",
           "default": true,
           "description": "🌐 global – global using"
         },
-        "mojiCode.sqlKeywords": {
+        "mojiPro.sqlKeywords": {
           "type": "boolean",
           "default": true,
           "description": "Master toggle: show emojis for SQL keywords."
         },
-        "mojiCode.sqlKeyword.SELECT": {
+        "mojiPro.sqlKeyword.SELECT": {
           "type": "boolean",
           "default": true,
           "description": "🔍 SELECT – select data"
         },
-        "mojiCode.sqlKeyword.FROM": {
+        "mojiPro.sqlKeyword.FROM": {
           "type": "boolean",
           "default": true,
           "description": "📂 FROM – source table"
         },
-        "mojiCode.sqlKeyword.WHERE": {
+        "mojiPro.sqlKeyword.WHERE": {
           "type": "boolean",
           "default": true,
           "description": "🔎 WHERE – filter condition"
         },
-        "mojiCode.sqlKeyword.AND": {
+        "mojiPro.sqlKeyword.AND": {
           "type": "boolean",
           "default": true,
           "description": "🤝 AND – logical and"
         },
-        "mojiCode.sqlKeyword.OR": {
+        "mojiPro.sqlKeyword.OR": {
           "type": "boolean",
           "default": true,
           "description": "🔀 OR – logical or"
         },
-        "mojiCode.sqlKeyword.NOT": {
+        "mojiPro.sqlKeyword.NOT": {
           "type": "boolean",
           "default": true,
           "description": "🚷 NOT – logical not"
         },
-        "mojiCode.sqlKeyword.IN": {
+        "mojiPro.sqlKeyword.IN": {
           "type": "boolean",
           "default": true,
           "description": "📥 IN – in set"
         },
-        "mojiCode.sqlKeyword.BETWEEN": {
+        "mojiPro.sqlKeyword.BETWEEN": {
           "type": "boolean",
           "default": true,
           "description": "↔️ BETWEEN – between range"
         },
-        "mojiCode.sqlKeyword.LIKE": {
+        "mojiPro.sqlKeyword.LIKE": {
           "type": "boolean",
           "default": true,
           "description": "🎭 LIKE – pattern match"
         },
-        "mojiCode.sqlKeyword.IS": {
+        "mojiPro.sqlKeyword.IS": {
           "type": "boolean",
           "default": true,
           "description": "🔗 IS – is comparison"
         },
-        "mojiCode.sqlKeyword.NULL": {
+        "mojiPro.sqlKeyword.NULL": {
           "type": "boolean",
           "default": true,
           "description": "🚫 NULL – null value"
         },
-        "mojiCode.sqlKeyword.AS": {
+        "mojiPro.sqlKeyword.AS": {
           "type": "boolean",
           "default": true,
           "description": "🏷️ AS – alias"
         },
-        "mojiCode.sqlKeyword.DISTINCT": {
+        "mojiPro.sqlKeyword.DISTINCT": {
           "type": "boolean",
           "default": true,
           "description": "✨ DISTINCT – unique values"
         },
-        "mojiCode.sqlKeyword.ALL": {
+        "mojiPro.sqlKeyword.ALL": {
           "type": "boolean",
           "default": true,
           "description": "📦 ALL – all records"
         },
-        "mojiCode.sqlKeyword.ANY": {
+        "mojiPro.sqlKeyword.ANY": {
           "type": "boolean",
           "default": true,
           "description": "🎲 ANY – any match"
         },
-        "mojiCode.sqlKeyword.EXISTS": {
+        "mojiPro.sqlKeyword.EXISTS": {
           "type": "boolean",
           "default": true,
           "description": "✅ EXISTS – exists check"
         },
-        "mojiCode.sqlKeyword.ORDER": {
+        "mojiPro.sqlKeyword.ORDER": {
           "type": "boolean",
           "default": true,
           "description": "📶 ORDER – order results"
         },
-        "mojiCode.sqlKeyword.BY": {
+        "mojiPro.sqlKeyword.BY": {
           "type": "boolean",
           "default": true,
           "description": "📌 BY – by column"
         },
-        "mojiCode.sqlKeyword.ASC": {
+        "mojiPro.sqlKeyword.ASC": {
           "type": "boolean",
           "default": true,
           "description": "⬆️ ASC – ascending"
         },
-        "mojiCode.sqlKeyword.DESC": {
+        "mojiPro.sqlKeyword.DESC": {
           "type": "boolean",
           "default": true,
           "description": "⬇️ DESC – descending"
         },
-        "mojiCode.sqlKeyword.GROUP": {
+        "mojiPro.sqlKeyword.GROUP": {
           "type": "boolean",
           "default": true,
           "description": "👥 GROUP – group rows"
         },
-        "mojiCode.sqlKeyword.HAVING": {
+        "mojiPro.sqlKeyword.HAVING": {
           "type": "boolean",
           "default": true,
           "description": "🔬 HAVING – group filter"
         },
-        "mojiCode.sqlKeyword.LIMIT": {
+        "mojiPro.sqlKeyword.LIMIT": {
           "type": "boolean",
           "default": true,
           "description": "🛑 LIMIT – limit rows"
         },
-        "mojiCode.sqlKeyword.OFFSET": {
+        "mojiPro.sqlKeyword.OFFSET": {
           "type": "boolean",
           "default": true,
           "description": "⏭️ OFFSET – skip rows"
         },
-        "mojiCode.sqlKeyword.TOP": {
+        "mojiPro.sqlKeyword.TOP": {
           "type": "boolean",
           "default": true,
           "description": "🔝 TOP – top n rows"
         },
-        "mojiCode.sqlKeyword.JOIN": {
+        "mojiPro.sqlKeyword.JOIN": {
           "type": "boolean",
           "default": true,
           "description": "🔗 JOIN – join tables"
         },
-        "mojiCode.sqlKeyword.INNER": {
+        "mojiPro.sqlKeyword.INNER": {
           "type": "boolean",
           "default": true,
           "description": "🎯 INNER – inner join"
         },
-        "mojiCode.sqlKeyword.LEFT": {
+        "mojiPro.sqlKeyword.LEFT": {
           "type": "boolean",
           "default": true,
           "description": "⬅️ LEFT – left join"
         },
-        "mojiCode.sqlKeyword.RIGHT": {
+        "mojiPro.sqlKeyword.RIGHT": {
           "type": "boolean",
           "default": true,
           "description": "➡️ RIGHT – right join"
         },
-        "mojiCode.sqlKeyword.FULL": {
+        "mojiPro.sqlKeyword.FULL": {
           "type": "boolean",
           "default": true,
           "description": "🔄 FULL – full join"
         },
-        "mojiCode.sqlKeyword.OUTER": {
+        "mojiPro.sqlKeyword.OUTER": {
           "type": "boolean",
           "default": true,
           "description": "🌐 OUTER – outer join"
         },
-        "mojiCode.sqlKeyword.CROSS": {
+        "mojiPro.sqlKeyword.CROSS": {
           "type": "boolean",
           "default": true,
           "description": "✖️ CROSS – cross join"
         },
-        "mojiCode.sqlKeyword.ON": {
+        "mojiPro.sqlKeyword.ON": {
           "type": "boolean",
           "default": true,
           "description": "🔛 ON – join condition"
         },
-        "mojiCode.sqlKeyword.USING": {
+        "mojiPro.sqlKeyword.USING": {
           "type": "boolean",
           "default": true,
           "description": "🔧 USING – using columns"
         },
-        "mojiCode.sqlKeyword.INSERT": {
+        "mojiPro.sqlKeyword.INSERT": {
           "type": "boolean",
           "default": true,
           "description": "➕ INSERT – insert data"
         },
-        "mojiCode.sqlKeyword.INTO": {
+        "mojiPro.sqlKeyword.INTO": {
           "type": "boolean",
           "default": true,
           "description": "📥 INTO – into table"
         },
-        "mojiCode.sqlKeyword.VALUES": {
+        "mojiPro.sqlKeyword.VALUES": {
           "type": "boolean",
           "default": true,
           "description": "💎 VALUES – values"
         },
-        "mojiCode.sqlKeyword.UPDATE": {
+        "mojiPro.sqlKeyword.UPDATE": {
           "type": "boolean",
           "default": true,
           "description": "✏️ UPDATE – update data"
         },
-        "mojiCode.sqlKeyword.SET": {
+        "mojiPro.sqlKeyword.SET": {
           "type": "boolean",
           "default": true,
           "description": "📝 SET – set values"
         },
-        "mojiCode.sqlKeyword.DELETE": {
+        "mojiPro.sqlKeyword.DELETE": {
           "type": "boolean",
           "default": true,
           "description": "🗑️ DELETE – delete data"
         },
-        "mojiCode.sqlKeyword.TRUNCATE": {
+        "mojiPro.sqlKeyword.TRUNCATE": {
           "type": "boolean",
           "default": true,
           "description": "🧹 TRUNCATE – truncate table"
         },
-        "mojiCode.sqlKeyword.MERGE": {
+        "mojiPro.sqlKeyword.MERGE": {
           "type": "boolean",
           "default": true,
           "description": "🔀 MERGE – merge data"
         },
-        "mojiCode.sqlKeyword.CREATE": {
+        "mojiPro.sqlKeyword.CREATE": {
           "type": "boolean",
           "default": true,
           "description": "🏗️ CREATE – create object"
         },
-        "mojiCode.sqlKeyword.ALTER": {
+        "mojiPro.sqlKeyword.ALTER": {
           "type": "boolean",
           "default": true,
           "description": "🔧 ALTER – alter object"
         },
-        "mojiCode.sqlKeyword.DROP": {
+        "mojiPro.sqlKeyword.DROP": {
           "type": "boolean",
           "default": true,
           "description": "💥 DROP – drop object"
         },
-        "mojiCode.sqlKeyword.TABLE": {
+        "mojiPro.sqlKeyword.TABLE": {
           "type": "boolean",
           "default": true,
           "description": "📊 TABLE – table"
         },
-        "mojiCode.sqlKeyword.DATABASE": {
+        "mojiPro.sqlKeyword.DATABASE": {
           "type": "boolean",
           "default": true,
           "description": "🗄️ DATABASE – database"
         },
-        "mojiCode.sqlKeyword.SCHEMA": {
+        "mojiPro.sqlKeyword.SCHEMA": {
           "type": "boolean",
           "default": true,
           "description": "📐 SCHEMA – schema"
         },
-        "mojiCode.sqlKeyword.INDEX": {
+        "mojiPro.sqlKeyword.INDEX": {
           "type": "boolean",
           "default": true,
           "description": "📑 INDEX – index"
         },
-        "mojiCode.sqlKeyword.VIEW": {
+        "mojiPro.sqlKeyword.VIEW": {
           "type": "boolean",
           "default": true,
           "description": "👁️ VIEW – view"
         },
-        "mojiCode.sqlKeyword.SEQUENCE": {
+        "mojiPro.sqlKeyword.SEQUENCE": {
           "type": "boolean",
           "default": true,
           "description": "🔢 SEQUENCE – sequence"
         },
-        "mojiCode.sqlKeyword.TRIGGER": {
+        "mojiPro.sqlKeyword.TRIGGER": {
           "type": "boolean",
           "default": true,
           "description": "⚡ TRIGGER – trigger"
         },
-        "mojiCode.sqlKeyword.PROCEDURE": {
+        "mojiPro.sqlKeyword.PROCEDURE": {
           "type": "boolean",
           "default": true,
           "description": "📜 PROCEDURE – stored procedure"
         },
-        "mojiCode.sqlKeyword.FUNCTION": {
+        "mojiPro.sqlKeyword.FUNCTION": {
           "type": "boolean",
           "default": true,
           "description": "⚙️ FUNCTION – function"
         },
-        "mojiCode.sqlKeyword.PRIMARY": {
+        "mojiPro.sqlKeyword.PRIMARY": {
           "type": "boolean",
           "default": true,
           "description": "🔑 PRIMARY – primary key"
         },
-        "mojiCode.sqlKeyword.FOREIGN": {
+        "mojiPro.sqlKeyword.FOREIGN": {
           "type": "boolean",
           "default": true,
           "description": "🔐 FOREIGN – foreign key"
         },
-        "mojiCode.sqlKeyword.KEY": {
+        "mojiPro.sqlKeyword.KEY": {
           "type": "boolean",
           "default": true,
           "description": "🗝️ KEY – key"
         },
-        "mojiCode.sqlKeyword.UNIQUE": {
+        "mojiPro.sqlKeyword.UNIQUE": {
           "type": "boolean",
           "default": true,
           "description": "🦄 UNIQUE – unique"
         },
-        "mojiCode.sqlKeyword.CHECK": {
+        "mojiPro.sqlKeyword.CHECK": {
           "type": "boolean",
           "default": true,
           "description": "✔️ CHECK – check constraint"
         },
-        "mojiCode.sqlKeyword.DEFAULT": {
+        "mojiPro.sqlKeyword.DEFAULT": {
           "type": "boolean",
           "default": true,
           "description": "📌 DEFAULT – default value"
         },
-        "mojiCode.sqlKeyword.CONSTRAINT": {
+        "mojiPro.sqlKeyword.CONSTRAINT": {
           "type": "boolean",
           "default": true,
           "description": "🔒 CONSTRAINT – constraint"
         },
-        "mojiCode.sqlKeyword.REFERENCES": {
+        "mojiPro.sqlKeyword.REFERENCES": {
           "type": "boolean",
           "default": true,
           "description": "🔗 REFERENCES – references"
         },
-        "mojiCode.sqlKeyword.CASCADE": {
+        "mojiPro.sqlKeyword.CASCADE": {
           "type": "boolean",
           "default": true,
           "description": "🌊 CASCADE – cascade action"
         },
-        "mojiCode.sqlKeyword.INT": {
+        "mojiPro.sqlKeyword.INT": {
           "type": "boolean",
           "default": true,
           "description": "🔢 INT – integer"
         },
-        "mojiCode.sqlKeyword.INTEGER": {
+        "mojiPro.sqlKeyword.INTEGER": {
           "type": "boolean",
           "default": true,
           "description": "🔢 INTEGER – integer"
         },
-        "mojiCode.sqlKeyword.BIGINT": {
+        "mojiPro.sqlKeyword.BIGINT": {
           "type": "boolean",
           "default": true,
           "description": "📐 BIGINT – big integer"
         },
-        "mojiCode.sqlKeyword.SMALLINT": {
+        "mojiPro.sqlKeyword.SMALLINT": {
           "type": "boolean",
           "default": true,
           "description": "📏 SMALLINT – small integer"
         },
-        "mojiCode.sqlKeyword.DECIMAL": {
+        "mojiPro.sqlKeyword.DECIMAL": {
           "type": "boolean",
           "default": true,
           "description": "💰 DECIMAL – decimal"
         },
-        "mojiCode.sqlKeyword.NUMERIC": {
+        "mojiPro.sqlKeyword.NUMERIC": {
           "type": "boolean",
           "default": true,
           "description": "🔣 NUMERIC – numeric"
         },
-        "mojiCode.sqlKeyword.FLOAT": {
+        "mojiPro.sqlKeyword.FLOAT": {
           "type": "boolean",
           "default": true,
           "description": "🎈 FLOAT – float"
         },
-        "mojiCode.sqlKeyword.REAL": {
+        "mojiPro.sqlKeyword.REAL": {
           "type": "boolean",
           "default": true,
           "description": "🎭 REAL – real"
         },
-        "mojiCode.sqlKeyword.DOUBLE": {
+        "mojiPro.sqlKeyword.DOUBLE": {
           "type": "boolean",
           "default": true,
           "description": "🎭 DOUBLE – double"
         },
-        "mojiCode.sqlKeyword.VARCHAR": {
+        "mojiPro.sqlKeyword.VARCHAR": {
           "type": "boolean",
           "default": true,
           "description": "📝 VARCHAR – variable char"
         },
-        "mojiCode.sqlKeyword.CHAR": {
+        "mojiPro.sqlKeyword.CHAR": {
           "type": "boolean",
           "default": true,
           "description": "🔤 CHAR – char"
         },
-        "mojiCode.sqlKeyword.TEXT": {
+        "mojiPro.sqlKeyword.TEXT": {
           "type": "boolean",
           "default": true,
           "description": "📄 TEXT – text"
         },
-        "mojiCode.sqlKeyword.DATE": {
+        "mojiPro.sqlKeyword.DATE": {
           "type": "boolean",
           "default": true,
           "description": "📅 DATE – date"
         },
-        "mojiCode.sqlKeyword.TIME": {
+        "mojiPro.sqlKeyword.TIME": {
           "type": "boolean",
           "default": true,
           "description": "🕐 TIME – time"
         },
-        "mojiCode.sqlKeyword.TIMESTAMP": {
+        "mojiPro.sqlKeyword.TIMESTAMP": {
           "type": "boolean",
           "default": true,
           "description": "⏰ TIMESTAMP – timestamp"
         },
-        "mojiCode.sqlKeyword.DATETIME": {
+        "mojiPro.sqlKeyword.DATETIME": {
           "type": "boolean",
           "default": true,
           "description": "📆 DATETIME – datetime"
         },
-        "mojiCode.sqlKeyword.BOOLEAN": {
+        "mojiPro.sqlKeyword.BOOLEAN": {
           "type": "boolean",
           "default": true,
           "description": "🔘 BOOLEAN – boolean"
         },
-        "mojiCode.sqlKeyword.BLOB": {
+        "mojiPro.sqlKeyword.BLOB": {
           "type": "boolean",
           "default": true,
           "description": "📦 BLOB – binary blob"
         },
-        "mojiCode.sqlKeyword.TRUE": {
+        "mojiPro.sqlKeyword.TRUE": {
           "type": "boolean",
           "default": true,
           "description": "✅ TRUE – true"
         },
-        "mojiCode.sqlKeyword.FALSE": {
+        "mojiPro.sqlKeyword.FALSE": {
           "type": "boolean",
           "default": true,
           "description": "❌ FALSE – false"
         },
-        "mojiCode.sqlKeyword.BEGIN": {
+        "mojiPro.sqlKeyword.BEGIN": {
           "type": "boolean",
           "default": true,
           "description": "🚀 BEGIN – begin"
         },
-        "mojiCode.sqlKeyword.COMMIT": {
+        "mojiPro.sqlKeyword.COMMIT": {
           "type": "boolean",
           "default": true,
           "description": "💾 COMMIT – commit"
         },
-        "mojiCode.sqlKeyword.ROLLBACK": {
+        "mojiPro.sqlKeyword.ROLLBACK": {
           "type": "boolean",
           "default": true,
           "description": "↩️ ROLLBACK – rollback"
         },
-        "mojiCode.sqlKeyword.SAVEPOINT": {
+        "mojiPro.sqlKeyword.SAVEPOINT": {
           "type": "boolean",
           "default": true,
           "description": "📍 SAVEPOINT – savepoint"
         },
-        "mojiCode.sqlKeyword.TRANSACTION": {
+        "mojiPro.sqlKeyword.TRANSACTION": {
           "type": "boolean",
           "default": true,
           "description": "💳 TRANSACTION – transaction"
         },
-        "mojiCode.sqlKeyword.GRANT": {
+        "mojiPro.sqlKeyword.GRANT": {
           "type": "boolean",
           "default": true,
           "description": "🎁 GRANT – grant permission"
         },
-        "mojiCode.sqlKeyword.REVOKE": {
+        "mojiPro.sqlKeyword.REVOKE": {
           "type": "boolean",
           "default": true,
           "description": "🚫 REVOKE – revoke permission"
         },
-        "mojiCode.sqlKeyword.DENY": {
+        "mojiPro.sqlKeyword.DENY": {
           "type": "boolean",
           "default": true,
           "description": "⛔ DENY – deny access"
         },
-        "mojiCode.sqlKeyword.WITH": {
+        "mojiPro.sqlKeyword.WITH": {
           "type": "boolean",
           "default": true,
           "description": "📎 WITH – CTE"
         },
-        "mojiCode.sqlKeyword.RECURSIVE": {
+        "mojiPro.sqlKeyword.RECURSIVE": {
           "type": "boolean",
           "default": true,
           "description": "🔁 RECURSIVE – recursive"
         },
-        "mojiCode.sqlKeyword.UNION": {
+        "mojiPro.sqlKeyword.UNION": {
           "type": "boolean",
           "default": true,
           "description": "🔗 UNION – union"
         },
-        "mojiCode.sqlKeyword.INTERSECT": {
+        "mojiPro.sqlKeyword.INTERSECT": {
           "type": "boolean",
           "default": true,
           "description": "🎯 INTERSECT – intersect"
         },
-        "mojiCode.sqlKeyword.EXCEPT": {
+        "mojiPro.sqlKeyword.EXCEPT": {
           "type": "boolean",
           "default": true,
           "description": "➖ EXCEPT – except"
         },
-        "mojiCode.sqlKeyword.COUNT": {
+        "mojiPro.sqlKeyword.COUNT": {
           "type": "boolean",
           "default": true,
           "description": "🔢 COUNT – count"
         },
-        "mojiCode.sqlKeyword.SUM": {
+        "mojiPro.sqlKeyword.SUM": {
           "type": "boolean",
           "default": true,
           "description": "➕ SUM – sum"
         },
-        "mojiCode.sqlKeyword.AVG": {
+        "mojiPro.sqlKeyword.AVG": {
           "type": "boolean",
           "default": true,
           "description": "📊 AVG – average"
         },
-        "mojiCode.sqlKeyword.MIN": {
+        "mojiPro.sqlKeyword.MIN": {
           "type": "boolean",
           "default": true,
           "description": "⬇️ MIN – minimum"
         },
-        "mojiCode.sqlKeyword.MAX": {
+        "mojiPro.sqlKeyword.MAX": {
           "type": "boolean",
           "default": true,
           "description": "⬆️ MAX – maximum"
         },
-        "mojiCode.sqlKeyword.OVER": {
+        "mojiPro.sqlKeyword.OVER": {
           "type": "boolean",
           "default": true,
           "description": "🪟 OVER – window function"
         },
-        "mojiCode.sqlKeyword.PARTITION": {
+        "mojiPro.sqlKeyword.PARTITION": {
           "type": "boolean",
           "default": true,
           "description": "📂 PARTITION – partition by"
         },
-        "mojiCode.sqlKeyword.ROWS": {
+        "mojiPro.sqlKeyword.ROWS": {
           "type": "boolean",
           "default": true,
           "description": "📋 ROWS – rows"
         },
-        "mojiCode.sqlKeyword.RANGE": {
+        "mojiPro.sqlKeyword.RANGE": {
           "type": "boolean",
           "default": true,
           "description": "↔️ RANGE – range"
         },
-        "mojiCode.sqlKeyword.CASE": {
+        "mojiPro.sqlKeyword.CASE": {
           "type": "boolean",
           "default": true,
           "description": "📋 CASE – case"
         },
-        "mojiCode.sqlKeyword.WHEN": {
+        "mojiPro.sqlKeyword.WHEN": {
           "type": "boolean",
           "default": true,
           "description": "⏰ WHEN – when"
         },
-        "mojiCode.sqlKeyword.THEN": {
+        "mojiPro.sqlKeyword.THEN": {
           "type": "boolean",
           "default": true,
           "description": "➡️ THEN – then"
         },
-        "mojiCode.sqlKeyword.ELSE": {
+        "mojiPro.sqlKeyword.ELSE": {
           "type": "boolean",
           "default": true,
           "description": "↪️ ELSE – else"
         },
-        "mojiCode.sqlKeyword.END": {
+        "mojiPro.sqlKeyword.END": {
           "type": "boolean",
           "default": true,
           "description": "🏁 END – end"
         },
-        "mojiCode.sqlKeyword.COALESCE": {
+        "mojiPro.sqlKeyword.COALESCE": {
           "type": "boolean",
           "default": true,
           "description": "🔄 COALESCE – coalesce"
         },
-        "mojiCode.sqlKeyword.NULLIF": {
+        "mojiPro.sqlKeyword.NULLIF": {
           "type": "boolean",
           "default": true,
           "description": "🚫 NULLIF – nullif"
         },
-        "mojiCode.sqlKeyword.IFNULL": {
+        "mojiPro.sqlKeyword.IFNULL": {
           "type": "boolean",
           "default": true,
           "description": "❓ IFNULL – ifnull"
         },
-        "mojiCode.sqlKeyword.NVL": {
+        "mojiPro.sqlKeyword.NVL": {
           "type": "boolean",
           "default": true,
           "description": "🔃 NVL – nvl"
         },
-        "mojiCode.sqlKeyword.EXPLAIN": {
+        "mojiPro.sqlKeyword.EXPLAIN": {
           "type": "boolean",
           "default": true,
           "description": "📖 EXPLAIN – explain plan"
         },
-        "mojiCode.sqlKeyword.ANALYZE": {
+        "mojiPro.sqlKeyword.ANALYZE": {
           "type": "boolean",
           "default": true,
           "description": "🔬 ANALYZE – analyze"
         },
-        "mojiCode.sqlKeyword.EXECUTE": {
+        "mojiPro.sqlKeyword.EXECUTE": {
           "type": "boolean",
           "default": true,
           "description": "▶️ EXECUTE – execute"
         },
-        "mojiCode.sqlKeyword.CALL": {
+        "mojiPro.sqlKeyword.CALL": {
           "type": "boolean",
           "default": true,
           "description": "📞 CALL – call procedure"
         },
-        "mojiCode.sqlKeyword.DECLARE": {
+        "mojiPro.sqlKeyword.DECLARE": {
           "type": "boolean",
           "default": true,
           "description": "📢 DECLARE – declare variable"
         },
-        "mojiCode.sqlKeyword.CURSOR": {
+        "mojiPro.sqlKeyword.CURSOR": {
           "type": "boolean",
           "default": true,
           "description": "👆 CURSOR – cursor"
         },
-        "mojiCode.sqlKeyword.FETCH": {
+        "mojiPro.sqlKeyword.FETCH": {
           "type": "boolean",
           "default": true,
           "description": "🎣 FETCH – fetch"
         },
-        "mojiCode.sqlKeyword.OPEN": {
+        "mojiPro.sqlKeyword.OPEN": {
           "type": "boolean",
           "default": true,
           "description": "📂 OPEN – open cursor"
         },
-        "mojiCode.sqlKeyword.CLOSE": {
+        "mojiPro.sqlKeyword.CLOSE": {
           "type": "boolean",
           "default": true,
           "description": "📁 CLOSE – close cursor"
         },
-        "mojiCode.sqlKeyword.IF": {
+        "mojiPro.sqlKeyword.IF": {
           "type": "boolean",
           "default": true,
           "description": "❓ IF – if"
         },
-        "mojiCode.sqlKeyword.WHILE": {
+        "mojiPro.sqlKeyword.WHILE": {
           "type": "boolean",
           "default": true,
           "description": "🔂 WHILE – while loop"
         },
-        "mojiCode.sqlKeyword.RETURN": {
+        "mojiPro.sqlKeyword.RETURN": {
           "type": "boolean",
           "default": true,
           "description": "🔙 RETURN – return"
         },
-        "mojiCode.sqlKeyword.RETURNS": {
+        "mojiPro.sqlKeyword.RETURNS": {
           "type": "boolean",
           "default": true,
           "description": "🔙 RETURNS – returns"
         },
-        "mojiCode.typescriptKeywords": {
+        "mojiPro.typescriptKeywords": {
           "type": "boolean",
           "default": true,
           "description": "Master toggle: show emojis for TypeScript keywords."
         },
-        "mojiCode.tsKeyword.await": {
+        "mojiPro.tsKeyword.await": {
           "type": "boolean",
           "default": true,
           "description": "⏳ await – waiting for a promise"
         },
-        "mojiCode.tsKeyword.break": {
+        "mojiPro.tsKeyword.break": {
           "type": "boolean",
           "default": true,
           "description": "🛑 break – exit loop/switch"
         },
-        "mojiCode.tsKeyword.case": {
+        "mojiPro.tsKeyword.case": {
           "type": "boolean",
           "default": true,
           "description": "📋 case – pattern match branch"
         },
-        "mojiCode.tsKeyword.catch": {
+        "mojiPro.tsKeyword.catch": {
           "type": "boolean",
           "default": true,
           "description": "🥅 catch – catch thrown errors"
         },
-        "mojiCode.tsKeyword.class": {
+        "mojiPro.tsKeyword.class": {
           "type": "boolean",
           "default": true,
           "description": "🏛️ class – class declaration"
         },
-        "mojiCode.tsKeyword.const": {
+        "mojiPro.tsKeyword.const": {
           "type": "boolean",
           "default": true,
           "description": "🔒 const – immutable binding"
         },
-        "mojiCode.tsKeyword.continue": {
+        "mojiPro.tsKeyword.continue": {
           "type": "boolean",
           "default": true,
           "description": "⏭️ continue – next iteration"
         },
-        "mojiCode.tsKeyword.debugger": {
+        "mojiPro.tsKeyword.debugger": {
           "type": "boolean",
           "default": true,
           "description": "🐛 debugger – breakpoint"
         },
-        "mojiCode.tsKeyword.default": {
+        "mojiPro.tsKeyword.default": {
           "type": "boolean",
           "default": true,
           "description": "📌 default – fallback branch"
         },
-        "mojiCode.tsKeyword.delete": {
+        "mojiPro.tsKeyword.delete": {
           "type": "boolean",
           "default": true,
           "description": "🗑️ delete – remove property"
         },
-        "mojiCode.tsKeyword.do": {
+        "mojiPro.tsKeyword.do": {
           "type": "boolean",
           "default": true,
           "description": "🔄 do – do-while loop"
         },
-        "mojiCode.tsKeyword.else": {
+        "mojiPro.tsKeyword.else": {
           "type": "boolean",
           "default": true,
           "description": "↪️ else – alternative branch"
         },
-        "mojiCode.tsKeyword.export": {
+        "mojiPro.tsKeyword.export": {
           "type": "boolean",
           "default": true,
           "description": "📦 export – module export"
         },
-        "mojiCode.tsKeyword.extends": {
+        "mojiPro.tsKeyword.extends": {
           "type": "boolean",
           "default": true,
           "description": "🧬 extends – inheritance"
         },
-        "mojiCode.tsKeyword.finally": {
+        "mojiPro.tsKeyword.finally": {
           "type": "boolean",
           "default": true,
           "description": "🏁 finally – guaranteed cleanup"
         },
-        "mojiCode.tsKeyword.for": {
+        "mojiPro.tsKeyword.for": {
           "type": "boolean",
           "default": true,
           "description": "🔁 for – for loop"
         },
-        "mojiCode.tsKeyword.function": {
+        "mojiPro.tsKeyword.function": {
           "type": "boolean",
           "default": true,
           "description": "⚡ function – function declaration"
         },
-        "mojiCode.tsKeyword.if": {
+        "mojiPro.tsKeyword.if": {
           "type": "boolean",
           "default": true,
           "description": "❓ if – conditional"
         },
-        "mojiCode.tsKeyword.import": {
+        "mojiPro.tsKeyword.import": {
           "type": "boolean",
           "default": true,
           "description": "📥 import – module import"
         },
-        "mojiCode.tsKeyword.in": {
+        "mojiPro.tsKeyword.in": {
           "type": "boolean",
           "default": true,
           "description": "📍 in – property membership"
         },
-        "mojiCode.tsKeyword.instanceof": {
+        "mojiPro.tsKeyword.instanceof": {
           "type": "boolean",
           "default": true,
           "description": "🔎 instanceof – prototype check"
         },
-        "mojiCode.tsKeyword.new": {
+        "mojiPro.tsKeyword.new": {
           "type": "boolean",
           "default": true,
           "description": "✨ new – instance creation"
         },
-        "mojiCode.tsKeyword.return": {
+        "mojiPro.tsKeyword.return": {
           "type": "boolean",
           "default": true,
           "description": "🔙 return – return value"
         },
-        "mojiCode.tsKeyword.super": {
+        "mojiPro.tsKeyword.super": {
           "type": "boolean",
           "default": true,
           "description": "🦸 super – parent class ref"
         },
-        "mojiCode.tsKeyword.switch": {
+        "mojiPro.tsKeyword.switch": {
           "type": "boolean",
           "default": true,
           "description": "🎚️ switch – multi-branch"
         },
-        "mojiCode.tsKeyword.this": {
+        "mojiPro.tsKeyword.this": {
           "type": "boolean",
           "default": true,
           "description": "👆 this – current context"
         },
-        "mojiCode.tsKeyword.throw": {
+        "mojiPro.tsKeyword.throw": {
           "type": "boolean",
           "default": true,
           "description": "💥 throw – throw error"
         },
-        "mojiCode.tsKeyword.try": {
+        "mojiPro.tsKeyword.try": {
           "type": "boolean",
           "default": true,
           "description": "🤞 try – attempt block"
         },
-        "mojiCode.tsKeyword.typeof": {
+        "mojiPro.tsKeyword.typeof": {
           "type": "boolean",
           "default": true,
           "description": "🏷️ typeof – type check"
         },
-        "mojiCode.tsKeyword.var": {
+        "mojiPro.tsKeyword.var": {
           "type": "boolean",
           "default": true,
           "description": "📝 var – variable (legacy)"
         },
-        "mojiCode.tsKeyword.void": {
+        "mojiPro.tsKeyword.void": {
           "type": "boolean",
           "default": true,
           "description": "🕳️ void – discard value"
         },
-        "mojiCode.tsKeyword.while": {
+        "mojiPro.tsKeyword.while": {
           "type": "boolean",
           "default": true,
           "description": "🔂 while – while loop"
         },
-        "mojiCode.tsKeyword.with": {
+        "mojiPro.tsKeyword.with": {
           "type": "boolean",
           "default": true,
           "description": "🤝 with – with statement"
         },
-        "mojiCode.tsKeyword.yield": {
+        "mojiPro.tsKeyword.yield": {
           "type": "boolean",
           "default": true,
           "description": "🌾 yield – generator yield"
         },
-        "mojiCode.tsKeyword.type": {
+        "mojiPro.tsKeyword.type": {
           "type": "boolean",
           "default": true,
           "description": "📐 type – type alias"
         },
-        "mojiCode.tsKeyword.interface": {
+        "mojiPro.tsKeyword.interface": {
           "type": "boolean",
           "default": true,
           "description": "🔌 interface – interface definition"
         },
-        "mojiCode.tsKeyword.enum": {
+        "mojiPro.tsKeyword.enum": {
           "type": "boolean",
           "default": true,
           "description": "📊 enum – enumeration"
         },
-        "mojiCode.tsKeyword.namespace": {
+        "mojiPro.tsKeyword.namespace": {
           "type": "boolean",
           "default": true,
           "description": "📁 namespace – namespace"
         },
-        "mojiCode.tsKeyword.module": {
+        "mojiPro.tsKeyword.module": {
           "type": "boolean",
           "default": true,
           "description": "🧩 module – module declaration"
         },
-        "mojiCode.tsKeyword.declare": {
+        "mojiPro.tsKeyword.declare": {
           "type": "boolean",
           "default": true,
           "description": "📢 declare – ambient declaration"
         },
-        "mojiCode.tsKeyword.abstract": {
+        "mojiPro.tsKeyword.abstract": {
           "type": "boolean",
           "default": true,
           "description": "🎨 abstract – abstract class/method"
         },
-        "mojiCode.tsKeyword.readonly": {
+        "mojiPro.tsKeyword.readonly": {
           "type": "boolean",
           "default": true,
           "description": "🔏 readonly – readonly property"
         },
-        "mojiCode.tsKeyword.implements": {
+        "mojiPro.tsKeyword.implements": {
           "type": "boolean",
           "default": true,
           "description": "✅ implements – implements interface"
         },
-        "mojiCode.tsKeyword.public": {
+        "mojiPro.tsKeyword.public": {
           "type": "boolean",
           "default": true,
           "description": "🌍 public – public access"
         },
-        "mojiCode.tsKeyword.private": {
+        "mojiPro.tsKeyword.private": {
           "type": "boolean",
           "default": true,
           "description": "🔐 private – private access"
         },
-        "mojiCode.tsKeyword.protected": {
+        "mojiPro.tsKeyword.protected": {
           "type": "boolean",
           "default": true,
           "description": "🛡️ protected – protected access"
         },
-        "mojiCode.tsKeyword.keyof": {
+        "mojiPro.tsKeyword.keyof": {
           "type": "boolean",
           "default": true,
           "description": "🔑 keyof – keyof operator"
         },
-        "mojiCode.tsKeyword.infer": {
+        "mojiPro.tsKeyword.infer": {
           "type": "boolean",
           "default": true,
           "description": "🔮 infer – type inference"
         },
-        "mojiCode.tsKeyword.never": {
+        "mojiPro.tsKeyword.never": {
           "type": "boolean",
           "default": true,
           "description": "🚫 never – never type"
         },
-        "mojiCode.tsKeyword.unknown": {
+        "mojiPro.tsKeyword.unknown": {
           "type": "boolean",
           "default": true,
           "description": "❔ unknown – unknown type"
         },
-        "mojiCode.tsKeyword.any": {
+        "mojiPro.tsKeyword.any": {
           "type": "boolean",
           "default": true,
           "description": "🌀 any – any type"
         },
-        "mojiCode.tsKeyword.is": {
+        "mojiPro.tsKeyword.is": {
           "type": "boolean",
           "default": true,
           "description": "🔍 is – type guard"
         },
-        "mojiCode.tsKeyword.asserts": {
+        "mojiPro.tsKeyword.asserts": {
           "type": "boolean",
           "default": true,
           "description": "❗ asserts – assertion function"
         },
-        "mojiCode.tsKeyword.as": {
+        "mojiPro.tsKeyword.as": {
           "type": "boolean",
           "default": true,
           "description": "🔀 as – type assertion"
         },
-        "mojiCode.tsKeyword.satisfies": {
+        "mojiPro.tsKeyword.satisfies": {
           "type": "boolean",
           "default": true,
           "description": "✔️ satisfies – satisfies operator"
         },
-        "mojiCode.tsKeyword.true": {
+        "mojiPro.tsKeyword.true": {
           "type": "boolean",
           "default": true,
           "description": "✅ true – true"
         },
-        "mojiCode.tsKeyword.false": {
+        "mojiPro.tsKeyword.false": {
           "type": "boolean",
           "default": true,
           "description": "❌ false – false"
         },
-        "mojiCode.tsKeyword.null": {
+        "mojiPro.tsKeyword.null": {
           "type": "boolean",
           "default": true,
           "description": "🚫 null – null value"
         },
-        "mojiCode.tsKeyword.undefined": {
+        "mojiPro.tsKeyword.undefined": {
           "type": "boolean",
           "default": true,
           "description": "❓ undefined – undefined"
         },
-        "mojiCode.tsKeyword.async": {
+        "mojiPro.tsKeyword.async": {
           "type": "boolean",
           "default": true,
           "description": "🔮 async – async function"
         },
-        "mojiCode.tsKeyword.get": {
+        "mojiPro.tsKeyword.get": {
           "type": "boolean",
           "default": true,
           "description": "📖 get – getter"
         },
-        "mojiCode.tsKeyword.set": {
+        "mojiPro.tsKeyword.set": {
           "type": "boolean",
           "default": true,
           "description": "📝 set – setter"
         },
-        "mojiCode.tsKeyword.static": {
+        "mojiPro.tsKeyword.static": {
           "type": "boolean",
           "default": true,
           "description": "🏛️ static – static member"
         },
-        "mojiCode.tsKeyword.constructor": {
+        "mojiPro.tsKeyword.constructor": {
           "type": "boolean",
           "default": true,
           "description": "🏗️ constructor – constructor"
         },
-        "mojiCode.tsKeyword.override": {
+        "mojiPro.tsKeyword.override": {
           "type": "boolean",
           "default": true,
           "description": "🔄 override – override method"
         },
-        "mojiCode.tsKeyword.out": {
+        "mojiPro.tsKeyword.out": {
           "type": "boolean",
           "default": true,
           "description": "📤 out – variance modifier"
         },
-        "mojiCode.tsKeyword.using": {
+        "mojiPro.tsKeyword.using": {
           "type": "boolean",
           "default": true,
           "description": "🔗 using – using declaration"
         },
-        "mojiCode.javaKeywords": {
+        "mojiPro.javaKeywords": {
           "type": "boolean",
           "default": true,
           "description": "Master toggle: show emojis for Java keywords."
         },
-        "mojiCode.javaKeyword.if": {
+        "mojiPro.javaKeyword.if": {
           "type": "boolean",
           "default": true,
           "description": "❓ if – conditional"
         },
-        "mojiCode.javaKeyword.else": {
+        "mojiPro.javaKeyword.else": {
           "type": "boolean",
           "default": true,
           "description": "↪️ else – alternative branch"
         },
-        "mojiCode.javaKeyword.switch": {
+        "mojiPro.javaKeyword.switch": {
           "type": "boolean",
           "default": true,
           "description": "🎚️ switch – multi-branch"
         },
-        "mojiCode.javaKeyword.case": {
+        "mojiPro.javaKeyword.case": {
           "type": "boolean",
           "default": true,
           "description": "📋 case – switch case"
         },
-        "mojiCode.javaKeyword.default": {
+        "mojiPro.javaKeyword.default": {
           "type": "boolean",
           "default": true,
           "description": "📌 default – default case"
         },
-        "mojiCode.javaKeyword.for": {
+        "mojiPro.javaKeyword.for": {
           "type": "boolean",
           "default": true,
           "description": "🔁 for – for loop"
         },
-        "mojiCode.javaKeyword.while": {
+        "mojiPro.javaKeyword.while": {
           "type": "boolean",
           "default": true,
           "description": "🔂 while – while loop"
         },
-        "mojiCode.javaKeyword.do": {
+        "mojiPro.javaKeyword.do": {
           "type": "boolean",
           "default": true,
           "description": "🔄 do – do-while loop"
         },
-        "mojiCode.javaKeyword.break": {
+        "mojiPro.javaKeyword.break": {
           "type": "boolean",
           "default": true,
           "description": "🛑 break – exit loop"
         },
-        "mojiCode.javaKeyword.continue": {
+        "mojiPro.javaKeyword.continue": {
           "type": "boolean",
           "default": true,
           "description": "⏭️ continue – next iteration"
         },
-        "mojiCode.javaKeyword.return": {
+        "mojiPro.javaKeyword.return": {
           "type": "boolean",
           "default": true,
           "description": "🔙 return – return value"
         },
-        "mojiCode.javaKeyword.yield": {
+        "mojiPro.javaKeyword.yield": {
           "type": "boolean",
           "default": true,
           "description": "🌾 yield – switch yield"
         },
-        "mojiCode.javaKeyword.int": {
+        "mojiPro.javaKeyword.int": {
           "type": "boolean",
           "default": true,
           "description": "🔢 int – integer"
         },
-        "mojiCode.javaKeyword.long": {
+        "mojiPro.javaKeyword.long": {
           "type": "boolean",
           "default": true,
           "description": "📐 long – long integer"
         },
-        "mojiCode.javaKeyword.short": {
+        "mojiPro.javaKeyword.short": {
           "type": "boolean",
           "default": true,
           "description": "📏 short – short integer"
         },
-        "mojiCode.javaKeyword.byte": {
+        "mojiPro.javaKeyword.byte": {
           "type": "boolean",
           "default": true,
           "description": "🔣 byte – byte"
         },
-        "mojiCode.javaKeyword.float": {
+        "mojiPro.javaKeyword.float": {
           "type": "boolean",
           "default": true,
           "description": "🎈 float – floating point"
         },
-        "mojiCode.javaKeyword.double": {
+        "mojiPro.javaKeyword.double": {
           "type": "boolean",
           "default": true,
           "description": "🎭 double – double precision"
         },
-        "mojiCode.javaKeyword.char": {
+        "mojiPro.javaKeyword.char": {
           "type": "boolean",
           "default": true,
           "description": "🔤 char – character"
         },
-        "mojiCode.javaKeyword.boolean": {
+        "mojiPro.javaKeyword.boolean": {
           "type": "boolean",
           "default": true,
           "description": "🔘 boolean – boolean"
         },
-        "mojiCode.javaKeyword.void": {
+        "mojiPro.javaKeyword.void": {
           "type": "boolean",
           "default": true,
           "description": "🕳️ void – no return"
         },
-        "mojiCode.javaKeyword.var": {
+        "mojiPro.javaKeyword.var": {
           "type": "boolean",
           "default": true,
           "description": "🏷️ var – local variable type inference"
         },
-        "mojiCode.javaKeyword.true": {
+        "mojiPro.javaKeyword.true": {
           "type": "boolean",
           "default": true,
           "description": "✅ true – true"
         },
-        "mojiCode.javaKeyword.false": {
+        "mojiPro.javaKeyword.false": {
           "type": "boolean",
           "default": true,
           "description": "❌ false – false"
         },
-        "mojiCode.javaKeyword.null": {
+        "mojiPro.javaKeyword.null": {
           "type": "boolean",
           "default": true,
           "description": "🚫 null – null value"
         },
-        "mojiCode.javaKeyword.public": {
+        "mojiPro.javaKeyword.public": {
           "type": "boolean",
           "default": true,
           "description": "🌍 public – public access"
         },
-        "mojiCode.javaKeyword.private": {
+        "mojiPro.javaKeyword.private": {
           "type": "boolean",
           "default": true,
           "description": "🔐 private – private access"
         },
-        "mojiCode.javaKeyword.protected": {
+        "mojiPro.javaKeyword.protected": {
           "type": "boolean",
           "default": true,
           "description": "🛡️ protected – protected access"
         },
-        "mojiCode.javaKeyword.class": {
+        "mojiPro.javaKeyword.class": {
           "type": "boolean",
           "default": true,
           "description": "🏛️ class – class"
         },
-        "mojiCode.javaKeyword.interface": {
+        "mojiPro.javaKeyword.interface": {
           "type": "boolean",
           "default": true,
           "description": "🔌 interface – interface"
         },
-        "mojiCode.javaKeyword.enum": {
+        "mojiPro.javaKeyword.enum": {
           "type": "boolean",
           "default": true,
           "description": "📊 enum – enumeration"
         },
-        "mojiCode.javaKeyword.record": {
+        "mojiPro.javaKeyword.record": {
           "type": "boolean",
           "default": true,
           "description": "📀 record – record type"
         },
-        "mojiCode.javaKeyword.abstract": {
+        "mojiPro.javaKeyword.abstract": {
           "type": "boolean",
           "default": true,
           "description": "🎨 abstract – abstract"
         },
-        "mojiCode.javaKeyword.final": {
+        "mojiPro.javaKeyword.final": {
           "type": "boolean",
           "default": true,
           "description": "🏁 final – final/immutable"
         },
-        "mojiCode.javaKeyword.static": {
+        "mojiPro.javaKeyword.static": {
           "type": "boolean",
           "default": true,
           "description": "🏛️ static – static member"
         },
-        "mojiCode.javaKeyword.sealed": {
+        "mojiPro.javaKeyword.sealed": {
           "type": "boolean",
           "default": true,
           "description": "🔐 sealed – sealed class"
         },
-        "mojiCode.javaKeyword.permits": {
+        "mojiPro.javaKeyword.permits": {
           "type": "boolean",
           "default": true,
           "description": "✅ permits – permits clause"
         },
-        "mojiCode.javaKeyword.extends": {
+        "mojiPro.javaKeyword.extends": {
           "type": "boolean",
           "default": true,
           "description": "🧬 extends – inheritance"
         },
-        "mojiCode.javaKeyword.implements": {
+        "mojiPro.javaKeyword.implements": {
           "type": "boolean",
           "default": true,
           "description": "✅ implements – implements interface"
         },
-        "mojiCode.javaKeyword.new": {
+        "mojiPro.javaKeyword.new": {
           "type": "boolean",
           "default": true,
           "description": "✨ new – instance creation"
         },
-        "mojiCode.javaKeyword.this": {
+        "mojiPro.javaKeyword.this": {
           "type": "boolean",
           "default": true,
           "description": "👆 this – current instance"
         },
-        "mojiCode.javaKeyword.super": {
+        "mojiPro.javaKeyword.super": {
           "type": "boolean",
           "default": true,
           "description": "🦸 super – parent class ref"
         },
-        "mojiCode.javaKeyword.instanceof": {
+        "mojiPro.javaKeyword.instanceof": {
           "type": "boolean",
           "default": true,
           "description": "🔎 instanceof – type check"
         },
-        "mojiCode.javaKeyword.try": {
+        "mojiPro.javaKeyword.try": {
           "type": "boolean",
           "default": true,
           "description": "🤞 try – try block"
         },
-        "mojiCode.javaKeyword.catch": {
+        "mojiPro.javaKeyword.catch": {
           "type": "boolean",
           "default": true,
           "description": "🥅 catch – catch exception"
         },
-        "mojiCode.javaKeyword.finally": {
+        "mojiPro.javaKeyword.finally": {
           "type": "boolean",
           "default": true,
           "description": "🏁 finally – finally block"
         },
-        "mojiCode.javaKeyword.throw": {
+        "mojiPro.javaKeyword.throw": {
           "type": "boolean",
           "default": true,
           "description": "💥 throw – throw exception"
         },
-        "mojiCode.javaKeyword.throws": {
+        "mojiPro.javaKeyword.throws": {
           "type": "boolean",
           "default": true,
           "description": "⚠️ throws – throws declaration"
         },
-        "mojiCode.javaKeyword.package": {
+        "mojiPro.javaKeyword.package": {
           "type": "boolean",
           "default": true,
           "description": "📦 package – package declaration"
         },
-        "mojiCode.javaKeyword.import": {
+        "mojiPro.javaKeyword.import": {
           "type": "boolean",
           "default": true,
           "description": "📥 import – import"
         },
-        "mojiCode.javaKeyword.synchronized": {
+        "mojiPro.javaKeyword.synchronized": {
           "type": "boolean",
           "default": true,
           "description": "🔒 synchronized – synchronized block"
         },
-        "mojiCode.javaKeyword.volatile": {
+        "mojiPro.javaKeyword.volatile": {
           "type": "boolean",
           "default": true,
           "description": "⚠️ volatile – volatile field"
         },
-        "mojiCode.javaKeyword.transient": {
+        "mojiPro.javaKeyword.transient": {
           "type": "boolean",
           "default": true,
           "description": "💨 transient – transient field"
         },
-        "mojiCode.javaKeyword.native": {
+        "mojiPro.javaKeyword.native": {
           "type": "boolean",
           "default": true,
           "description": "⚙️ native – native method"
         },
-        "mojiCode.javaKeyword.strictfp": {
+        "mojiPro.javaKeyword.strictfp": {
           "type": "boolean",
           "default": true,
           "description": "📐 strictfp – strict floating point"
         },
-        "mojiCode.javaKeyword.assert": {
+        "mojiPro.javaKeyword.assert": {
           "type": "boolean",
           "default": true,
           "description": "🔍 assert – assertion"
         },
-        "mojiCode.javaKeyword.module": {
+        "mojiPro.javaKeyword.module": {
           "type": "boolean",
           "default": true,
           "description": "🧩 module – module"
         },
-        "mojiCode.javaKeyword.requires": {
+        "mojiPro.javaKeyword.requires": {
           "type": "boolean",
           "default": true,
           "description": "📋 requires – requires"
         },
-        "mojiCode.javaKeyword.exports": {
+        "mojiPro.javaKeyword.exports": {
           "type": "boolean",
           "default": true,
           "description": "📤 exports – exports"
         },
-        "mojiCode.javaKeyword.opens": {
+        "mojiPro.javaKeyword.opens": {
           "type": "boolean",
           "default": true,
           "description": "🔓 opens – opens"
         },
-        "mojiCode.javaKeyword.uses": {
+        "mojiPro.javaKeyword.uses": {
           "type": "boolean",
           "default": true,
           "description": "🔧 uses – uses"
         },
-        "mojiCode.javaKeyword.provides": {
+        "mojiPro.javaKeyword.provides": {
           "type": "boolean",
           "default": true,
           "description": "🎁 provides – provides"
         },
-        "mojiCode.javaKeyword.with": {
+        "mojiPro.javaKeyword.with": {
           "type": "boolean",
           "default": true,
           "description": "🤝 with – with"
         },
-        "mojiCode.javaKeyword.to": {
+        "mojiPro.javaKeyword.to": {
           "type": "boolean",
           "default": true,
           "description": "➡️ to – to"

@@ -9,9 +9,11 @@ docs/
 landing/
 *.vsix
 nul
+desktop.ini
+package-lock.json
 
 # Exclude large source image files (keep only the final icon)
 src/img/*.clip
-src/img/MojiCodePro.png
+src/img/MojiPro.png
 src/img/Emoticon_Smile_Face.png
 src/img/Emoticon_Smile_Face_v4.png

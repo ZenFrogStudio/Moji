@@ -1,4 +1,4 @@
-# MojiCode Pro
+# Moji Pro
 
 > **Visual cues for faster code comprehension**
 > Supplement code keywords with emojis across 10 languages to reduce cognitive load and enhance pattern recognition.
@@ -29,7 +29,7 @@ Programming forces you to work against your brain's strengths.
 
 ## 💡 The Solution
 
-**MojiCode Pro** supplements each keyword with a visual symbol:
+**Moji Pro** supplements each keyword with a visual symbol:
 
 ```javascript
 🔙 return user;
@@ -447,7 +447,7 @@ Stage 2:
 
 1. Open VS Code
 2. Go to **Extensions** (`Cmd+Shift+X` / `Ctrl+Shift+X`)
-3. Search for **"MojiCode Pro"**
+3. Search for **"Moji Pro"**
 4. Click **Install**
 
 ---
@@ -458,11 +458,11 @@ Once installed, emojis appear automatically in supported language files.
 
 **Toggle the extension:**
 - Open Command Palette (`Cmd+Shift+P` / `Ctrl+Shift+P`)
-- Type: `MojiCode Pro: Toggle`
+- Type: `Moji Pro: Toggle`
 
 **Configure emojis:**
 - Open Command Palette (`Cmd+Shift+P` / `Ctrl+Shift+P`)
-- Type: `MojiCode Pro: Settings`
+- Type: `Moji Pro: Settings`
 - Use the visual settings panel to enable/disable individual emojis
 
 **Display modes:**
@@ -511,7 +511,7 @@ Open an issue or submit a PR on [GitHub](https://github.com/lucidiancreative).
 
 ## 📄 License
 
-MojiCode Pro is proprietary software licensed under the MojiCode Pro End User License Agreement. See the LICENSE file included with this extension for details.
+Moji Pro is proprietary software licensed under the Moji Pro End User License Agreement. See the LICENSE file included with this extension for details.
 
 ---
 
@@ -534,10 +534,10 @@ Emojis are:
 - Lightweight (no performance impact)
 
 **Can I disable specific emojis?**
-Yes! Open the Settings panel (`MojiCode Pro: Settings` command) to toggle individual emojis on/off for each language.
+Yes! Open the Settings panel (`Moji Pro: Settings` command) to toggle individual emojis on/off for each language.
 
 **Which languages are supported?**
-MojiCode Pro supports 10 languages: JavaScript, TypeScript, Python, C, C++, C#, Java, SQL, HTML, and CSS.
+Moji Pro supports 10 languages: JavaScript, TypeScript, Python, C, C++, C#, Java, SQL, HTML, and CSS.
 
 **Is this scientifically proven?**
 The cognitive science behind visual processing, dual coding theory, and reduced working memory load is well-established. This extension applies those principles to code reading.

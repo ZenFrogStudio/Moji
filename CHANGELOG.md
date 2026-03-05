@@ -1,8 +1,15 @@
 # Changelog
 
-All notable changes to MojiCode Pro will be documented in this file.
+All notable changes to Moji Pro will be documented in this file.
 
-## [1.0.0] - 2026-02-19
+## [1.0.0] - 2026-03-04
+
+### Changed
+- Rebranded extension from MojiCode Pro to Moji Pro
+- Renamed VS Code command and configuration namespace from `mojiCode.*` to `mojiPro.*`
+- Renamed license storage keys (`mojicode_*` → `moji_*`) — existing activations require re-entry
+
+## [1.0.0-rc.1] - 2026-02-19
 
 ### Added
 - Emoji overlay decorations for code keywords across 10 languages

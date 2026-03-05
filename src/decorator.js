@@ -61,7 +61,7 @@ class KeywordDecorator {
   _buildDecorationTypes() {
     this._disposeDecorationTypes();
 
-    const config     = vscode.workspace.getConfiguration('mojiCode');
+    const config     = vscode.workspace.getConfiguration('mojiPro');
     const mode       = config.get('displayMode', 'overlay');
     const opacity    = config.get('overlayOpacity', 1);
     const editorFont = vscode.workspace.getConfiguration('editor').get('fontSize', 14);
@@ -98,23 +98,23 @@ class KeywordDecorator {
     // ── Language/Category Configuration Table ─────────────────────────────
     // Unified configuration for all language categories to eliminate code duplication
     const CATEGORY_CONFIG = [
-      { masterKey: 'javascriptKeywords', configNs: 'mojiCode.jsKeyword', map: KEYWORD_EMOJI_MAP, prefix: '' },
-      { masterKey: 'htmlTags', configNs: 'mojiCode.htmlTag', map: HTML_TAG_EMOJI_MAP, prefix: 'tag:' },
-      { masterKey: 'htmlVoidElements', configNs: 'mojiCode.htmlVoid', map: HTML_VOID_EMOJI_MAP, prefix: 'void:' },
-      { masterKey: 'htmlAttributes', configNs: 'mojiCode.htmlAttr', map: HTML_ATTR_EMOJI_MAP, prefix: 'attr:' },
-      { masterKey: 'cssAtRules', configNs: 'mojiCode.cssAtRule', map: CSS_ATRULE_EMOJI_MAP, prefix: 'cssAtRule:' },
-      { masterKey: 'cssLayout', configNs: 'mojiCode.cssLayout', map: CSS_LAYOUT_EMOJI_MAP, prefix: 'cssLayout:' },
-      { masterKey: 'cssBox', configNs: 'mojiCode.cssBox', map: CSS_BOX_EMOJI_MAP, prefix: 'cssBox:' },
-      { masterKey: 'cssVisual', configNs: 'mojiCode.cssVisual', map: CSS_VISUAL_EMOJI_MAP, prefix: 'cssVisual:' },
-      { masterKey: 'cssPseudo', configNs: 'mojiCode.cssPseudo', map: CSS_PSEUDO_EMOJI_MAP, prefix: 'cssPseudo:' },
-      { masterKey: 'cssValues', configNs: 'mojiCode.cssValue', map: CSS_VALUE_EMOJI_MAP, prefix: 'cssValue:' },
-      { masterKey: 'pythonKeywords', configNs: 'mojiCode.pyKeyword', map: PYTHON_KEYWORD_EMOJI_MAP, prefix: 'py:' },
-      { masterKey: 'cKeywords', configNs: 'mojiCode.cKeyword', map: C_KEYWORD_EMOJI_MAP, prefix: 'c:' },
-      { masterKey: 'cppKeywords', configNs: 'mojiCode.cppKeyword', map: CPP_KEYWORD_EMOJI_MAP, prefix: 'cpp:' },
-      { masterKey: 'csharpKeywords', configNs: 'mojiCode.csharpKeyword', map: CSHARP_KEYWORD_EMOJI_MAP, prefix: 'csharp:' },
-      { masterKey: 'sqlKeywords', configNs: 'mojiCode.sqlKeyword', map: SQL_KEYWORD_EMOJI_MAP, prefix: 'sql:' },
-      { masterKey: 'typescriptKeywords', configNs: 'mojiCode.tsKeyword', map: TYPESCRIPT_KEYWORD_EMOJI_MAP, prefix: 'ts:' },
-      { masterKey: 'javaKeywords', configNs: 'mojiCode.javaKeyword', map: JAVA_KEYWORD_EMOJI_MAP, prefix: 'java:' },
+      { masterKey: 'javascriptKeywords', configNs: 'mojiPro.jsKeyword', map: KEYWORD_EMOJI_MAP, prefix: '' },
+      { masterKey: 'htmlTags', configNs: 'mojiPro.htmlTag', map: HTML_TAG_EMOJI_MAP, prefix: 'tag:' },
+      { masterKey: 'htmlVoidElements', configNs: 'mojiPro.htmlVoid', map: HTML_VOID_EMOJI_MAP, prefix: 'void:' },
+      { masterKey: 'htmlAttributes', configNs: 'mojiPro.htmlAttr', map: HTML_ATTR_EMOJI_MAP, prefix: 'attr:' },
+      { masterKey: 'cssAtRules', configNs: 'mojiPro.cssAtRule', map: CSS_ATRULE_EMOJI_MAP, prefix: 'cssAtRule:' },
+      { masterKey: 'cssLayout', configNs: 'mojiPro.cssLayout', map: CSS_LAYOUT_EMOJI_MAP, prefix: 'cssLayout:' },
+      { masterKey: 'cssBox', configNs: 'mojiPro.cssBox', map: CSS_BOX_EMOJI_MAP, prefix: 'cssBox:' },
+      { masterKey: 'cssVisual', configNs: 'mojiPro.cssVisual', map: CSS_VISUAL_EMOJI_MAP, prefix: 'cssVisual:' },
+      { masterKey: 'cssPseudo', configNs: 'mojiPro.cssPseudo', map: CSS_PSEUDO_EMOJI_MAP, prefix: 'cssPseudo:' },
+      { masterKey: 'cssValues', configNs: 'mojiPro.cssValue', map: CSS_VALUE_EMOJI_MAP, prefix: 'cssValue:' },
+      { masterKey: 'pythonKeywords', configNs: 'mojiPro.pyKeyword', map: PYTHON_KEYWORD_EMOJI_MAP, prefix: 'py:' },
+      { masterKey: 'cKeywords', configNs: 'mojiPro.cKeyword', map: C_KEYWORD_EMOJI_MAP, prefix: 'c:' },
+      { masterKey: 'cppKeywords', configNs: 'mojiPro.cppKeyword', map: CPP_KEYWORD_EMOJI_MAP, prefix: 'cpp:' },
+      { masterKey: 'csharpKeywords', configNs: 'mojiPro.csharpKeyword', map: CSHARP_KEYWORD_EMOJI_MAP, prefix: 'csharp:' },
+      { masterKey: 'sqlKeywords', configNs: 'mojiPro.sqlKeyword', map: SQL_KEYWORD_EMOJI_MAP, prefix: 'sql:' },
+      { masterKey: 'typescriptKeywords', configNs: 'mojiPro.tsKeyword', map: TYPESCRIPT_KEYWORD_EMOJI_MAP, prefix: 'ts:' },
+      { masterKey: 'javaKeywords', configNs: 'mojiPro.javaKeyword', map: JAVA_KEYWORD_EMOJI_MAP, prefix: 'java:' },
     ];
 
     // Process all categories using the configuration table
@@ -215,7 +215,7 @@ class KeywordDecorator {
     }
 
     vscode.window.showInformationMessage(
-      `MojiCode Pro: ${this.enabled ? 'Enabled' : 'Disabled'}`,
+      `Moji Pro: ${this.enabled ? 'Enabled' : 'Disabled'}`,
     );
   }
 

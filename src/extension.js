@@ -19,18 +19,18 @@ async function activate(context) {
 
   if (!isLicensed) {
     vscode.window.showInformationMessage(
-      'MojiCode Pro requires a license key to enable emoji decorations.',
+      'Moji Pro requires a license key to enable emoji decorations.',
       'Activate License'
     ).then(selection => {
       if (selection === 'Activate License') {
-        vscode.commands.executeCommand('mojiCode.activateLicense');
+        vscode.commands.executeCommand('mojiPro.activateLicense');
       }
     });
   }
 
   // ── Decorator setup ────────────────────────────────────────────────────
 
-  const config  = vscode.workspace.getConfiguration('mojiCode');
+  const config  = vscode.workspace.getConfiguration('mojiPro');
   const enabled = config.get('enabled', true);
 
   decorator         = new KeywordDecorator();
@@ -43,10 +43,10 @@ async function activate(context) {
   // ── Commands ───────────────────────────────────────────────────────────
 
   context.subscriptions.push(
-    vscode.commands.registerCommand('mojiCode.toggle', () => {
+    vscode.commands.registerCommand('mojiPro.toggle', () => {
       if (!licenseManager.isValid) {
         vscode.window.showWarningMessage(
-          'MojiCode Pro: A license key is required. Use "MojiCode Pro: Activate License".'
+          'Moji Pro: A license key is required. Use "Moji Pro: Activate License".'
         );
         return;
       }
@@ -55,15 +55,15 @@ async function activate(context) {
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand('mojiCode.openSettings', () => {
+    vscode.commands.registerCommand('mojiPro.openSettings', () => {
       openSettingsPanel(context, licenseManager);
     })
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand('mojiCode.activateLicense', async () => {
+    vscode.commands.registerCommand('mojiPro.activateLicense', async () => {
       const key = await vscode.window.showInputBox({
-        prompt:         'Enter your MojiCode Pro license key',
+        prompt:         'Enter your Moji Pro license key',
         placeHolder:    'XXXX-XXXX-XXXX-XXXX',
         password:       true,
         ignoreFocusOut: true,
@@ -75,26 +75,26 @@ async function activate(context) {
 
       if (result.success) {
         vscode.window.showInformationMessage(
-          'MojiCode Pro: License activated successfully! Enjoy your emojis.'
+          'Moji Pro: License activated successfully! Enjoy your emojis.'
         );
         decorator.enabled = vscode.workspace
-          .getConfiguration('mojiCode')
+          .getConfiguration('mojiPro')
           .get('enabled', true);
         if (vscode.window.activeTextEditor) {
           decorator.updateEditor(vscode.window.activeTextEditor);
         }
       } else {
         vscode.window.showErrorMessage(
-          `MojiCode Pro: Activation failed — ${result.error}`
+          `Moji Pro: Activation failed — ${result.error}`
         );
       }
     })
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand('mojiCode.deactivateLicense', async () => {
+    vscode.commands.registerCommand('mojiPro.deactivateLicense', async () => {
       const confirm = await vscode.window.showWarningMessage(
-        'Deactivate your MojiCode Pro license on this machine?',
+        'Deactivate your Moji Pro license on this machine?',
         { modal: true },
         'Deactivate'
       );
@@ -108,7 +108,7 @@ async function activate(context) {
       }
 
       vscode.window.showInformationMessage(
-        'MojiCode Pro: License deactivated. Enter a new key to re-enable.'
+        'Moji Pro: License deactivated. Enter a new key to re-enable.'
       );
     })
   );
@@ -116,10 +116,10 @@ async function activate(context) {
   // Internal command used by the settings panel to re-apply or clear decorations
   // after license state changes without directly coupling settingsPanel to decorator.
   context.subscriptions.push(
-    vscode.commands.registerCommand('mojiCode._refreshDecorator', () => {
+    vscode.commands.registerCommand('mojiPro._refreshDecorator', () => {
       if (licenseManager.isValid) {
         decorator.enabled = vscode.workspace
-          .getConfiguration('mojiCode')
+          .getConfiguration('mojiPro')
           .get('enabled', true);
         if (vscode.window.activeTextEditor) {
           decorator.updateEditor(vscode.window.activeTextEditor);
@@ -161,14 +161,14 @@ async function activate(context) {
   context.subscriptions.push(
     vscode.workspace.onDidChangeConfiguration((event) => {
       if (
-        event.affectsConfiguration('mojiCode') ||
+        event.affectsConfiguration('mojiPro') ||
         event.affectsConfiguration('editor.fontSize')
       ) {
         // Debounce to batch rapid config changes (e.g., "Select All" updates 30+ settings)
         clearTimeout(configTimer);
         configTimer = setTimeout(() => {
           const newEnabled = vscode.workspace
-            .getConfiguration('mojiCode')
+            .getConfiguration('mojiPro')
             .get('enabled', true);
 
           decorator.reloadConfig();
