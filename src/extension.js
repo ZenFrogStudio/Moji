@@ -12,14 +12,14 @@ let decorator;
 let licenseManager;
 
 async function activate(context) {
-  // ── License check (must run first – gates all decoration) ─────────────
+  // ── License check ──────────────────────────────────────────────────────
 
-  licenseManager = new LicenseManager(context.secrets);
+  licenseManager = new LicenseManager(context.secrets, context.globalState);
   const isLicensed = await licenseManager.initialize();
 
   if (!isLicensed) {
     vscode.window.showInformationMessage(
-      'Moji Pro requires a license key to enable emoji decorations.',
+      'Moji Pro: JS, HTML, and CSS emojis are free. Activate a license to unlock all languages.',
       'Activate License'
     ).then(selection => {
       if (selection === 'Activate License') {
@@ -33,10 +33,11 @@ async function activate(context) {
   const config  = vscode.workspace.getConfiguration('mojiPro');
   const enabled = config.get('enabled', true);
 
-  decorator         = new KeywordDecorator();
-  decorator.enabled = enabled;
+  decorator          = new KeywordDecorator();
+  decorator.enabled  = enabled;
+  decorator.licensed = isLicensed;
 
-  if (licenseManager.isValid && vscode.window.activeTextEditor) {
+  if (vscode.window.activeTextEditor) {
     decorator.updateEditor(vscode.window.activeTextEditor);
   }
 
@@ -44,12 +45,6 @@ async function activate(context) {
 
   context.subscriptions.push(
     vscode.commands.registerCommand('mojiPro.toggle', () => {
-      if (!licenseManager.isValid) {
-        vscode.window.showWarningMessage(
-          'Moji Pro: A license key is required. Use "Moji Pro: Activate License".'
-        );
-        return;
-      }
       decorator.toggle();
     })
   );
@@ -60,11 +55,33 @@ async function activate(context) {
     })
   );
 
+  const PURCHASE_URL = 'https://lucidiancreative.com/moji-checkout.html';
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand('mojiPro.purchaseLicense', () => {
+      vscode.env.openExternal(vscode.Uri.parse(PURCHASE_URL));
+    })
+  );
+
   context.subscriptions.push(
     vscode.commands.registerCommand('mojiPro.activateLicense', async () => {
+      // If not yet licensed, prompt the user to buy or enter their key.
+      if (!licenseManager.isValid) {
+        const choice = await vscode.window.showInformationMessage(
+          'Moji Pro: Unlock all languages with a Pro license.',
+          'I have a key',
+          'Buy Moji Pro'
+        );
+        if (choice === 'Buy Moji Pro') {
+          vscode.env.openExternal(vscode.Uri.parse(PURCHASE_URL));
+          return;
+        }
+        if (choice !== 'I have a key') return; // dismissed
+      }
+
       const key = await vscode.window.showInputBox({
         prompt:         'Enter your Moji Pro license key',
-        placeHolder:    'XXXX-XXXX-XXXX-XXXX',
+        placeHolder:    'MOJI-XXXX-XXXX-XXXX-XXXX',
         password:       true,
         ignoreFocusOut: true,
       });
@@ -77,6 +94,7 @@ async function activate(context) {
         vscode.window.showInformationMessage(
           'Moji Pro: License activated successfully! Enjoy your emojis.'
         );
+        decorator.licensed = true;
         decorator.enabled = vscode.workspace
           .getConfiguration('mojiPro')
           .get('enabled', true);
@@ -92,6 +110,26 @@ async function activate(context) {
   );
 
   context.subscriptions.push(
+    vscode.commands.registerCommand('mojiPro.licenseStatus', () => {
+      const { isPremium, activeDevices, maxDevices } = licenseManager.getLicenseStatus();
+      if (isPremium) {
+        vscode.window.showInformationMessage(
+          `Moji Pro: Premium active — ${activeDevices} of ${maxDevices} device slots in use.`
+        );
+      } else {
+        vscode.window.showInformationMessage(
+          'Moji Pro: Free tier — JS, HTML, and CSS emojis are active. Activate a license to unlock all languages.',
+          'Activate License'
+        ).then(selection => {
+          if (selection === 'Activate License') {
+            vscode.commands.executeCommand('mojiPro.activateLicense');
+          }
+        });
+      }
+    })
+  );
+
+  context.subscriptions.push(
     vscode.commands.registerCommand('mojiPro.deactivateLicense', async () => {
       const confirm = await vscode.window.showWarningMessage(
         'Deactivate your Moji Pro license on this machine?',
@@ -102,13 +140,13 @@ async function activate(context) {
 
       await licenseManager.deactivate();
 
-      decorator.enabled = false;
+      decorator.licensed = false;
       if (vscode.window.activeTextEditor) {
         decorator.updateEditor(vscode.window.activeTextEditor);
       }
 
       vscode.window.showInformationMessage(
-        'Moji Pro: License deactivated. Enter a new key to re-enable.'
+        'Moji Pro: License deactivated. JS, HTML, and CSS emojis remain active.'
       );
     })
   );
@@ -117,18 +155,12 @@ async function activate(context) {
   // after license state changes without directly coupling settingsPanel to decorator.
   context.subscriptions.push(
     vscode.commands.registerCommand('mojiPro._refreshDecorator', () => {
-      if (licenseManager.isValid) {
-        decorator.enabled = vscode.workspace
-          .getConfiguration('mojiPro')
-          .get('enabled', true);
-        if (vscode.window.activeTextEditor) {
-          decorator.updateEditor(vscode.window.activeTextEditor);
-        }
-      } else {
-        decorator.enabled = false;
-        if (vscode.window.activeTextEditor) {
-          decorator.updateEditor(vscode.window.activeTextEditor);
-        }
+      decorator.licensed = licenseManager.isValid;
+      decorator.enabled = vscode.workspace
+        .getConfiguration('mojiPro')
+        .get('enabled', true);
+      if (vscode.window.activeTextEditor) {
+        decorator.updateEditor(vscode.window.activeTextEditor);
       }
     })
   );
@@ -137,7 +169,7 @@ async function activate(context) {
 
   context.subscriptions.push(
     vscode.window.onDidChangeActiveTextEditor((editor) => {
-      if (editor && licenseManager.isValid) {
+      if (editor) {
         decorator.updateEditor(editor);
       }
     })
@@ -148,7 +180,7 @@ async function activate(context) {
   context.subscriptions.push(
     vscode.workspace.onDidChangeTextDocument((event) => {
       const editor = vscode.window.activeTextEditor;
-      if (editor && event.document === editor.document && licenseManager.isValid) {
+      if (editor && event.document === editor.document) {
         clearTimeout(updateTimer);
         updateTimer = setTimeout(() => decorator.updateEditor(editor), 100);
       }
@@ -174,7 +206,7 @@ async function activate(context) {
           decorator.reloadConfig();
           decorator.enabled = newEnabled;
 
-          if (licenseManager.isValid && vscode.window.activeTextEditor) {
+          if (vscode.window.activeTextEditor) {
             decorator.updateEditor(vscode.window.activeTextEditor);
           }
         }, 100);

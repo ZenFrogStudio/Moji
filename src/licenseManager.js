@@ -1,58 +1,99 @@
 'use strict';
 
-const https = require('https');
-const os    = require('os');
+const https  = require('https');
+const vscode = require('vscode');
 
-const LS_HOST     = 'api.lemonsqueezy.com';
-const SECRET_KEY  = 'moji_license_key';
-const SECRET_INST = 'moji_instance_id';
+const API_HOST = 'txsfvojjzmoxtzhszzoa.supabase.co';
+const API_BASE = '/functions/v1/moji-license';
+const ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR4c2Z2b2pqem1veHR6aHN6em9hIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4MTY2MzgsImV4cCI6MjA4ODM5MjYzOH0.4dsx0LktL5pwYAaN3JgVl5A5nEzB7W8KPHyhWapWMY4';
+
+const SECRET_KEY = 'moji_license_key';
+const STATE_KEY  = 'moji_license_state'; // globalState key: { validationSuccess, lastValidated, activeDevices, maxDevices }
 
 class LicenseManager {
-  constructor(secrets) {
-    this._secrets    = secrets;
-    this._valid      = false;
-    this._key        = null;
-    this._instanceId = null;
+  constructor(secrets, globalState) {
+    this._secrets       = secrets;
+    this._globalState   = globalState;
+    this._valid         = false;
+    this._key           = null;
+    this._activeDevices = 0;
+    this._maxDevices    = 5;
   }
 
   /**
-   * Called once on extension activation. Reads stored credentials and
-   * validates them against LemonSqueezy. On network error, allows the
-   * extension to run (offline leniency).
+   * Called once on extension activation. Reads SecretStorage and uses cached
+   * globalState for immediate validity — never blocks on network. Fires async
+   * background validation that can revoke premium only on explicit server rejection.
    * @returns {Promise<boolean>}
    */
   async initialize() {
-    const key        = await this._secrets.get(SECRET_KEY);
-    const instanceId = await this._secrets.get(SECRET_INST);
+    const key = await this._secrets.get(SECRET_KEY);
 
-    if (!key || !instanceId) {
+    if (!key) {
       this._valid = false;
       return false;
     }
 
+    this._key = key;
+
+    // Use cached validation result for immediate premium access
+    const cached = this._globalState.get(STATE_KEY);
+    if (cached && cached.validationSuccess) {
+      this._valid         = true;
+      this._activeDevices = cached.activeDevices || 0;
+      this._maxDevices    = cached.maxDevices    || 5;
+    }
+
+    // Re-validate in background — only revokes on explicit server rejection
+    this._validateAsync(key);
+
+    return this._valid;
+  }
+
+  /**
+   * Background validation against the server. Updates cached state on success.
+   * On explicit rejection (invalid/revoked), clears credentials and fires a
+   * decorator refresh. Network failures are silently ignored.
+   * @param {string} key
+   */
+  async _validateAsync(key) {
     try {
-      const response = await this._post('/v1/licenses/validate', {
-        license_key: key,
-        instance_id: instanceId
+      const response = await this._post('/activate', {
+        license_key:        key,
+        device_fingerprint: vscode.env.machineId,
       });
-      this._valid = response.valid === true;
-      if (this._valid) {
-        this._key        = key;
-        this._instanceId = instanceId;
+
+      if (response.valid === true) {
+        // Server confirmed — refresh cached state
+        this._valid         = true;
+        this._activeDevices = response.active_devices ?? this._activeDevices;
+        this._maxDevices    = response.max_devices    ?? this._maxDevices;
+        await this._globalState.update(STATE_KEY, {
+          validationSuccess: true,
+          lastValidated:     Date.now(),
+          activeDevices:     this._activeDevices,
+          maxDevices:        this._maxDevices,
+        });
+      } else if (response.valid === false) {
+        // Server explicitly rejected — revoke premium access
+        this._valid = false;
+        this._key   = null;
+        await this._secrets.delete(SECRET_KEY);
+        await this._globalState.update(STATE_KEY, undefined);
+        vscode.commands.executeCommand('mojiPro._refreshDecorator');
+        vscode.window.showWarningMessage(
+          'Moji Pro: Your license key is no longer valid and has been removed.'
+        );
       }
-      return this._valid;
+      // Any other response shape — keep existing state unchanged
     } catch (_networkError) {
-      // Offline leniency — assume valid so extension still works without internet
-      this._valid      = true;
-      this._key        = key;
-      this._instanceId = instanceId;
-      return true;
+      // Offline or timeout — cached state stands, no change
     }
   }
 
   /**
-   * Activates a new license key against LemonSqueezy and stores the
-   * resulting credentials in SecretStorage.
+   * Activates a license key against the server. Idempotent — safe to call even
+   * if the device is already registered (covers the reinstall scenario).
    * @param {string} licenseKey
    * @returns {Promise<{success: boolean, error?: string}>}
    */
@@ -61,60 +102,64 @@ class LicenseManager {
       return { success: false, error: 'License key cannot be empty.' };
     }
 
-    const trimmedKey   = licenseKey.trim();
-    const instanceName = 'vscode-' + os.hostname()
-      .replace(/[^a-zA-Z0-9\-.]/g, '-')
-      .slice(0, 50);
+    const trimmedKey = licenseKey.trim();
 
     try {
-      const response = await this._post('/v1/licenses/activate', {
-        license_key:   trimmedKey,
-        instance_name: instanceName
+      const response = await this._post('/activate', {
+        license_key:        trimmedKey,
+        device_fingerprint: vscode.env.machineId,
       });
 
-      if (response.activated === true) {
-        const instanceId = response.instance.id;
+      if (response.valid === true) {
+        // Covers "Device activated" and "Device already activated"
         await this._secrets.store(SECRET_KEY, trimmedKey);
-        await this._secrets.store(SECRET_INST, instanceId);
-        this._key        = trimmedKey;
-        this._instanceId = instanceId;
-        this._valid      = true;
+        this._key           = trimmedKey;
+        this._valid         = true;
+        this._activeDevices = response.active_devices ?? this._activeDevices;
+        this._maxDevices    = response.max_devices    ?? this._maxDevices;
+        await this._globalState.update(STATE_KEY, {
+          validationSuccess: true,
+          lastValidated:     Date.now(),
+          activeDevices:     this._activeDevices,
+          maxDevices:        this._maxDevices,
+        });
         return { success: true };
       }
 
-      return {
-        success: false,
-        error: response.error || 'Activation failed. Please check your license key.'
-      };
+      // Build a human-readable error — surface device counts when limit is hit
+      let error = response.error || 'Activation failed. Please check your license key.';
+      if (typeof response.active_devices === 'number' && typeof response.max_devices === 'number') {
+        error = `All ${response.max_devices} device slots are in use. Deactivate another device to free a slot.`;
+      }
+      return { success: false, error };
+
     } catch (_networkError) {
       return { success: false, error: 'Network error. Check your connection and try again.' };
     }
   }
 
   /**
-   * Deactivates the current license on this machine and clears stored credentials.
-   * The LemonSqueezy deactivation call is best-effort; secrets are always cleared.
+   * Deactivates the license on this machine. Best-effort server call —
+   * local credentials are always cleared regardless of the server response.
    * @returns {Promise<void>}
    */
   async deactivate() {
-    const key        = this._key;
-    const instanceId = this._instanceId;
-
+    const key = this._key;
     try {
-      if (key && instanceId) {
-        await this._post('/v1/licenses/deactivate', {
-          license_key: key,
-          instance_id: instanceId
+      if (key) {
+        await this._post('/deactivate', {
+          license_key:        key,
+          device_fingerprint: vscode.env.machineId,
         });
       }
     } catch (_err) {
-      // Best-effort — always clean up locally regardless
+      // Best-effort — always clean up locally
     } finally {
       await this._secrets.delete(SECRET_KEY);
-      await this._secrets.delete(SECRET_INST);
-      this._key        = null;
-      this._instanceId = null;
-      this._valid      = false;
+      await this._globalState.update(STATE_KEY, undefined);
+      this._key           = null;
+      this._valid         = false;
+      this._activeDevices = 0;
     }
   }
 
@@ -139,25 +184,38 @@ class LicenseManager {
   }
 
   /**
-   * Internal HTTP POST helper using Node.js built-in https module.
-   * LemonSqueezy license endpoints require application/x-www-form-urlencoded.
-   * @param {string} path - e.g. '/v1/licenses/validate'
-   * @param {object} data - key-value pairs to URL-encode
+   * Returns current license status info for display commands.
+   * @returns {{ isPremium: boolean, activeDevices: number, maxDevices: number }}
+   */
+  getLicenseStatus() {
+    return {
+      isPremium:     this._valid,
+      activeDevices: this._activeDevices,
+      maxDevices:    this._maxDevices,
+    };
+  }
+
+  /**
+   * Internal HTTP POST to the Supabase Edge Function.
+   * Uses Node's built-in https module — no external dependencies.
+   * @param {string} endpoint - e.g. '/activate'
+   * @param {object} data
    * @returns {Promise<object>} - parsed JSON response
    */
-  _post(path, data) {
+  _post(endpoint, data) {
     return new Promise((resolve, reject) => {
-      const body = new URLSearchParams(data).toString();
+      const body = JSON.stringify(data);
 
       const options = {
-        hostname: LS_HOST,
-        path,
-        method:  'POST',
+        hostname: API_HOST,
+        path:     `${API_BASE}${endpoint}`,
+        method:   'POST',
         headers: {
-          'Content-Type':   'application/x-www-form-urlencoded',
+          'Content-Type':   'application/json',
           'Content-Length': Buffer.byteLength(body),
-          'Accept':         'application/json',
-        }
+          'Authorization':  `Bearer ${ANON_KEY}`,
+          'apikey':         ANON_KEY,
+        },
       };
 
       const req = https.request(options, (res) => {
@@ -167,7 +225,7 @@ class LicenseManager {
           try {
             resolve(JSON.parse(Buffer.concat(chunks).toString()));
           } catch (_e) {
-            reject(new Error('Invalid JSON response from LemonSqueezy'));
+            reject(new Error('Invalid JSON response from license server'));
           }
         });
       });

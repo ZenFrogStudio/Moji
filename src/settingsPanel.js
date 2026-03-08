@@ -25,6 +25,15 @@ function getNonce() {
   return crypto.randomBytes(16).toString('base64');
 }
 
+function escapeHtml(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 let currentPanel      = undefined;
 let currentTab        = 'javascript'; // Track active tab server-side
 let currentLicenseManager = undefined; // Reference held for message handler access
@@ -647,7 +656,7 @@ async function getWebviewContent() {
   <div class="license-section">
     <div class="license-header">
       <span class="license-badge active">&#10003; Active</span>
-      ${licenseMaskedKey ? `<span class="license-key-display">${licenseMaskedKey}</span>` : ''}
+      ${licenseMaskedKey ? `<span class="license-key-display">${escapeHtml(licenseMaskedKey)}</span>` : ''}
     </div>
     <div>
       <button class="bulk-btn" type="button" id="btn-deactivate">Deactivate License</button>

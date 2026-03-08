@@ -36,6 +36,9 @@ const { scanJavaKeywords } = require('./javaScanner');
 const JS_LANGUAGES = new Set(['javascript', 'javascriptreact']);
 const HTML_LANGUAGES = new Set(['html']);
 const CSS_LANGUAGES = new Set(['css', 'scss', 'less']);
+
+// Languages always available without a license (free tier)
+const FREE_LANGUAGES = new Set([...JS_LANGUAGES, ...HTML_LANGUAGES, ...CSS_LANGUAGES]);
 const PYTHON_LANGUAGES = new Set(['python']);
 const C_LANGUAGES = new Set(['c']);
 const CPP_LANGUAGES = new Set(['cpp']);
@@ -53,6 +56,7 @@ class KeywordDecorator {
     /** @type {Map<string, {version: number, matches: Array}>} */
     this.scanCache = new Map(); // Cache scan results by document URI
     this.enabled = true;
+    this.licensed = false;
     this._buildDecorationTypes();
   }
 
@@ -146,6 +150,12 @@ class KeywordDecorator {
     }
 
     if (!this.enabled) {
+      this._clearAll(editor);
+      return;
+    }
+
+    // Non-free languages require a license
+    if (!this.licensed && !FREE_LANGUAGES.has(editor.document.languageId)) {
       this._clearAll(editor);
       return;
     }

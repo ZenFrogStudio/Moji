@@ -1,6 +1,6 @@
 {
-  "name": "Moji-Pro",
-  "displayName": "Moji Pro",
+  "name": "Moji",
+  "displayName": "Moji",
   "description": "Adds visual symbols to your coding experience for enhanced memorability and comprehension.",
   "version": "1.0.0",
   "publisher": "Lucidian",
@@ -77,6 +77,14 @@
       {
         "command": "mojiPro.deactivateLicense",
         "title": "Moji Pro: Deactivate License"
+      },
+      {
+        "command": "mojiPro.licenseStatus",
+        "title": "Moji Pro: License Status"
+      },
+      {
+        "command": "mojiPro.purchaseLicense",
+        "title": "Moji Pro: Purchase License"
       }
     ],
     "menus": {
@@ -88,7 +96,7 @@
       ]
     },
     "configuration": {
-      "title": "Moji Pro",
+      "title": "Moji",
       "properties": {
         "mojiPro.enabled": {
           "type": "boolean",
@@ -3674,6 +3682,7 @@
     }
   },
   "devDependencies": {
-    "@vscode/vsce": "^3.7.1"
+    "@vscode/vsce": "^3.7.1",
+    "supabase": "^2.77.0"
   }
 }

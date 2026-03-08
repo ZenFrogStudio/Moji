@@ -9,8 +9,12 @@ docs/
 landing/
 *.vsix
 nul
+curl
 desktop.ini
 package-lock.json
+*.md
+!readme.md
+!changelog.md
 
 # Exclude large source image files (keep only the final icon)
 src/img/*.clip
