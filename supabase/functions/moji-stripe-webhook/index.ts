@@ -83,7 +83,7 @@ Deno.serve(async (req) => {
       return json({ error: "Failed to create license" }, 500);
     }
 
-    console.log(`License created: ${licenseKey} for ${customerEmail} (session: ${sessionId})`);
+    console.log(`License created for ${customerEmail} (session: ${sessionId})`);
 
     return json({ message: "License created", license_key: licenseKey });
 
