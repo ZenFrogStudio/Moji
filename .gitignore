@@ -3,5 +3,5 @@ node_modules/
 *.vsix
 nul
 desktop.ini
-supabase/
+supabase/.temp/
 curl
