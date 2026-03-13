@@ -12,6 +12,13 @@ const supabase = createClient(
 
 const MAX_ACTIVE_DEVICES = 5;
 
+// Rate limit config per endpoint
+const RATE_LIMITS = {
+  activate:              { limit: 10, windowMinutes: 15 },
+  deactivate:            { limit: 10, windowMinutes: 60 },
+  "lookup-by-transaction": { limit: 10, windowMinutes: 15 },
+};
+
 // ─── Route handler ───────────────────────────────────────────────
 Deno.serve(async (req) => {
   // Handle CORS preflight
@@ -30,10 +37,32 @@ Deno.serve(async (req) => {
   }
 
   const url = new URL(req.url);
+  const endpoint = url.pathname.split("/").pop() as keyof typeof RATE_LIMITS;
   const body = await req.json();
 
   try {
-    switch (url.pathname.split("/").pop()) {
+    // Rate limit check — keyed by IP for activate/lookup, by license_key for deactivate
+    const rl = RATE_LIMITS[endpoint];
+    if (rl) {
+      const ip = req.headers.get("x-forwarded-for")?.split(",")[0].trim() ?? "unknown";
+      const rlKey = endpoint === "deactivate" ? (body.license_key ?? ip) : ip;
+
+      const { data: allowed, error: rlError } = await supabase.rpc("check_rate_limit", {
+        p_key: rlKey,
+        p_endpoint: endpoint,
+        p_limit: rl.limit,
+        p_window_minutes: rl.windowMinutes,
+      });
+
+      if (rlError) {
+        console.error("Rate limit check error:", rlError);
+        // Fail open — don't block legitimate users if the check itself errors
+      } else if (!allowed) {
+        return json({ error: "Too many requests. Please wait before trying again." }, 429);
+      }
+    }
+
+    switch (endpoint) {
       case "activate":
         return await activate(body);
       case "deactivate":

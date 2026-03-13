@@ -10,7 +10,7 @@ Settings for each language can be toggled under settings>customize.
 
 ## Moji Pro
 
-Moji includes a free tier with select languages. Upgrade to **Moji Pro** for a one-time payment of $6.99 to unlock all programming languages.
+Moji includes a free tier with select languages. Upgrade to **Moji Pro** to unlock all programming languages.
 
 **What you get:**
 - All current and future programming languages
@@ -19,7 +19,7 @@ Moji includes a free tier with select languages. Upgrade to **Moji Pro** for a o
 - All future updates included
 
 **How to activate:**
-1. Run `Moji Pro: Purchase License` from the Command Palette to buy
+1. Run `Moji Pro: Purchase License` from the Command Palette
 2. Copy your license key from the confirmation page after purchase
 3. Run `Moji Pro: Activate License` from the Command Palette and paste your key
 
