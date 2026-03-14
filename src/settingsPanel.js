@@ -37,6 +37,28 @@ function escapeHtml(str) {
 let currentPanel          = undefined;
 let currentLicenseManager = undefined; // Reference held for message handler access
 
+// Maps webview category names to their keyword map and VS Code config namespace.
+// Single source of truth — eliminates the if-else chain in the toggleAll handler.
+const TOGGLE_ALL_MAP = {
+  javascript: { map: KEYWORD_EMOJI_MAP,           prefix: 'mojiPro.jsKeyword'      },
+  tags:       { map: HTML_TAG_EMOJI_MAP,           prefix: 'mojiPro.htmlTag'        },
+  void:       { map: HTML_VOID_EMOJI_MAP,          prefix: 'mojiPro.htmlVoid'       },
+  attr:       { map: HTML_ATTR_EMOJI_MAP,          prefix: 'mojiPro.htmlAttr'       },
+  cssAtRule:  { map: CSS_ATRULE_EMOJI_MAP,         prefix: 'mojiPro.cssAtRule'      },
+  cssLayout:  { map: CSS_LAYOUT_EMOJI_MAP,         prefix: 'mojiPro.cssLayout'      },
+  cssBox:     { map: CSS_BOX_EMOJI_MAP,            prefix: 'mojiPro.cssBox'         },
+  cssVisual:  { map: CSS_VISUAL_EMOJI_MAP,         prefix: 'mojiPro.cssVisual'      },
+  cssPseudo:  { map: CSS_PSEUDO_EMOJI_MAP,         prefix: 'mojiPro.cssPseudo'      },
+  cssValue:   { map: CSS_VALUE_EMOJI_MAP,          prefix: 'mojiPro.cssValue'       },
+  python:     { map: PYTHON_KEYWORD_EMOJI_MAP,     prefix: 'mojiPro.pyKeyword'      },
+  c:          { map: C_KEYWORD_EMOJI_MAP,          prefix: 'mojiPro.cKeyword'       },
+  cpp:        { map: CPP_KEYWORD_EMOJI_MAP,        prefix: 'mojiPro.cppKeyword'     },
+  csharp:     { map: CSHARP_KEYWORD_EMOJI_MAP,     prefix: 'mojiPro.csharpKeyword'  },
+  sql:        { map: SQL_KEYWORD_EMOJI_MAP,        prefix: 'mojiPro.sqlKeyword'     },
+  typescript: { map: TYPESCRIPT_KEYWORD_EMOJI_MAP, prefix: 'mojiPro.tsKeyword'      },
+  java:       { map: JAVA_KEYWORD_EMOJI_MAP,       prefix: 'mojiPro.javaKeyword'    },
+};
+
 /**
  * Opens (or focuses) the Moji Pro settings panel.
  * @param {vscode.ExtensionContext} context
@@ -90,72 +112,19 @@ async function openSettingsPanel(context, licenseManager) {
         currentPanel.webview.postMessage({ command: 'licenseDeactivated' });
         vscode.commands.executeCommand('mojiPro._refreshDecorator');
       } else if (message.command === 'toggleAll') {
+        const entry = TOGGLE_ALL_MAP[message.category];
+        if (!entry) return;
+
         const config = vscode.workspace.getConfiguration();
-        const { category, value } = message;
-
-        let map, prefix;
-        if (category === 'javascript') {
-          map = KEYWORD_EMOJI_MAP;
-          prefix = 'mojiPro.jsKeyword';
-        } else if (category === 'tags') {
-          map = HTML_TAG_EMOJI_MAP;
-          prefix = 'mojiPro.htmlTag';
-        } else if (category === 'void') {
-          map = HTML_VOID_EMOJI_MAP;
-          prefix = 'mojiPro.htmlVoid';
-        } else if (category === 'attr') {
-          map = HTML_ATTR_EMOJI_MAP;
-          prefix = 'mojiPro.htmlAttr';
-        } else if (category === 'cssAtRule') {
-          map = CSS_ATRULE_EMOJI_MAP;
-          prefix = 'mojiPro.cssAtRule';
-        } else if (category === 'cssLayout') {
-          map = CSS_LAYOUT_EMOJI_MAP;
-          prefix = 'mojiPro.cssLayout';
-        } else if (category === 'cssBox') {
-          map = CSS_BOX_EMOJI_MAP;
-          prefix = 'mojiPro.cssBox';
-        } else if (category === 'cssVisual') {
-          map = CSS_VISUAL_EMOJI_MAP;
-          prefix = 'mojiPro.cssVisual';
-        } else if (category === 'cssPseudo') {
-          map = CSS_PSEUDO_EMOJI_MAP;
-          prefix = 'mojiPro.cssPseudo';
-        } else if (category === 'cssValue') {
-          map = CSS_VALUE_EMOJI_MAP;
-          prefix = 'mojiPro.cssValue';
-        } else if (category === 'python') {
-          map = PYTHON_KEYWORD_EMOJI_MAP;
-          prefix = 'mojiPro.pyKeyword';
-        } else if (category === 'c') {
-          map = C_KEYWORD_EMOJI_MAP;
-          prefix = 'mojiPro.cKeyword';
-        } else if (category === 'cpp') {
-          map = CPP_KEYWORD_EMOJI_MAP;
-          prefix = 'mojiPro.cppKeyword';
-        } else if (category === 'csharp') {
-          map = CSHARP_KEYWORD_EMOJI_MAP;
-          prefix = 'mojiPro.csharpKeyword';
-        } else if (category === 'sql') {
-          map = SQL_KEYWORD_EMOJI_MAP;
-          prefix = 'mojiPro.sqlKeyword';
-        } else if (category === 'typescript') {
-          map = TYPESCRIPT_KEYWORD_EMOJI_MAP;
-          prefix = 'mojiPro.tsKeyword';
-        } else if (category === 'java') {
-          map = JAVA_KEYWORD_EMOJI_MAP;
-          prefix = 'mojiPro.javaKeyword';
-        } else {
-          return; // Unknown category
+        try {
+          await Promise.all(
+            Object.keys(entry.map).map(key =>
+              config.update(`${entry.prefix}.${key}`, message.value, vscode.ConfigurationTarget.Global)
+            )
+          );
+        } catch (err) {
+          vscode.window.showErrorMessage(`Moji Pro: Failed to update settings — ${err.message}`);
         }
-
-        // Batch all updates in parallel (don't await - let it run in background)
-        Promise.all(
-          Object.keys(map).map(key =>
-            config.update(`${prefix}.${key}`, value, vscode.ConfigurationTarget.Global)
-          )
-        );
-        // Don't re-render - client updates UI instantly
       }
     },
     undefined,

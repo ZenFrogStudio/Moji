@@ -11,6 +11,8 @@ let decorator;
 /** @type {LicenseManager | undefined} */
 let licenseManager;
 
+const PURCHASE_URL = 'https://lucidiancreative.com/moji-checkout.html';
+
 async function activate(context) {
   // ── License check ──────────────────────────────────────────────────────
 
@@ -54,8 +56,6 @@ async function activate(context) {
       openSettingsPanel(context, licenseManager);
     })
   );
-
-  const PURCHASE_URL = 'https://lucidiancreative.com/moji-checkout.html';
 
   context.subscriptions.push(
     vscode.commands.registerCommand('mojiPro.purchaseLicense', () => {
@@ -188,6 +188,13 @@ async function activate(context) {
         }
         decorator.updateEditor(editor);
       }
+    })
+  );
+
+  // Evict scan cache when a document is closed to prevent unbounded memory growth.
+  context.subscriptions.push(
+    vscode.workspace.onDidCloseTextDocument((document) => {
+      decorator.clearCacheForDocument(document.uri.toString());
     })
   );
 

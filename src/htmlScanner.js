@@ -95,6 +95,7 @@ function _scanAttributes(text, i, len, document, results) {
  */
 function scanHtmlTokens(document) {
   const text = document.getText();
+  const lowerText = text.toLowerCase(); // precomputed once for script/style close-tag search
   const results = [];
   const len = text.length;
   let i = 0;
@@ -162,7 +163,7 @@ function scanHtmlTokens(document) {
     // ── Raw-text elements: skip content of <script> and <style> ───────────
     if (tagName === 'script' || tagName === 'style') {
       const closeTag = `</${tagName}`;
-      const closeIdx = text.toLowerCase().indexOf(closeTag, i);
+      const closeIdx = lowerText.indexOf(closeTag, i);
       if (closeIdx !== -1) {
         i = closeIdx; // loop will process the closing tag next
       } else {

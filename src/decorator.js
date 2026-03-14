@@ -271,6 +271,11 @@ class KeywordDecorator {
     this.scanCache.clear();
   }
 
+  /** Remove the scan cache entry for a document that has been closed. */
+  clearCacheForDocument(uri) {
+    this.scanCache.delete(uri);
+  }
+
   /** Dispose all decoration types. */
   dispose() {
     this._disposeDecorationTypes();

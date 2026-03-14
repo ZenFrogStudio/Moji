@@ -104,6 +104,11 @@ class LicenseManager {
 
     const trimmedKey = licenseKey.trim();
 
+    const KEY_FORMAT = /^MOJI-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$/i;
+    if (!KEY_FORMAT.test(trimmedKey)) {
+      return { success: false, error: 'Invalid key format. Expected: MOJI-XXXX-XXXX-XXXX-XXXX' };
+    }
+
     try {
       const response = await this._post('/activate', {
         license_key:        trimmedKey,
