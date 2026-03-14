@@ -34,8 +34,7 @@ function escapeHtml(str) {
     .replace(/'/g, '&#39;');
 }
 
-let currentPanel      = undefined;
-let currentTab        = 'javascript'; // Track active tab server-side
+let currentPanel          = undefined;
 let currentLicenseManager = undefined; // Reference held for message handler access
 
 /**
@@ -50,10 +49,9 @@ async function openSettingsPanel(context, licenseManager) {
     ? vscode.window.activeTextEditor.viewColumn
     : undefined;
 
-  // If panel already exists, reveal it AND refresh content
+  // If panel already exists, just reveal it — retainContextWhenHidden preserves DOM state
   if (currentPanel) {
     currentPanel.reveal(column);
-    currentPanel.webview.html = await getWebviewContent();
     return;
   }
 
@@ -73,25 +71,23 @@ async function openSettingsPanel(context, licenseManager) {
   // Handle messages from the webview
   currentPanel.webview.onDidReceiveMessage(
     async (message) => {
-      if (message.command === 'switchTab') {
-        currentTab = message.tab;
-        currentPanel.webview.html = await getWebviewContent();
-      } else if (message.command === 'toggleSetting') {
+      if (message.command === 'toggleSetting') {
+        // Config update triggers onDidChangeConfiguration which re-applies decorations.
+        // The webview already updated its own checkbox state — no re-render needed.
         const config = vscode.workspace.getConfiguration();
         await config.update(message.key, message.value, vscode.ConfigurationTarget.Global);
-        // Re-render to show updated state
-        currentPanel.webview.html = await getWebviewContent();
       } else if (message.command === 'activateLicense') {
         const result = await currentLicenseManager.activate(message.key);
         if (result.success) {
-          currentPanel.webview.html = await getWebviewContent();
+          const maskedKey = await currentLicenseManager.getMaskedKey();
+          currentPanel.webview.postMessage({ command: 'licenseActivated', maskedKey });
           vscode.commands.executeCommand('mojiPro._refreshDecorator');
         } else {
           currentPanel.webview.postMessage({ command: 'licenseError', error: result.error });
         }
       } else if (message.command === 'deactivateLicense') {
         await currentLicenseManager.deactivate();
-        currentPanel.webview.html = await getWebviewContent();
+        currentPanel.webview.postMessage({ command: 'licenseDeactivated' });
         vscode.commands.executeCommand('mojiPro._refreshDecorator');
       } else if (message.command === 'toggleAll') {
         const config = vscode.workspace.getConfiguration();
@@ -399,27 +395,7 @@ async function getWebviewContent() {
   const cssValueCount = Object.keys(CSS_VALUE_EMOJI_MAP).length;
   const cssTotal = cssAtRuleCount + cssLayoutCount + cssBoxCount + cssVisualCount + cssPseudoCount + cssValueCount;
 
-  // Determine which tab content to show (server-side)
-  const jsTabActive = currentTab === 'javascript' ? 'active' : '';
-  const htmlTabActive = currentTab === 'html' ? 'active' : '';
-  const cssTabActive = currentTab === 'css' ? 'active' : '';
-  const pythonTabActive = currentTab === 'python' ? 'active' : '';
-  const cTabActive = currentTab === 'c' ? 'active' : '';
-  const cppTabActive = currentTab === 'cpp' ? 'active' : '';
-  const csharpTabActive = currentTab === 'csharp' ? 'active' : '';
-  const sqlTabActive = currentTab === 'sql' ? 'active' : '';
-  const typescriptTabActive = currentTab === 'typescript' ? 'active' : '';
-  const javaTabActive = currentTab === 'java' ? 'active' : '';
-  const jsContentActive = currentTab === 'javascript' ? 'active' : '';
-  const htmlContentActive = currentTab === 'html' ? 'active' : '';
-  const cssContentActive = currentTab === 'css' ? 'active' : '';
-  const pythonContentActive = currentTab === 'python' ? 'active' : '';
-  const cContentActive = currentTab === 'c' ? 'active' : '';
-  const cppContentActive = currentTab === 'cpp' ? 'active' : '';
-  const csharpContentActive = currentTab === 'csharp' ? 'active' : '';
-  const sqlContentActive = currentTab === 'sql' ? 'active' : '';
-  const typescriptContentActive = currentTab === 'typescript' ? 'active' : '';
-  const javaContentActive = currentTab === 'java' ? 'active' : '';
+  // Tab state is managed client-side after initial render; JavaScript is always the default.
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -652,18 +628,19 @@ async function getWebviewContent() {
 <body>
   <h1>Moji Pro Settings</h1>
 
-  ${licenseValid ? `
-  <div class="license-section">
+  <!-- Active license state — shown when license is valid -->
+  <div id="license-active" class="license-section" style="${licenseValid ? '' : 'display:none'}">
     <div class="license-header">
       <span class="license-badge active">&#10003; Active</span>
-      ${licenseMaskedKey ? `<span class="license-key-display">${escapeHtml(licenseMaskedKey)}</span>` : ''}
+      <span class="license-key-display" id="license-key-display">${licenseMaskedKey ? escapeHtml(licenseMaskedKey) : ''}</span>
     </div>
     <div>
       <button class="bulk-btn" type="button" id="btn-deactivate">Deactivate License</button>
     </div>
   </div>
-  ` : `
-  <div class="license-section">
+
+  <!-- Inactive license state — shown when no license is active -->
+  <div id="license-inactive" class="license-section" style="${licenseValid ? 'display:none' : ''}">
     <div class="license-header">
       <span class="license-badge inactive">&#10007; Not activated</span>
     </div>
@@ -677,43 +654,42 @@ async function getWebviewContent() {
     </div>
     <div class="license-error" id="license-error" style="display:none"></div>
   </div>
-  `}
 
   <div class="tabs">
-    <button class="tab ${jsTabActive}" data-tab="javascript" type="button">
+    <button class="tab active" data-tab="javascript" type="button">
       JavaScript <span class="count">(${jsCount})</span>
     </button>
-    <button class="tab ${htmlTabActive}" data-tab="html" type="button">
+    <button class="tab" data-tab="html" type="button">
       HTML <span class="count">(${tagCount + voidCount + attrCount})</span>
     </button>
-    <button class="tab ${cssTabActive}" data-tab="css" type="button">
+    <button class="tab" data-tab="css" type="button">
       CSS <span class="count">(${cssTotal})</span>
     </button>
-    <button class="tab ${pythonTabActive}" data-tab="python" type="button">
+    <button class="tab" data-tab="python" type="button">
       Python <span class="count">(${pythonCount})</span>
     </button>
-    <button class="tab ${cTabActive}" data-tab="c" type="button">
+    <button class="tab" data-tab="c" type="button">
       C <span class="count">(${cCount})</span>
     </button>
-    <button class="tab ${cppTabActive}" data-tab="cpp" type="button">
+    <button class="tab" data-tab="cpp" type="button">
       C++ <span class="count">(${cppCount})</span>
     </button>
-    <button class="tab ${csharpTabActive}" data-tab="csharp" type="button">
+    <button class="tab" data-tab="csharp" type="button">
       C# <span class="count">(${csharpCount})</span>
     </button>
-    <button class="tab ${sqlTabActive}" data-tab="sql" type="button">
+    <button class="tab" data-tab="sql" type="button">
       SQL <span class="count">(${sqlCount})</span>
     </button>
-    <button class="tab ${typescriptTabActive}" data-tab="typescript" type="button">
+    <button class="tab" data-tab="typescript" type="button">
       TypeScript <span class="count">(${typescriptCount})</span>
     </button>
-    <button class="tab ${javaTabActive}" data-tab="java" type="button">
+    <button class="tab" data-tab="java" type="button">
       Java <span class="count">(${javaCount})</span>
     </button>
   </div>
 
   <!-- JavaScript Tab -->
-  <div id="javascript" class="tab-content ${jsContentActive}">
+  <div id="javascript" class="tab-content active">
     <div class="master-toggle">
       <input type="checkbox" id="master-javascript" data-setting-key="mojiPro.javascriptKeywords" ${settings.masterToggles.javascriptKeywords ? 'checked' : ''}>
       <label for="master-javascript">Enable JavaScript keyword emojis</label>
@@ -726,7 +702,7 @@ async function getWebviewContent() {
   </div>
 
   <!-- HTML Tab -->
-  <div id="html" class="tab-content ${htmlContentActive}">
+  <div id="html" class="tab-content">
     <!-- Tags Section -->
     <div class="section">
       <div class="section-title">Tags <span class="count">(${tagCount})</span></div>
@@ -771,7 +747,7 @@ async function getWebviewContent() {
   </div>
 
   <!-- CSS Tab -->
-  <div id="css" class="tab-content ${cssContentActive}">
+  <div id="css" class="tab-content">
     <!-- At-Rules Section -->
     <div class="section">
       <div class="section-title">At-Rules <span class="count">(${cssAtRuleCount})</span></div>
@@ -858,7 +834,7 @@ async function getWebviewContent() {
   </div>
 
   <!-- Python Tab -->
-  <div id="python" class="tab-content ${pythonContentActive}">
+  <div id="python" class="tab-content">
     <div class="master-toggle">
       <input type="checkbox" id="master-python" data-setting-key="mojiPro.pythonKeywords" ${settings.masterToggles.pythonKeywords ? 'checked' : ''}>
       <label for="master-python">Enable Python keyword emojis</label>
@@ -871,7 +847,7 @@ async function getWebviewContent() {
   </div>
 
   <!-- C Tab -->
-  <div id="c" class="tab-content ${cContentActive}">
+  <div id="c" class="tab-content">
     <div class="master-toggle">
       <input type="checkbox" id="master-c" data-setting-key="mojiPro.cKeywords" ${settings.masterToggles.cKeywords ? 'checked' : ''}>
       <label for="master-c">Enable C keyword emojis</label>
@@ -884,7 +860,7 @@ async function getWebviewContent() {
   </div>
 
   <!-- C++ Tab -->
-  <div id="cpp" class="tab-content ${cppContentActive}">
+  <div id="cpp" class="tab-content">
     <div class="master-toggle">
       <input type="checkbox" id="master-cpp" data-setting-key="mojiPro.cppKeywords" ${settings.masterToggles.cppKeywords ? 'checked' : ''}>
       <label for="master-cpp">Enable C++ keyword emojis</label>
@@ -897,7 +873,7 @@ async function getWebviewContent() {
   </div>
 
   <!-- C# Tab -->
-  <div id="csharp" class="tab-content ${csharpContentActive}">
+  <div id="csharp" class="tab-content">
     <div class="master-toggle">
       <input type="checkbox" id="master-csharp" data-setting-key="mojiPro.csharpKeywords" ${settings.masterToggles.csharpKeywords ? 'checked' : ''}>
       <label for="master-csharp">Enable C# keyword emojis</label>
@@ -910,7 +886,7 @@ async function getWebviewContent() {
   </div>
 
   <!-- SQL Tab -->
-  <div id="sql" class="tab-content ${sqlContentActive}">
+  <div id="sql" class="tab-content">
     <div class="master-toggle">
       <input type="checkbox" id="master-sql" data-setting-key="mojiPro.sqlKeywords" ${settings.masterToggles.sqlKeywords ? 'checked' : ''}>
       <label for="master-sql">Enable SQL keyword emojis</label>
@@ -923,7 +899,7 @@ async function getWebviewContent() {
   </div>
 
   <!-- TypeScript Tab -->
-  <div id="typescript" class="tab-content ${typescriptContentActive}">
+  <div id="typescript" class="tab-content">
     <div class="master-toggle">
       <input type="checkbox" id="master-typescript" data-setting-key="mojiPro.typescriptKeywords" ${settings.masterToggles.typescriptKeywords ? 'checked' : ''}>
       <label for="master-typescript">Enable TypeScript keyword emojis</label>
@@ -936,7 +912,7 @@ async function getWebviewContent() {
   </div>
 
   <!-- Java Tab -->
-  <div id="java" class="tab-content ${javaContentActive}">
+  <div id="java" class="tab-content">
     <div class="master-toggle">
       <input type="checkbox" id="master-java" data-setting-key="mojiPro.javaKeywords" ${settings.masterToggles.javaKeywords ? 'checked' : ''}>
       <label for="master-java">Enable Java keyword emojis</label>
@@ -971,10 +947,15 @@ async function getWebviewContent() {
       java: 'mojiPro.javaKeyword.'
     };
 
-    // Tab buttons
+    // Tab buttons — handled entirely client-side, no round-trip to extension host
     document.querySelectorAll('[data-tab]').forEach(function(btn) {
       btn.addEventListener('click', function() {
-        vscode.postMessage({ command: 'switchTab', tab: this.dataset.tab });
+        var tab = this.dataset.tab;
+        document.querySelectorAll('.tab').forEach(function(t) { t.classList.remove('active'); });
+        document.querySelectorAll('.tab-content').forEach(function(c) { c.classList.remove('active'); });
+        this.classList.add('active');
+        var content = document.getElementById(tab);
+        if (content) { content.classList.add('active'); }
       });
     });
 
@@ -1051,7 +1032,7 @@ async function getWebviewContent() {
         });
       }
 
-      // Handle error messages sent back from the extension host
+      // Handle messages sent back from the extension host
       window.addEventListener('message', function(event) {
         var msg = event.data;
         if (msg.command === 'licenseError') {
@@ -1063,6 +1044,20 @@ async function getWebviewContent() {
             btnSubmit.disabled = false;
             btnSubmit.textContent = 'Submit';
           }
+        } else if (msg.command === 'licenseActivated') {
+          document.getElementById('license-active').style.display = '';
+          document.getElementById('license-inactive').style.display = 'none';
+          if (msg.maskedKey) {
+            document.getElementById('license-key-display').textContent = msg.maskedKey;
+          }
+        } else if (msg.command === 'licenseDeactivated') {
+          document.getElementById('license-active').style.display = 'none';
+          document.getElementById('license-inactive').style.display = '';
+          // Reset the activation form to its initial state
+          if (inputRow) { inputRow.style.display = 'none'; }
+          if (btnActivate) { btnActivate.style.display = ''; }
+          if (errorDiv) { errorDiv.style.display = 'none'; }
+          if (keyInput) { keyInput.value = ''; }
         }
       });
     })();
