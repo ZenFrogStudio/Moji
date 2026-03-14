@@ -2,6 +2,13 @@
 
 All notable changes to Moji Pro will be documented in this file.
 
+## [1.0.1] - 2026-03-13
+
+### Improved
+- Significant performance improvements to decorator rendering
+- Refactored scanner architecture — all language scanners now share a common factory, reducing duplication and improving maintainability
+- Settings panel performance optimizations
+
 ## [1.0.0] - 2026-03-04
 
 ### Changed
