@@ -49,43 +49,71 @@ const JAVA_LANGUAGES = new Set(['java']);
 
 const SUPPORTED_LANGUAGES = new Set([...JS_LANGUAGES, ...HTML_LANGUAGES, ...CSS_LANGUAGES, ...PYTHON_LANGUAGES, ...C_LANGUAGES, ...CPP_LANGUAGES, ...CSHARP_LANGUAGES, ...SQL_LANGUAGES, ...TS_LANGUAGES, ...JAVA_LANGUAGES]);
 
+// Shared category table — used by both _buildDecorationTypes and _refreshEnabledKeywords.
+const CATEGORY_CONFIG = [
+  { masterKey: 'javascriptKeywords', configNs: 'mojiPro.jsKeyword', map: KEYWORD_EMOJI_MAP, prefix: '' },
+  { masterKey: 'htmlTags', configNs: 'mojiPro.htmlTag', map: HTML_TAG_EMOJI_MAP, prefix: 'tag:' },
+  { masterKey: 'htmlVoidElements', configNs: 'mojiPro.htmlVoid', map: HTML_VOID_EMOJI_MAP, prefix: 'void:' },
+  { masterKey: 'htmlAttributes', configNs: 'mojiPro.htmlAttr', map: HTML_ATTR_EMOJI_MAP, prefix: 'attr:' },
+  { masterKey: 'cssAtRules', configNs: 'mojiPro.cssAtRule', map: CSS_ATRULE_EMOJI_MAP, prefix: 'cssAtRule:' },
+  { masterKey: 'cssLayout', configNs: 'mojiPro.cssLayout', map: CSS_LAYOUT_EMOJI_MAP, prefix: 'cssLayout:' },
+  { masterKey: 'cssBox', configNs: 'mojiPro.cssBox', map: CSS_BOX_EMOJI_MAP, prefix: 'cssBox:' },
+  { masterKey: 'cssVisual', configNs: 'mojiPro.cssVisual', map: CSS_VISUAL_EMOJI_MAP, prefix: 'cssVisual:' },
+  { masterKey: 'cssPseudo', configNs: 'mojiPro.cssPseudo', map: CSS_PSEUDO_EMOJI_MAP, prefix: 'cssPseudo:' },
+  { masterKey: 'cssValues', configNs: 'mojiPro.cssValue', map: CSS_VALUE_EMOJI_MAP, prefix: 'cssValue:' },
+  { masterKey: 'pythonKeywords', configNs: 'mojiPro.pyKeyword', map: PYTHON_KEYWORD_EMOJI_MAP, prefix: 'py:' },
+  { masterKey: 'cKeywords', configNs: 'mojiPro.cKeyword', map: C_KEYWORD_EMOJI_MAP, prefix: 'c:' },
+  { masterKey: 'cppKeywords', configNs: 'mojiPro.cppKeyword', map: CPP_KEYWORD_EMOJI_MAP, prefix: 'cpp:' },
+  { masterKey: 'csharpKeywords', configNs: 'mojiPro.csharpKeyword', map: CSHARP_KEYWORD_EMOJI_MAP, prefix: 'csharp:' },
+  { masterKey: 'sqlKeywords', configNs: 'mojiPro.sqlKeyword', map: SQL_KEYWORD_EMOJI_MAP, prefix: 'sql:' },
+  { masterKey: 'typescriptKeywords', configNs: 'mojiPro.tsKeyword', map: TYPESCRIPT_KEYWORD_EMOJI_MAP, prefix: 'ts:' },
+  { masterKey: 'javaKeywords', configNs: 'mojiPro.javaKeyword', map: JAVA_KEYWORD_EMOJI_MAP, prefix: 'java:' },
+];
+
 class KeywordDecorator {
   constructor() {
     /** @type {Map<string, vscode.TextEditorDecorationType>} */
     this.decorationTypes = new Map();
     /** @type {Map<string, {version: number, matches: Array}>} */
-    this.scanCache = new Map(); // Cache scan results by document URI
+    this.scanCache = new Map();
+    /** @type {Set<string>} Keywords currently enabled — controls which types get ranges applied. */
+    this.enabledKeywords = new Set();
     this.enabled = true;
     this.licensed = false;
+    this._mode = null;
+    this._opacity = null;
+    this._editorFont = null;
     this._buildDecorationTypes();
   }
 
   // ── Decoration type management ───────────────────────────────────────────
 
+  // Creates one TextEditorDecorationType for EVERY keyword regardless of enabled state.
+  // Enabled state is tracked separately in this.enabledKeywords.
+  // Only called when the visual style (mode, opacity, font) changes — not on keyword toggles.
   _buildDecorationTypes() {
     this._disposeDecorationTypes();
 
     const config     = vscode.workspace.getConfiguration('mojiPro');
-    const mode       = config.get('displayMode', 'overlay');
-    const opacity    = config.get('overlayOpacity', 1);
-    const editorFont = vscode.workspace.getConfiguration('editor').get('fontSize', 14);
+    this._mode       = config.get('displayMode', 'overlay');
+    this._opacity    = config.get('overlayOpacity', 1);
+    this._editorFont = vscode.workspace.getConfiguration('editor').get('fontSize', 14);
 
-    // Helper: create a single decoration type and register it in the map.
     const addDecoration = (key, emoji) => {
       /** @type {vscode.DecorationRenderOptions} */
       let options;
 
-      if (mode === 'replace') {
+      if (this._mode === 'replace') {
         options = {
           textDecoration: 'none; font-size: 0',
           before: {
             contentText: emoji,
-            textDecoration: `none; font-size: ${editorFont}px`,
+            textDecoration: `none; font-size: ${this._editorFont}px`,
           },
         };
       } else {
         options = {
-          opacity: String(opacity),
+          opacity: String(this._opacity),
           before: {
             contentText: emoji,
             margin: '0 4px 0 0',
@@ -93,41 +121,30 @@ class KeywordDecorator {
         };
       }
 
-      this.decorationTypes.set(
-        key,
-        vscode.window.createTextEditorDecorationType(options),
-      );
+      this.decorationTypes.set(key, vscode.window.createTextEditorDecorationType(options));
     };
 
-    // ── Language/Category Configuration Table ─────────────────────────────
-    // Unified configuration for all language categories to eliminate code duplication
-    const CATEGORY_CONFIG = [
-      { masterKey: 'javascriptKeywords', configNs: 'mojiPro.jsKeyword', map: KEYWORD_EMOJI_MAP, prefix: '' },
-      { masterKey: 'htmlTags', configNs: 'mojiPro.htmlTag', map: HTML_TAG_EMOJI_MAP, prefix: 'tag:' },
-      { masterKey: 'htmlVoidElements', configNs: 'mojiPro.htmlVoid', map: HTML_VOID_EMOJI_MAP, prefix: 'void:' },
-      { masterKey: 'htmlAttributes', configNs: 'mojiPro.htmlAttr', map: HTML_ATTR_EMOJI_MAP, prefix: 'attr:' },
-      { masterKey: 'cssAtRules', configNs: 'mojiPro.cssAtRule', map: CSS_ATRULE_EMOJI_MAP, prefix: 'cssAtRule:' },
-      { masterKey: 'cssLayout', configNs: 'mojiPro.cssLayout', map: CSS_LAYOUT_EMOJI_MAP, prefix: 'cssLayout:' },
-      { masterKey: 'cssBox', configNs: 'mojiPro.cssBox', map: CSS_BOX_EMOJI_MAP, prefix: 'cssBox:' },
-      { masterKey: 'cssVisual', configNs: 'mojiPro.cssVisual', map: CSS_VISUAL_EMOJI_MAP, prefix: 'cssVisual:' },
-      { masterKey: 'cssPseudo', configNs: 'mojiPro.cssPseudo', map: CSS_PSEUDO_EMOJI_MAP, prefix: 'cssPseudo:' },
-      { masterKey: 'cssValues', configNs: 'mojiPro.cssValue', map: CSS_VALUE_EMOJI_MAP, prefix: 'cssValue:' },
-      { masterKey: 'pythonKeywords', configNs: 'mojiPro.pyKeyword', map: PYTHON_KEYWORD_EMOJI_MAP, prefix: 'py:' },
-      { masterKey: 'cKeywords', configNs: 'mojiPro.cKeyword', map: C_KEYWORD_EMOJI_MAP, prefix: 'c:' },
-      { masterKey: 'cppKeywords', configNs: 'mojiPro.cppKeyword', map: CPP_KEYWORD_EMOJI_MAP, prefix: 'cpp:' },
-      { masterKey: 'csharpKeywords', configNs: 'mojiPro.csharpKeyword', map: CSHARP_KEYWORD_EMOJI_MAP, prefix: 'csharp:' },
-      { masterKey: 'sqlKeywords', configNs: 'mojiPro.sqlKeyword', map: SQL_KEYWORD_EMOJI_MAP, prefix: 'sql:' },
-      { masterKey: 'typescriptKeywords', configNs: 'mojiPro.tsKeyword', map: TYPESCRIPT_KEYWORD_EMOJI_MAP, prefix: 'ts:' },
-      { masterKey: 'javaKeywords', configNs: 'mojiPro.javaKeyword', map: JAVA_KEYWORD_EMOJI_MAP, prefix: 'java:' },
-    ];
+    for (const { configNs, map, prefix } of CATEGORY_CONFIG) {
+      const itemCfg = vscode.workspace.getConfiguration(configNs);
+      for (const [key, emoji] of Object.entries(map)) {
+        addDecoration(`${prefix}${key}`, emoji);
+      }
+    }
 
-    // Process all categories using the configuration table
+    this._refreshEnabledKeywords();
+  }
+
+  // Reads current config and updates the enabledKeywords set.
+  // Does NOT touch decoration types — no visual disruption.
+  _refreshEnabledKeywords() {
+    this.enabledKeywords.clear();
+    const config = vscode.workspace.getConfiguration('mojiPro');
     for (const { masterKey, configNs, map, prefix } of CATEGORY_CONFIG) {
       if (config.get(masterKey, true)) {
         const itemCfg = vscode.workspace.getConfiguration(configNs);
-        for (const [key, emoji] of Object.entries(map)) {
+        for (const [key] of Object.entries(map)) {
           if (itemCfg.get(key, true)) {
-            addDecoration(`${prefix}${key}`, emoji);
+            this.enabledKeywords.add(`${prefix}${key}`);
           }
         }
       }
@@ -209,9 +226,14 @@ class KeywordDecorator {
       if (list) list.push({ range });
     }
 
-    // Apply each keyword's decoration type with its ranges.
+    // Apply ranges for enabled keywords; clear for disabled ones.
+    // Decoration types are never disposed on keyword toggles, so there is no
+    // dispose/recreate flash — we simply pass an empty array to clear disabled types.
     for (const [keyword, decorationType] of this.decorationTypes) {
-      editor.setDecorations(decorationType, groups.get(keyword) || []);
+      editor.setDecorations(
+        decorationType,
+        this.enabledKeywords.has(keyword) ? (groups.get(keyword) || []) : []
+      );
     }
   }
 
@@ -229,12 +251,23 @@ class KeywordDecorator {
     );
   }
 
-  /** Rebuild decoration types after a configuration change. */
+  /** Update state after a configuration change. */
   reloadConfig() {
     const wasEnabled = this.enabled;
-    this._buildDecorationTypes();
+    const config     = vscode.workspace.getConfiguration('mojiPro');
+    const newMode    = config.get('displayMode', 'overlay');
+    const newOpacity = config.get('overlayOpacity', 1);
+    const newFont    = vscode.workspace.getConfiguration('editor').get('fontSize', 14);
+
+    if (newMode !== this._mode || newOpacity !== this._opacity || newFont !== this._editorFont) {
+      // Visual style changed — must recreate decoration types (unavoidable full rebuild)
+      this._buildDecorationTypes();
+    } else {
+      // Only keyword enable/disable changed — update the enabled set with no type disposal
+      this._refreshEnabledKeywords();
+    }
+
     this.enabled = wasEnabled;
-    // Clear scan cache since decoration types have changed
     this.scanCache.clear();
   }
 

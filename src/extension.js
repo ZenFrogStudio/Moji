@@ -167,9 +167,25 @@ async function activate(context) {
 
   // ── Editor lifecycle events ────────────────────────────────────────────
 
+  // Timestamp of the last decorator reload triggered by an editor tab switch.
+  // Used to suppress redundant reloads from delayed onDidChangeConfiguration
+  // events that arrive after the editor switch has already handled the refresh.
+  let lastEditorSwitchRefresh = 0;
+
   context.subscriptions.push(
     vscode.window.onDidChangeActiveTextEditor((editor) => {
       if (editor) {
+        // Flush any pending config debounce immediately so the editor renders
+        // with the latest settings on first paint rather than flickering.
+        if (configTimer) {
+          clearTimeout(configTimer);
+          configTimer = undefined;
+          decorator.reloadConfig();
+          decorator.enabled = vscode.workspace
+            .getConfiguration('mojiPro')
+            .get('enabled', true);
+          lastEditorSwitchRefresh = Date.now();
+        }
         decorator.updateEditor(editor);
       }
     })
@@ -199,6 +215,11 @@ async function activate(context) {
         // Debounce to batch rapid config changes (e.g., "Select All" updates 30+ settings)
         clearTimeout(configTimer);
         configTimer = setTimeout(() => {
+          // Skip if an editor tab switch already handled this reload recently.
+          // Delayed onDidChangeConfiguration events (from async settings.json writes)
+          // can arrive after the editor switch has already applied the correct config.
+          if (Date.now() - lastEditorSwitchRefresh < 500) return;
+
           const newEnabled = vscode.workspace
             .getConfiguration('mojiPro')
             .get('enabled', true);

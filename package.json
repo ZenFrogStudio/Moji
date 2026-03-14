@@ -68,7 +68,7 @@
       },
       {
         "command": "mojiPro.openSettings",
-        "title": "Customize"
+        "title": "Moji Pro: Customize Settings"
       },
       {
         "command": "mojiPro.activateLicense",
