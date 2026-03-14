@@ -1,8 +1,8 @@
 {
   "name": "moji-pro",
   "displayName": "Moji Pro",
-  "description": "Adds visual symbols to your coding experience for enhanced memorability and comprehension.",
-  "version": "1.0.0",
+  "description": "Adds visual symbols to your coding keywords for enhanced memorability and comprehension.",
+  "version": "1.0.1",
   "publisher": "Lucidian",
   "license": "SEE LICENSE IN LICENSE",
   "icon": "src/img/icon-sm.png",
