@@ -12,11 +12,11 @@ const supabase = createClient(
 
 const MAX_ACTIVE_DEVICES = 5;
 
-// Rate limit config per endpoint
-const RATE_LIMITS = {
-  activate:              { limit: 10, windowMinutes: 15 },
-  deactivate:            { limit: 10, windowMinutes: 60 },
-  "lookup-by-transaction": { limit: 10, windowMinutes: 15 },
+// Rate limits per endpoint: [max requests, window in minutes]
+const RATE_LIMITS: Record<string, [number, number]> = {
+  "activate":              [20, 5],   // 20 attempts per 5 min (VS Code startup calls this)
+  "deactivate":            [10, 5],   // 10 per 5 min
+  "lookup-by-transaction": [10, 5],   // 10 per 5 min
 };
 
 // ─── Route handler ───────────────────────────────────────────────
@@ -25,7 +25,7 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, {
       headers: {
-        "Access-Control-Allow-Origin": "https://lucidiancreative.com",
+        "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Methods": "POST, OPTIONS",
         "Access-Control-Allow-Headers": "Content-Type, Authorization, apikey",
       },
@@ -37,31 +37,23 @@ Deno.serve(async (req) => {
   }
 
   const url = new URL(req.url);
-  const endpoint = url.pathname.split("/").pop() as keyof typeof RATE_LIMITS;
   const body = await req.json();
+  const endpoint = url.pathname.split("/").pop() || "";
+
+  // Rate limit check
+  const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim()
+    || req.headers.get("cf-connecting-ip")
+    || "unknown";
+
+  const limits = RATE_LIMITS[endpoint];
+  if (limits) {
+    const allowed = await checkRateLimit(ip, endpoint, limits[0], limits[1]);
+    if (!allowed) {
+      return json({ error: "Too many requests. Please try again later." }, 429);
+    }
+  }
 
   try {
-    // Rate limit check — keyed by IP for activate/lookup, by license_key for deactivate
-    const rl = RATE_LIMITS[endpoint];
-    if (rl) {
-      const ip = req.headers.get("x-forwarded-for")?.split(",")[0].trim() ?? "unknown";
-      const rlKey = endpoint === "deactivate" ? (body.license_key ?? ip) : ip;
-
-      const { data: allowed, error: rlError } = await supabase.rpc("check_rate_limit", {
-        p_key: rlKey,
-        p_endpoint: endpoint,
-        p_limit: rl.limit,
-        p_window_minutes: rl.windowMinutes,
-      });
-
-      if (rlError) {
-        console.error("Rate limit check error:", rlError);
-        // Fail open — don't block legitimate users if the check itself errors
-      } else if (!allowed) {
-        return json({ error: "Too many requests. Please wait before trying again." }, 429);
-      }
-    }
-
     switch (endpoint) {
       case "activate":
         return await activate(body);
@@ -155,25 +147,25 @@ async function activate(body: { license_key?: string; device_fingerprint?: strin
   });
 }
 
-// ─── Lookup by Session ────────────────────────────────────────────
+// ─── Lookup by Transaction ────────────────────────────────────────
 // Called by the post-purchase success page
-// Returns the license key for a given Stripe checkout session ID
-// Expects: { session_id: string }
-async function lookupByTransaction(body: { session_id?: string }) {
-  const { session_id } = body;
+// Returns the license key for a given Paddle transaction ID
+// Expects: { transaction_id: string }
+async function lookupByTransaction(body: { transaction_id?: string }) {
+  const { transaction_id } = body;
 
-  if (!session_id) {
-    return json({ error: "session_id is required" }, 400);
+  if (!transaction_id) {
+    return json({ error: "transaction_id is required" }, 400);
   }
 
   const { data: license, error: licenseError } = await supabase
     .from("licenses")
     .select("license_key")
-    .eq("stripe_checkout_session_id", session_id)
+    .eq("paddle_transaction_id", transaction_id)
     .single();
 
   if (licenseError || !license) {
-    return json({ error: "No license found for this session. Please allow a moment for your purchase to process and try again." }, 404);
+    return json({ error: "No license found for this transaction. Please allow a moment for your purchase to process and try again." }, 404);
   }
 
   return json({ license_key: license.license_key });
@@ -221,13 +213,40 @@ async function deactivate(body: { license_key?: string; device_fingerprint?: str
   return json({ message: "Device deactivated" });
 }
 
+// ─── Rate Limiting ──────────────────────────────────────────────
+async function checkRateLimit(
+  ip: string,
+  endpoint: string,
+  maxRequests: number,
+  windowMinutes: number
+): Promise<boolean> {
+  try {
+    const { data, error } = await supabase.rpc("check_rate_limit", {
+      p_ip: ip,
+      p_endpoint: endpoint,
+      p_max_requests: maxRequests,
+      p_window_minutes: windowMinutes,
+    });
+
+    if (error) {
+      console.error("Rate limit check error:", error);
+      return true; // Fail open — don't block legitimate users if rate limiter breaks
+    }
+
+    return data === true;
+  } catch (err) {
+    console.error("Rate limit exception:", err);
+    return true; // Fail open
+  }
+}
+
 // ─── Helper ──────────────────────────────────────────────────────
 function json(data: Record<string, unknown>, status = 200) {
   return new Response(JSON.stringify(data), {
     status,
     headers: {
       "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "https://lucidiancreative.com",
+      "Access-Control-Allow-Origin": "*",
     },
   });
 }

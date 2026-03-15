@@ -138,7 +138,7 @@ Yes. Open the Settings panel (`Moji Pro: Settings`) to toggle individual emojis 
 ## Contributing
 
 Found a bug? Have an emoji suggestion?
-Open an issue or submit a PR on [GitHub](https://github.com/lucidiancreative).
+Open an issue on [GitHub](https://github.com/lucidiancreative/moji-pro/issues).
 
 ## License
 

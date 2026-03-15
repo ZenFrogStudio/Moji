@@ -8,8 +8,12 @@
   "icon": "src/img/icon-sm.png",
   "repository": {
     "type": "git",
-    "url": "https://github.com/lucidiancreative/Moji-Pro"
+    "url": "https://github.com/lucidiancreative/moji-pro"
   },
+  "bugs": {
+    "url": "https://github.com/lucidiancreative/moji-pro/issues"
+  },
+  "homepage": "https://github.com/lucidiancreative/moji-pro",
   "engines": {
     "vscode": "^1.75.0"
   },
