@@ -15,6 +15,6 @@ const SKIP_PATTERNS = [
 ];
 
 // Create scanner using factory (with 'cs:' prefix)
-const scanCsharpKeywords = createScanner(CSHARP_KEYWORD_EMOJI_MAP, SKIP_PATTERNS, 'g', 'cs:');
+const scanCsharpKeywords = createScanner(CSHARP_KEYWORD_EMOJI_MAP, SKIP_PATTERNS, 'g', 'csharp:');
 
 module.exports = { scanCsharpKeywords };
