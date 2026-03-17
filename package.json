@@ -2,7 +2,7 @@
   "name": "moji-pro",
   "displayName": "Moji Pro",
   "description": "Adds visual symbols to your coding keywords for enhanced memorability and comprehension.",
-  "version": "1.0.1",
+  "version": "1.2.0",
   "publisher": "Lucidian",
   "license": "SEE LICENSE IN LICENSE",
   "icon": "src/img/icon-sm.png",
@@ -134,24 +134,12 @@
         "mojiPro.codeBlocks.enabled": {
           "type": "boolean",
           "default": true,
-          "description": "Enable code block highlighting — tinted backgrounds and a thin border outline around nested code blocks."
-        },
-        "mojiPro.codeBlocks.borderColor": {
-          "type": "string",
-          "default": "rgba(128,128,128,0.35)",
-          "description": "CSS color for the block outline border. Accepts any valid CSS color string (e.g. rgba, hex, named colors)."
+          "description": "Enable code block highlighting — applies a subtle background tint to each detected code block."
         },
         "mojiPro.codeBlocks.backgroundColor": {
           "type": "string",
           "default": "rgba(128,128,128,0.04)",
-          "description": "CSS color applied as one background layer per nesting depth. Layers stack, so deeper blocks appear progressively more tinted."
-        },
-        "mojiPro.codeBlocks.borderWidth": {
-          "type": "number",
-          "default": 1,
-          "minimum": 1,
-          "maximum": 4,
-          "description": "Thickness of the block outline border in pixels."
+          "description": "CSS color for the block background tint. Accepts any valid CSS color string (e.g. rgba, hex, named colors)."
         },
         "mojiPro.htmlTags": {
           "type": "boolean",

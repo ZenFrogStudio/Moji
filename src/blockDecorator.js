@@ -1,25 +1,10 @@
-// Adds code block highlighting to the editor: a tinted background fill plus a
-// thin connected border outline around each multi-line {} or indent block, so
-// users can quickly identify code block boundaries and their contents.
+// Adds code block highlighting to the editor: a configurable background tint
+// applied to every line within each detected multi-line block, so users can
+// quickly identify code block boundaries and their contents at a glance.
 //
 // Supported block strategies:
 //   bracket-based  – JS, TS, Java, C, C++, C#, CSS/SCSS/Less  ({} delimiters)
 //   indent-based   – Python  (indentation level as depth proxy)
-//
-// Border rendering model:
-//   Three decoration types apply only the relevant CSS border sides per line
-//   position within each block:
-//     opening line  → border-top  + border-left  (top-left corner of the box)
-//     middle lines  → border-left                (left side running down)
-//     closing line  → border-bottom + border-left (bottom-left corner of the box)
-//   This creates a single connected outline rather than the "every line in its
-//   own box" look that applying border on all four sides of every line produces.
-//   The right side runs to the viewport edge (isWholeLine: true fills the full
-//   line width) — precise right-edge clipping is not in scope.
-//
-//   Individual CSS border sides are applied via the textDecoration CSS injection
-//   hack: Monaco writes the textDecoration value verbatim into the generated CSS
-//   class, so extra declarations appended after the semicolon are valid and applied.
 
 const vscode = require('vscode');
 
@@ -39,25 +24,17 @@ const BLOCK_SUPPORTED_LANGUAGES = new Set([
 
 class BlockDecorator {
   constructor() {
-    /** @type {vscode.TextEditorDecorationType | null} Background fill for all block lines. */
+    /** @type {vscode.TextEditorDecorationType | null} Background fill for all lines within a block. */
     this._bgDecType = null;
-    /** @type {vscode.TextEditorDecorationType | null} border-top + border-left on opening lines. */
-    this._openingDecType = null;
-    /** @type {vscode.TextEditorDecorationType | null} border-left only on middle lines. */
-    this._middleDecType = null;
-    /** @type {vscode.TextEditorDecorationType | null} border-bottom + border-left on closing lines. */
-    this._closingDecType = null;
 
     /** @type {Map<string, {version: number, blocks: Array}>} Per-document scan cache. */
     this._blockCache = new Map();
 
     this.enabled = false;
 
-    // Cached config values — compared in reloadConfig to detect style changes
-    // that require rebuilding decoration types (unavoidable dispose/recreate).
-    this._cfgBorderColor     = null;
+    // Cached config value — compared in reloadConfig to detect style changes
+    // that require rebuilding the decoration type (unavoidable dispose/recreate).
     this._cfgBackgroundColor = null;
-    this._cfgBorderWidth     = null;
 
     this._buildDecorationTypes();
   }
@@ -68,46 +45,17 @@ class BlockDecorator {
     this._disposeDecorationTypes();
 
     const cfg = vscode.workspace.getConfiguration('mojiPro.codeBlocks');
-    this._cfgBorderColor     = cfg.get('borderColor',     'rgba(128,128,128,0.4)');
     this._cfgBackgroundColor = cfg.get('backgroundColor', 'rgba(128,128,128,0.06)');
-    this._cfgBorderWidth     = cfg.get('borderWidth',     1);
-
-    const bc = this._cfgBorderColor;
-    const bw = this._cfgBorderWidth;
 
     this._bgDecType = vscode.window.createTextEditorDecorationType({
       isWholeLine: true,
       backgroundColor: this._cfgBackgroundColor,
     });
-
-    // Opening line of each block: top cap + left side begins here.
-    this._openingDecType = vscode.window.createTextEditorDecorationType({
-      isWholeLine: true,
-      textDecoration: `none; border-top: ${bw}px solid ${bc}; border-left: ${bw}px solid ${bc};`,
-    });
-
-    // Middle lines: left side only — no top/bottom so adjacent lines don't each
-    // show a horizontal separator, which caused the "individual row" look.
-    this._middleDecType = vscode.window.createTextEditorDecorationType({
-      isWholeLine: true,
-      textDecoration: `none; border-left: ${bw}px solid ${bc};`,
-    });
-
-    // Closing line of each block: bottom cap + left side ends here.
-    this._closingDecType = vscode.window.createTextEditorDecorationType({
-      isWholeLine: true,
-      textDecoration: `none; border-bottom: ${bw}px solid ${bc}; border-left: ${bw}px solid ${bc};`,
-    });
   }
 
   _disposeDecorationTypes() {
-    for (const dt of [this._bgDecType, this._openingDecType, this._middleDecType, this._closingDecType]) {
-      if (dt) dt.dispose();
-    }
-    this._bgDecType      = null;
-    this._openingDecType = null;
-    this._middleDecType  = null;
-    this._closingDecType = null;
+    if (this._bgDecType) this._bgDecType.dispose();
+    this._bgDecType = null;
   }
 
   // ── Block detection ────────────────────────────────────────────────────────
@@ -297,32 +245,11 @@ class BlockDecorator {
       this._blockCache.set(docKey, { version: docVersion, blocks });
     }
 
-    const bgRanges      = [];
-    const openingRanges = [];
-    const middleRanges  = [];
-    const closingRanges = [];
+    const bgRanges = blocks.map(({ startLine, endLine }) =>
+      new vscode.Range(startLine, 0, endLine, editor.document.lineAt(endLine).text.length)
+    );
 
-    for (const { startLine, endLine } of blocks) {
-      const doc         = editor.document;
-      const openingChar = doc.lineAt(startLine).text.length;
-      const closingChar = doc.lineAt(endLine).text.length;
-
-      bgRanges.push(new vscode.Range(startLine, 0, endLine, closingChar));
-      openingRanges.push(new vscode.Range(startLine, 0, startLine, openingChar));
-      closingRanges.push(new vscode.Range(endLine, 0, endLine, closingChar));
-
-      // One range covers all middle lines — more efficient than one Range per line
-      // for large blocks since isWholeLine: true decorates every line in the range.
-      if (endLine - startLine > 1) {
-        const midEndChar = doc.lineAt(endLine - 1).text.length;
-        middleRanges.push(new vscode.Range(startLine + 1, 0, endLine - 1, midEndChar));
-      }
-    }
-
-    editor.setDecorations(this._bgDecType,      bgRanges);
-    editor.setDecorations(this._openingDecType, openingRanges);
-    editor.setDecorations(this._middleDecType,  middleRanges);
-    editor.setDecorations(this._closingDecType, closingRanges);
+    editor.setDecorations(this._bgDecType, bgRanges);
   }
 
   /** Toggle the feature on/off and refresh the active editor. */
@@ -341,18 +268,11 @@ class BlockDecorator {
    * just updates the enabled flag to avoid a dispose/recreate flash.
    */
   reloadConfig() {
-    const cfg            = vscode.workspace.getConfiguration('mojiPro.codeBlocks');
-    const newBorderColor = cfg.get('borderColor',     'rgba(128,128,128,0.4)');
-    const newBgColor     = cfg.get('backgroundColor', 'rgba(128,128,128,0.06)');
-    const newBorderWidth = cfg.get('borderWidth',     1);
+    const cfg        = vscode.workspace.getConfiguration('mojiPro.codeBlocks');
+    const newBgColor = cfg.get('backgroundColor', 'rgba(128,128,128,0.06)');
 
-    const styleChanged =
-      newBorderColor  !== this._cfgBorderColor  ||
-      newBgColor      !== this._cfgBackgroundColor ||
-      newBorderWidth  !== this._cfgBorderWidth;
-
-    if (styleChanged) {
-      // Visual style changed — must recreate decoration types (unavoidable full rebuild).
+    if (newBgColor !== this._cfgBackgroundColor) {
+      // Background color changed — must recreate the decoration type (unavoidable full rebuild).
       this._buildDecorationTypes();
     }
 
@@ -373,9 +293,7 @@ class BlockDecorator {
   // ── Helpers ────────────────────────────────────────────────────────────────
 
   _clearAll(editor) {
-    for (const dt of [this._bgDecType, this._openingDecType, this._middleDecType, this._closingDecType]) {
-      if (dt) editor.setDecorations(dt, []);
-    }
+    if (this._bgDecType) editor.setDecorations(this._bgDecType, []);
   }
 }
 
