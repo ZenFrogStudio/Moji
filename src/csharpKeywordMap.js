@@ -14,7 +14,7 @@ const CSHARP_KEYWORD_EMOJI_MAP = {
   'do':           '🔃',   // arrows           – do-while loop
   'break':        '🛑',   // stop sign        – exit loop
   'continue':     '⏭️',   // skip forward     – next iteration
-  'goto':         '🚀',   // rocket           – unconditional jump
+  'goto':         '🏹',   // bow and arrow    – unconditional jump
   'return':       '🔙',   // back arrow       – return value
   'yield':        '🌾',   // wheat            – yield return
   'when':         '⏰',   // clock            – pattern guard
@@ -64,7 +64,7 @@ const CSHARP_KEYWORD_EMOJI_MAP = {
   'partial':      '🧩',   // puzzle piece     – partial class
 
   // Class & Type Definitions
-  'class':        '🏛️',   // classical bldg   – class
+  'class':        '🧑‍🏫',   // teacher          – class
   'struct':       '🏗️',   // construction     – struct
   'interface':    '🔌',   // plug             – interface
   'enum':         '📊',   // bar chart        – enumeration

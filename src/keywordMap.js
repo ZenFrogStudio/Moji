@@ -6,7 +6,7 @@ const KEYWORD_EMOJI_MAP = {
   'break':      '🛑',   // stop sign       – exit loop / switch
   'case':       '📋',   // clipboard       – pattern match branch
   'catch':      '🥅',   // goal net        – catch thrown errors
-  'class':      '🏛️',   // classical bldg  – class declaration
+  'class':      '🧑‍🏫',   // teacher         – class declaration
   'const':      '🔒',   // lock            – immutable binding
   'continue':   '⏭️',   // skip forward    – next iteration
   'debugger':   '🐛',   // bug             – breakpoint
@@ -15,7 +15,7 @@ const KEYWORD_EMOJI_MAP = {
   'do':         '🔄',   // arrows circle   – do-while loop
   'else':       '↪️',    // right curve     – alternative branch
   'enum':       '📊',   // bar chart       – enumeration (reserved)
-  'export':     '📦',   // package         – module export
+  'export':     '🚀',   // rocket          – module export
   'extends':    '🧬',   // DNA             – inheritance
   'finally':    '🏁',   // chequered flag  – guaranteed cleanup
   'for':        '🔁',   // repeat arrows   – for loop

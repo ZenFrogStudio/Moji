@@ -8,7 +8,7 @@ const TYPESCRIPT_KEYWORD_EMOJI_MAP = {
   'break':        '🛑',   // stop sign       – exit loop / switch
   'case':         '📋',   // clipboard       – pattern match branch
   'catch':        '🥅',   // goal net        – catch thrown errors
-  'class':        '🏛️',   // classical bldg  – class declaration
+  'class':        '🧑‍🏫',   // teacher         – class declaration
   'const':        '🔒',   // lock            – immutable binding
   'continue':     '⏭️',   // skip forward    – next iteration
   'debugger':     '🐛',   // bug             – breakpoint
@@ -16,7 +16,7 @@ const TYPESCRIPT_KEYWORD_EMOJI_MAP = {
   'delete':       '🗑️',   // wastebasket     – remove property
   'do':           '🔄',   // arrows          – do-while loop
   'else':         '↪️',   // right curve     – alternative branch
-  'export':       '📦',   // package         – module export
+  'export':       '🚀',   // rocket          – module export
   'extends':      '🧬',   // dna             – inheritance
   'finally':      '🏁',   // checkered flag  – guaranteed cleanup
   'for':          '🔁',   // repeat arrows   – for loop

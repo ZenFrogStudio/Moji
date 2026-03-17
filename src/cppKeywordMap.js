@@ -13,7 +13,7 @@ const CPP_KEYWORD_EMOJI_MAP = {
   'do':           '🔄',   // arrows circle    – do-while loop
   'break':        '🛑',   // stop sign        – exit loop/switch
   'continue':     '⏭️',   // skip forward     – next iteration
-  'goto':         '🚀',   // rocket           – unconditional jump
+  'goto':         '🏹',   // bow and arrow    – unconditional jump
   'return':       '🔙',   // back arrow       – return value
 
   // Data Types (inherited from C + C++ additions)
@@ -48,7 +48,7 @@ const CPP_KEYWORD_EMOJI_MAP = {
   'inline':       '📎',   // paperclip        – inline function
 
   // Classes & OOP
-  'class':        '🏛️',   // classical bldg   – class definition
+  'class':        '🧑‍🏫',   // teacher          – class definition
   'struct':       '🏗️',   // construction     – structure type
   'union':        '🤝',   // handshake        – union type
   'enum':         '📊',   // bar chart        – enumeration
@@ -99,7 +99,7 @@ const CPP_KEYWORD_EMOJI_MAP = {
 
   // Other Keywords
   'asm':          '⚙️',   // gear             – inline assembly
-  'export':       '📦',   // package          – module export
+  'export':       '🚀',   // rocket           – module export
   'import':       '📥',   // inbox            – module import (C++20)
   'module':       '🧩',   // puzzle           – module (C++20)
   'co_await':     '⏳',   // hourglass        – coroutine await

@@ -24,7 +24,7 @@ const PYTHON_KEYWORD_EMOJI_MAP = {
   'return':     '🔙',   // back arrow       – return value
   'yield':      '🌾',   // rice sheaf       – generator yield
   'lambda':     'λ',    // lambda letter    – anonymous function
-  'class':      '🏛️',   // classical bldg   – class declaration
+  'class':      '🧑‍🏫',   // teacher          – class declaration
 
   // Exception Handling
   'try':        '🤞',   // crossed fingers  – attempt block

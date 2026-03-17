@@ -39,7 +39,7 @@ const JAVA_KEYWORD_EMOJI_MAP = {
   'protected':    '🛡️',   // shield           – protected access
 
   // ── Class & Type Modifiers ──────────────────────────────────────────────
-  'class':        '🏛️',   // classical bldg   – class
+  'class':        '🧑‍🏫',   // teacher          – class
   'interface':    '🔌',   // plug             – interface
   'enum':         '📊',   // bar chart        – enumeration
   'record':       '📀',   // disc             – record type
