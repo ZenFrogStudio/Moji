@@ -7,16 +7,16 @@
 const HTML_TAG_EMOJI_MAP = {
   // Structural
   'html':       '🌐',  // globe           – root document element
-  'head':       '🧠',  // brain           – document metadata container
-  'body':       '🦴',  // bone            – document body
+  'head':       '🗣️',  // brain           – document metadata container
+  'body':       '💀',  // bone            – document body
 
   // Generic containers
-  'div':        '📦',  // package         – generic block container
-  'span':       '🔖',  // bookmark        – generic inline container
+  'div':        '🧱',  // package         – generic block container
+  'span':       '🦇',  // bookmark        – generic inline container
 
   // Text content
   'p':          '📄',  // page            – paragraph
-  'a':          '🔗',  // link            – anchor / hyperlink
+  'a':          '🖇️',  // link            – anchor / hyperlink
   'h1':         '1️⃣',  // keycap one      – heading level 1
   'h2':         '2️⃣',  // keycap two      – heading level 2
   'h3':         '3️⃣',  // keycap three    – heading level 3
@@ -41,7 +41,7 @@ const HTML_TAG_EMOJI_MAP = {
   // Forms
   'form':       '📑',  // bookmark tabs   – input form
   'button':     '🔘',  // radio button    – clickable button
-  'select':     '📂',  // open folder     – dropdown select
+  'select':     '🛒',  // open folder     – dropdown select
   'option':     '☑️',   // check box       – select option
   'textarea':   '✏️',   // pencil          – multiline text input
   'label':      '🪧',  // placard         – form control label
@@ -56,7 +56,7 @@ const HTML_TAG_EMOJI_MAP = {
   'aside':      '📌',  // pushpin         – tangential content
 
   // Embedded content & scripting
-  'script':     '⚡',  // lightning       – executable script
+  'script':     '📜',  // lightning       – executable script
   'style':      '🎨',  // artist palette  – embedded stylesheet
   'title':      '👑',  // crown           – document title
   'video':      '🎬',  // clapper board   – video player
@@ -116,7 +116,7 @@ const HTML_VOID_EMOJI_MAP = {
 // ── HTML attribute names ─────────────────────────────────────────────────────
 
 const HTML_ATTR_EMOJI_MAP = {
-  'class':       '🏛️',  // classical bldg  – CSS class name
+  'class':       '🧑‍🏫',  // classical bldg  – CSS class name
   'id':          '🆔',  // id button       – unique identifier
   'href':        '🌍',  // globe europe    – hyperlink reference
   'src':         '📥',  // inbox tray      – source URL
@@ -126,9 +126,9 @@ const HTML_ATTR_EMOJI_MAP = {
   'name':        '📛',  // name badge      – element name
   'value':       '💎',  // gem             – element value
   'placeholder': '💡',  // light bulb      – placeholder hint
-  'action':      '🎯',  // direct hit      – form submission URL
+  'action':      '🎬',  // direct hit      – form submission URL
   'method':      '📮',  // postbox         – HTTP method
-  'target':      '🏹',  // bow and arrow   – link target
+  'target':      '🎯',  // bow and arrow   – link target
   'rel':         '🤝',  // handshake       – link relationship
   'width':       '↔️',   // left-right arrow– element width
   'height':      '↕️',   // up-down arrow   – element height
