@@ -7,8 +7,8 @@
 const HTML_TAG_EMOJI_MAP = {
   // Structural
   'html':       '🌐',  // globe           – root document element
-  'head':       '🗣️',  // brain           – document metadata container
-  'body':       '💀',  // bone            – document body
+  'head':       '🗿',  // brain           – document metadata container
+  'body':       '🧍',  // bone            – document body
 
   // Generic containers
   'div':        '🧱',  // package         – generic block container
