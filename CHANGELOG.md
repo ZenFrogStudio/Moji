@@ -2,6 +2,15 @@
 
 All notable changes to Moji Pro will be documented in this file.
 
+## [1.2.0] - 2026-03-17
+
+### Added
+- **Code Block Highlighting** — draws a thin connected outline (top, left, and bottom border sides) around each multi-line `{}` block in JS, TS, Java, C, C++, C#, CSS/SCSS/Less, and around indented blocks in Python, with a subtle background tint to visually separate nested scopes
+- Toggle command `Moji Pro: Toggle Code Block Highlighting` to enable/disable the feature without opening settings
+- New **Code Blocks** tab in the Moji Pro Settings panel with a master on/off toggle
+- Four new settings under `mojiPro.codeBlocks.*`: `enabled`, `borderColor`, `backgroundColor`, `borderWidth`
+- Code block highlighting is enabled by default
+
 ## [1.0.1] - 2026-03-13
 
 ### Improved

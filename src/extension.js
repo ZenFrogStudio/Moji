@@ -47,7 +47,7 @@ async function activate(context) {
   blockDecorator         = new BlockDecorator();
   blockDecorator.enabled = vscode.workspace
     .getConfiguration('mojiPro.codeBlocks')
-    .get('enabled', false);
+    .get('enabled', true);
 
   if (vscode.window.activeTextEditor) {
     decorator.updateEditor(vscode.window.activeTextEditor);

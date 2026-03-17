@@ -94,6 +94,9 @@ async function openSettingsPanel(context, licenseManager) {
   currentPanel.webview.onDidReceiveMessage(
     async (message) => {
       if (message.command === 'toggleSetting') {
+        // Guard: only accept keys that belong to this extension — prevents the webview
+        // from writing arbitrary VS Code settings if a CSP bypass ever occurred.
+        if (typeof message.key !== 'string' || !message.key.startsWith('mojiPro.')) return;
         // Config update triggers onDidChangeConfiguration which re-applies decorations.
         // The webview already updated its own checkbox state — no re-render needed.
         const config = vscode.workspace.getConfiguration();
@@ -145,7 +148,8 @@ async function openSettingsPanel(context, licenseManager) {
  * Get current settings state for all emojis.
  */
 function getCurrentSettings() {
-  const mainCfg = vscode.workspace.getConfiguration('mojiPro');
+  const mainCfg        = vscode.workspace.getConfiguration('mojiPro');
+  const codeBlocksCfg  = vscode.workspace.getConfiguration('mojiPro.codeBlocks');
   const jsCfg = vscode.workspace.getConfiguration('mojiPro.jsKeyword');
   const tagCfg = vscode.workspace.getConfiguration('mojiPro.htmlTag');
   const voidCfg = vscode.workspace.getConfiguration('mojiPro.htmlVoid');
@@ -165,6 +169,9 @@ function getCurrentSettings() {
   const javaCfg = vscode.workspace.getConfiguration('mojiPro.javaKeyword');
 
   const settings = {
+    codeBlocks: {
+      enabled: codeBlocksCfg.get('enabled', true),
+    },
     masterToggles: {
       javascriptKeywords: mainCfg.get('javascriptKeywords', true),
       htmlTags: mainCfg.get('htmlTags', true),
@@ -655,6 +662,9 @@ async function getWebviewContent() {
     <button class="tab" data-tab="java" type="button">
       Java <span class="count">(${javaCount})</span>
     </button>
+    <button class="tab" data-tab="codeblocks" type="button">
+      Code Blocks
+    </button>
   </div>
 
   <!-- JavaScript Tab -->
@@ -891,6 +901,14 @@ async function getWebviewContent() {
       <button class="bulk-btn" data-toggle-all="java" data-toggle-value="false" type="button">Deselect All</button>
     </div>
     <div class="emoji-grid">${javaItems}</div>
+  </div>
+
+  <!-- Code Blocks Tab -->
+  <div id="codeblocks" class="tab-content">
+    <div class="master-toggle">
+      <input type="checkbox" id="master-codeblocks" data-setting-key="mojiPro.codeBlocks.enabled" ${settings.codeBlocks.enabled ? 'checked' : ''}>
+      <label for="master-codeblocks">Enable code block highlighting</label>
+    </div>
   </div>
 
   <script nonce="${nonce}">

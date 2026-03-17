@@ -242,7 +242,9 @@ class BlockDecorator {
       indentLevels.push(Math.floor(spaces / tabSize));
     }
 
-    const maxLevel = Math.max(0, ...indentLevels.filter(l => l !== null));
+    // Use reduce instead of spread+Math.max — spread into Math.max throws a
+    // RangeError on large Python files (V8 has a ~65k argument count limit).
+    const maxLevel = indentLevels.reduce((max, l) => (l !== null && l > max ? l : max), 0);
 
     for (let level = 1; level <= maxLevel && level <= 20; level++) {
       let blockStart = -1;

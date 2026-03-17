@@ -133,7 +133,7 @@
         },
         "mojiPro.codeBlocks.enabled": {
           "type": "boolean",
-          "default": false,
+          "default": true,
           "description": "Enable code block highlighting — tinted backgrounds and a thin border outline around nested code blocks."
         },
         "mojiPro.codeBlocks.borderColor": {
