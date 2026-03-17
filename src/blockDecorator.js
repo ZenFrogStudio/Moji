@@ -7,20 +7,19 @@
 //   indent-based   – Python  (indentation level as depth proxy)
 //
 // Border rendering model:
-//   Three decoration types share the same border color/width but apply only the
-//   relevant CSS border sides per line position within each block:
+//   Three decoration types apply only the relevant CSS border sides per line
+//   position within each block:
 //     opening line  → border-top  + border-left  (top-left corner of the box)
 //     middle lines  → border-left                (left side running down)
 //     closing line  → border-bottom + border-left (bottom-left corner of the box)
-//   This creates a single connected U-shaped outline on the left + caps at top
-//   and bottom, rather than the "every line in a separate box" look that using
-//   border on all four sides of every line produces.
-//   The right side of the outline runs to the viewport edge (isWholeLine: true
-//   fills the full line width) — precise right-edge clipping is not in scope.
+//   This creates a single connected outline rather than the "every line in its
+//   own box" look that applying border on all four sides of every line produces.
+//   The right side runs to the viewport edge (isWholeLine: true fills the full
+//   line width) — precise right-edge clipping is not in scope.
 //
 //   Individual CSS border sides are applied via the textDecoration CSS injection
-//   hack: Monaco generates a CSS class from the textDecoration value verbatim, so
-//   extra declarations appended after the semicolon are valid and applied.
+//   hack: Monaco writes the textDecoration value verbatim into the generated CSS
+//   class, so extra declarations appended after the semicolon are valid and applied.
 
 const vscode = require('vscode');
 
@@ -54,8 +53,8 @@ class BlockDecorator {
 
     this.enabled = false;
 
-    // Cached config values — used in reloadConfig to detect style changes that
-    // require rebuilding decoration types (unavoidable dispose/recreate).
+    // Cached config values — compared in reloadConfig to detect style changes
+    // that require rebuilding decoration types (unavoidable dispose/recreate).
     this._cfgBorderColor     = null;
     this._cfgBackgroundColor = null;
     this._cfgBorderWidth     = null;
@@ -76,16 +75,10 @@ class BlockDecorator {
     const bc = this._cfgBorderColor;
     const bw = this._cfgBorderWidth;
 
-    // Subtle background fill — no border — applied to every line of every block.
     this._bgDecType = vscode.window.createTextEditorDecorationType({
       isWholeLine: true,
       backgroundColor: this._cfgBackgroundColor,
     });
-
-    // Border decorations use the textDecoration CSS injection hack to apply only
-    // the relevant sides per line position. Monaco writes the textDecoration value
-    // verbatim into the generated CSS class, so extra declarations after the
-    // semicolon are valid CSS and are rendered by the browser/Electron.
 
     // Opening line of each block: top cap + left side begins here.
     this._openingDecType = vscode.window.createTextEditorDecorationType({
@@ -94,7 +87,7 @@ class BlockDecorator {
     });
 
     // Middle lines: left side only — no top/bottom so adjacent lines don't each
-    // show a horizontal separator, which is what caused the "individual row" look.
+    // show a horizontal separator, which caused the "individual row" look.
     this._middleDecType = vscode.window.createTextEditorDecorationType({
       isWholeLine: true,
       textDecoration: `none; border-left: ${bw}px solid ${bc};`,
@@ -120,10 +113,10 @@ class BlockDecorator {
   // ── Block detection ────────────────────────────────────────────────────────
 
   /**
-   * Returns [{startLine, endLine, depth}] for all multi-line blocks in the document.
+   * Returns [{startLine, endLine}] for all multi-line blocks in the document.
    * Routes to the appropriate detection strategy based on language.
    * @param {vscode.TextDocument} document
-   * @returns {{startLine: number, endLine: number, depth: number}[]}
+   * @returns {{startLine: number, endLine: number}[]}
    */
   _detectBlocks(document) {
     if (INDENT_BLOCK_LANGUAGES.has(document.languageId)) {
@@ -139,10 +132,9 @@ class BlockDecorator {
    * @param {vscode.TextDocument} document
    */
   _detectBracketBlocks(document) {
-    const text      = document.getText();
-    const blocks    = [];
-    const stack     = []; // {startLine, depth} entries pushed on '{'
-    let currentDepth = 0;
+    const text   = document.getText();
+    const blocks = [];
+    const stack  = []; // startLine values pushed on '{'
 
     // Build a line-start-index array so char positions can be converted to
     // line numbers in O(log n) via binary search.
@@ -204,20 +196,13 @@ class BlockDecorator {
       }
 
       if (ch === '{') {
-        stack.push({ startLine: charToLine(i), depth: currentDepth });
-        currentDepth++;
-      } else if (ch === '}') {
-        if (stack.length > 0) {
-          currentDepth = Math.max(0, currentDepth - 1);
-          const open    = stack.pop();
-          const endLine = charToLine(i);
-          if (endLine > open.startLine) {
-            // Only record multi-line blocks — single-line {} clutter the view.
-            blocks.push({ startLine: open.startLine, endLine, depth: open.depth });
-          }
-        } else {
-          // Unmatched closing brace — keep depth from going negative.
-          currentDepth = Math.max(0, currentDepth - 1);
+        stack.push(charToLine(i));
+      } else if (ch === '}' && stack.length > 0) {
+        const startLine = stack.pop();
+        const endLine   = charToLine(i);
+        if (endLine > startLine) {
+          // Only record multi-line blocks — single-line {} clutter the view.
+          blocks.push({ startLine, endLine });
         }
       }
 
@@ -230,9 +215,9 @@ class BlockDecorator {
   /**
    * Indentation-based block detection for Python.
    * For each indent level L (1, 2, …), finds contiguous runs of lines whose
-   * effective indent >= L and records each run as a block at depth L-1.
-   * Blank lines are treated as continuations of the current block (they don't
-   * break a run) but are trimmed from the block's end.
+   * effective indent >= L and records each run as one block.
+   * Blank lines are treated as continuations (don't break a run) but are
+   * trimmed from the recorded block end.
    * @param {vscode.TextDocument} document
    */
   _detectIndentBlocks(document) {
@@ -259,7 +244,6 @@ class BlockDecorator {
 
     const maxLevel = Math.max(0, ...indentLevels.filter(l => l !== null));
 
-    // Cap at 20 levels — deep Python nesting beyond this is pathological.
     for (let level = 1; level <= maxLevel && level <= 20; level++) {
       let blockStart = -1;
 
@@ -275,7 +259,7 @@ class BlockDecorator {
           let endLine = l - 1;
           while (endLine > blockStart && indentLevels[endLine] === null) endLine--;
           if (endLine > blockStart) {
-            blocks.push({ startLine: blockStart, endLine, depth: level - 1 });
+            blocks.push({ startLine: blockStart, endLine });
           }
           blockStart = -1;
         }
@@ -311,7 +295,6 @@ class BlockDecorator {
       this._blockCache.set(docKey, { version: docVersion, blocks });
     }
 
-    // Build range arrays for background fill and the three border-side types.
     const bgRanges      = [];
     const openingRanges = [];
     const middleRanges  = [];
@@ -322,18 +305,12 @@ class BlockDecorator {
       const openingChar = doc.lineAt(startLine).text.length;
       const closingChar = doc.lineAt(endLine).text.length;
 
-      // Background fill spans the full block.
       bgRanges.push(new vscode.Range(startLine, 0, endLine, closingChar));
-
-      // Opening line: top cap + left side starts.
       openingRanges.push(new vscode.Range(startLine, 0, startLine, openingChar));
-
-      // Closing line: bottom cap + left side ends.
       closingRanges.push(new vscode.Range(endLine, 0, endLine, closingChar));
 
-      // Middle lines as a single range — avoids creating one Range object per line
-      // for large blocks. isWholeLine: true applies the decoration to every line
-      // within the range, so a single range covers all middle lines efficiently.
+      // One range covers all middle lines — more efficient than one Range per line
+      // for large blocks since isWholeLine: true decorates every line in the range.
       if (endLine - startLine > 1) {
         const midEndChar = doc.lineAt(endLine - 1).text.length;
         middleRanges.push(new vscode.Range(startLine + 1, 0, endLine - 1, midEndChar));
@@ -378,7 +355,6 @@ class BlockDecorator {
     }
 
     this.enabled = cfg.get('enabled', false);
-    // Force re-scan so any layout-affecting config changes are reflected.
     this._blockCache.clear();
   }
 
