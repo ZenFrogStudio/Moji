@@ -5,7 +5,7 @@
 ---
 ## Settings
 
-Settings for each language can be toggled under settings>customize.
+Settings for each language can be toggled under > Customize Settings.
 ---
 
 ## Moji Pro
@@ -64,6 +64,7 @@ Moji uses VS Code's decoration APIs to render emojis alongside code keywords:
 ## Features
 
 - **Multi-language**: JavaScript, TypeScript, Python, C, C++, C#, Java, SQL, HTML, and CSS
+- **Code Block Highlighting**: thin connected outline around each `{}` block and indented scope, with a subtle background tint — on by default, fully configurable
 - **Non-invasive**: Source code never modified
 - **Reversible**: Toggle on/off anytime
 - **Configurable**: Enable/disable individual emojis via Settings panel
@@ -88,10 +89,14 @@ Once installed, emojis appear automatically in supported language files.
 - Open Command Palette (`Cmd+Shift+P` / `Ctrl+Shift+P`)
 - Type: `Moji Pro: Toggle`
 
-**Configure emojis:**
+**Toggle code block highlighting:**
+- Open Command Palette
+- Type: `Moji Pro: Toggle Code Block Highlighting`
+
+**Configure emojis and code block settings:**
 - Open Command Palette
 - Type: `Moji Pro: Settings`
-- Use the visual settings panel to enable/disable individual emojis
+- Use the visual settings panel to enable/disable individual emojis or adjust code block options
 
 **Display modes:**
 - **Overlay** (default): Emoji appears before the keyword, keyword remains visible
