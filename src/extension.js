@@ -2,11 +2,15 @@
 
 const vscode = require('vscode');
 const { KeywordDecorator } = require('./decorator');
+const { BlockDecorator }   = require('./blockDecorator');
 const { openSettingsPanel } = require('./settingsPanel');
 const { LicenseManager }   = require('./licenseManager');
 
 /** @type {KeywordDecorator | undefined} */
 let decorator;
+
+/** @type {BlockDecorator | undefined} */
+let blockDecorator;
 
 /** @type {LicenseManager | undefined} */
 let licenseManager;
@@ -39,8 +43,15 @@ async function activate(context) {
   decorator.enabled  = enabled;
   decorator.licensed = isLicensed;
 
+  // Block highlighting is opt-in — reads its own enabled flag from settings.
+  blockDecorator         = new BlockDecorator();
+  blockDecorator.enabled = vscode.workspace
+    .getConfiguration('mojiPro.codeBlocks')
+    .get('enabled', false);
+
   if (vscode.window.activeTextEditor) {
     decorator.updateEditor(vscode.window.activeTextEditor);
+    blockDecorator.updateEditor(vscode.window.activeTextEditor);
   }
 
   // ── Commands ───────────────────────────────────────────────────────────
@@ -48,6 +59,12 @@ async function activate(context) {
   context.subscriptions.push(
     vscode.commands.registerCommand('mojiPro.toggle', () => {
       decorator.toggle();
+    })
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand('mojiPro.toggleCodeBlocks', () => {
+      blockDecorator.toggle();
     })
   );
 
@@ -184,17 +201,21 @@ async function activate(context) {
           decorator.enabled = vscode.workspace
             .getConfiguration('mojiPro')
             .get('enabled', true);
+          blockDecorator.reloadConfig();
           lastEditorSwitchRefresh = Date.now();
         }
         decorator.updateEditor(editor);
+        blockDecorator.updateEditor(editor);
       }
     })
   );
 
-  // Evict scan cache when a document is closed to prevent unbounded memory growth.
+  // Evict scan caches when a document is closed to prevent unbounded memory growth.
   context.subscriptions.push(
     vscode.workspace.onDidCloseTextDocument((document) => {
-      decorator.clearCacheForDocument(document.uri.toString());
+      const uri = document.uri.toString();
+      decorator.clearCacheForDocument(uri);
+      blockDecorator.clearCacheForDocument(uri);
     })
   );
 
@@ -205,7 +226,10 @@ async function activate(context) {
       const editor = vscode.window.activeTextEditor;
       if (editor && event.document === editor.document) {
         clearTimeout(updateTimer);
-        updateTimer = setTimeout(() => decorator.updateEditor(editor), 100);
+        updateTimer = setTimeout(() => {
+          decorator.updateEditor(editor);
+          blockDecorator.updateEditor(editor);
+        }, 100);
       }
     })
   );
@@ -217,7 +241,8 @@ async function activate(context) {
     vscode.workspace.onDidChangeConfiguration((event) => {
       if (
         event.affectsConfiguration('mojiPro') ||
-        event.affectsConfiguration('editor.fontSize')
+        event.affectsConfiguration('editor.fontSize') ||
+        event.affectsConfiguration('mojiPro.codeBlocks')
       ) {
         // Debounce to batch rapid config changes (e.g., "Select All" updates 30+ settings)
         clearTimeout(configTimer);
@@ -234,8 +259,11 @@ async function activate(context) {
           decorator.reloadConfig();
           decorator.enabled = newEnabled;
 
+          blockDecorator.reloadConfig();
+
           if (vscode.window.activeTextEditor) {
             decorator.updateEditor(vscode.window.activeTextEditor);
+            blockDecorator.updateEditor(vscode.window.activeTextEditor);
           }
         }, 100);
       }
@@ -245,6 +273,7 @@ async function activate(context) {
   // ── Cleanup ────────────────────────────────────────────────────────────
 
   context.subscriptions.push({ dispose: () => decorator.dispose() });
+  context.subscriptions.push({ dispose: () => blockDecorator.dispose() });
 }
 
 function deactivate() {
