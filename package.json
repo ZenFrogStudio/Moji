@@ -170,7 +170,7 @@
         "mojiPro.jsKeyword.class": {
           "type": "boolean",
           "default": true,
-          "description": "🏛️ class – class declaration"
+          "description": "🧑‍🏫 class – class declaration"
         },
         "mojiPro.jsKeyword.const": {
           "type": "boolean",
@@ -215,7 +215,7 @@
         "mojiPro.jsKeyword.export": {
           "type": "boolean",
           "default": true,
-          "description": "📦 export – module export"
+          "description": "🚀 export – module export"
         },
         "mojiPro.jsKeyword.extends": {
           "type": "boolean",
@@ -1170,7 +1170,7 @@
         "mojiPro.pyKeyword.class": {
           "type": "boolean",
           "default": true,
-          "description": "🏛️ class – class declaration"
+          "description": "🧑‍🏫 class – class declaration"
         },
         "mojiPro.pyKeyword.try": {
           "type": "boolean",
@@ -1820,7 +1820,7 @@
         "mojiPro.cppKeyword.export": {
           "type": "boolean",
           "default": true,
-          "description": "📦 export – module export"
+          "description": "🚀 export – module export"
         },
         "mojiPro.cppKeyword.import": {
           "type": "boolean",
@@ -3045,7 +3045,7 @@
         "mojiPro.tsKeyword.class": {
           "type": "boolean",
           "default": true,
-          "description": "🏛️ class – class declaration"
+          "description": "🧑‍🏫 class – class declaration"
         },
         "mojiPro.tsKeyword.const": {
           "type": "boolean",
@@ -3085,7 +3085,7 @@
         "mojiPro.tsKeyword.export": {
           "type": "boolean",
           "default": true,
-          "description": "📦 export – module export"
+          "description": "🚀 export – module export"
         },
         "mojiPro.tsKeyword.extends": {
           "type": "boolean",

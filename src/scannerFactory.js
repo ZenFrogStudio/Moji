@@ -18,6 +18,11 @@ function createScanner(keywordMap, skipPatterns, flags = 'g', keywordPrefix = ''
   const sorted = keywords.slice().sort((a, b) => b.length - a.length);
   const keywordAlt = sorted.join('|');
 
+  // Lowercase → original key lookup so case-insensitive scanners (e.g. SQL, 'gi' flag)
+  // emit the map's canonical key ('SELECT') rather than the raw document text ('select').
+  // For case-sensitive scanners the lookup is a no-op (keys are already lowercase).
+  const keyLookup = Object.fromEntries(keywords.map(k => [k.toLowerCase(), k]));
+
   // Build the combined tokenizer regex:
   // - Skip patterns come first (consume non-keyword tokens)
   // - Keyword pattern comes last (captures real keywords)
@@ -40,12 +45,16 @@ function createScanner(keywordMap, skipPatterns, flags = 'g', keywordPrefix = ''
     let match;
     while ((match = regex.exec(text)) !== null) {
       // Skip non-keyword matches (comments, strings, etc.)
-      const keyword = match[keywordGroupIndex];
-      if (!keyword) continue;
+      const rawKeyword = match[keywordGroupIndex];
+      if (!rawKeyword) continue;
 
-      // Calculate positions (optimize: avoid double positionAt call)
+      // Normalize to the map's canonical key so decoration type lookups always
+      // hit — e.g. document text 'select' resolves to map key 'SELECT'.
+      const keyword = keyLookup[rawKeyword.toLowerCase()] ?? rawKeyword;
+
+      // Calculate positions using raw match length (actual chars in document)
       const startPos = document.positionAt(match.index);
-      const endPos = document.positionAt(match.index + keyword.length);
+      const endPos = document.positionAt(match.index + rawKeyword.length);
 
       results.push({
         keyword: keywordPrefix ? `${keywordPrefix}${keyword}` : keyword,
