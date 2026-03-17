@@ -1,17 +1,26 @@
-// Adds depth-based block highlighting to the editor: tinted backgrounds that
-// stack per nesting level plus a thin border outline, so users can quickly
-// identify code block boundaries and their contents.
+// Adds code block highlighting to the editor: a tinted background fill plus a
+// thin connected border outline around each multi-line {} or indent block, so
+// users can quickly identify code block boundaries and their contents.
 //
 // Supported block strategies:
 //   bracket-based  – JS, TS, Java, C, C++, C#, CSS/SCSS/Less  ({} delimiters)
 //   indent-based   – Python  (indentation level as depth proxy)
 //
-// Background stacking model:
-//   Ten decoration types share the same backgroundColor value.
-//   A block at nesting depth D contributes its range to layers 0..D, so each
-//   line inside D+1 nested blocks receives D+1 stacked background layers,
-//   producing a progressively darker tint for deeper code — no per-depth
-//   colour calculation required.
+// Border rendering model:
+//   Three decoration types share the same border color/width but apply only the
+//   relevant CSS border sides per line position within each block:
+//     opening line  → border-top  + border-left  (top-left corner of the box)
+//     middle lines  → border-left                (left side running down)
+//     closing line  → border-bottom + border-left (bottom-left corner of the box)
+//   This creates a single connected U-shaped outline on the left + caps at top
+//   and bottom, rather than the "every line in a separate box" look that using
+//   border on all four sides of every line produces.
+//   The right side of the outline runs to the viewport edge (isWholeLine: true
+//   fills the full line width) — precise right-edge clipping is not in scope.
+//
+//   Individual CSS border sides are applied via the textDecoration CSS injection
+//   hack: Monaco generates a CSS class from the textDecoration value verbatim, so
+//   extra declarations appended after the semicolon are valid and applied.
 
 const vscode = require('vscode');
 
@@ -29,16 +38,16 @@ const BLOCK_SUPPORTED_LANGUAGES = new Set([
   ...INDENT_BLOCK_LANGUAGES,
 ]);
 
-// Number of stackable background-layer decoration types.
-// Covers up to 10 levels of nesting before the tint stops darkening further.
-const MAX_DEPTH_LAYERS = 10;
-
 class BlockDecorator {
   constructor() {
-    /** @type {vscode.TextEditorDecorationType[]} One per background stacking layer. */
-    this._bgDecTypes = [];
-    /** @type {vscode.TextEditorDecorationType | null} Thin border around every block line. */
-    this._outlineDecType = null;
+    /** @type {vscode.TextEditorDecorationType | null} Background fill for all block lines. */
+    this._bgDecType = null;
+    /** @type {vscode.TextEditorDecorationType | null} border-top + border-left on opening lines. */
+    this._openingDecType = null;
+    /** @type {vscode.TextEditorDecorationType | null} border-left only on middle lines. */
+    this._middleDecType = null;
+    /** @type {vscode.TextEditorDecorationType | null} border-bottom + border-left on closing lines. */
+    this._closingDecType = null;
 
     /** @type {Map<string, {version: number, blocks: Array}>} Per-document scan cache. */
     this._blockCache = new Map();
@@ -60,36 +69,52 @@ class BlockDecorator {
     this._disposeDecorationTypes();
 
     const cfg = vscode.workspace.getConfiguration('mojiPro.codeBlocks');
-    this._cfgBorderColor     = cfg.get('borderColor',     'rgba(128,128,128,0.35)');
-    this._cfgBackgroundColor = cfg.get('backgroundColor', 'rgba(128,128,128,0.04)');
+    this._cfgBorderColor     = cfg.get('borderColor',     'rgba(128,128,128,0.4)');
+    this._cfgBackgroundColor = cfg.get('backgroundColor', 'rgba(128,128,128,0.06)');
     this._cfgBorderWidth     = cfg.get('borderWidth',     1);
 
-    // One decoration type per stacking layer — each contributes one background pass.
-    for (let i = 0; i < MAX_DEPTH_LAYERS; i++) {
-      this._bgDecTypes.push(
-        vscode.window.createTextEditorDecorationType({
-          isWholeLine: true,
-          backgroundColor: this._cfgBackgroundColor,
-        })
-      );
-    }
+    const bc = this._cfgBorderColor;
+    const bw = this._cfgBorderWidth;
 
-    // Outline: border on every line of every block.
-    // isWholeLine means adjacent lines share a border edge, giving the appearance
-    // of a continuous rectangular outline around the full block.
-    this._outlineDecType = vscode.window.createTextEditorDecorationType({
+    // Subtle background fill — no border — applied to every line of every block.
+    this._bgDecType = vscode.window.createTextEditorDecorationType({
       isWholeLine: true,
-      border: `${this._cfgBorderWidth}px solid ${this._cfgBorderColor}`,
+      backgroundColor: this._cfgBackgroundColor,
+    });
+
+    // Border decorations use the textDecoration CSS injection hack to apply only
+    // the relevant sides per line position. Monaco writes the textDecoration value
+    // verbatim into the generated CSS class, so extra declarations after the
+    // semicolon are valid CSS and are rendered by the browser/Electron.
+
+    // Opening line of each block: top cap + left side begins here.
+    this._openingDecType = vscode.window.createTextEditorDecorationType({
+      isWholeLine: true,
+      textDecoration: `none; border-top: ${bw}px solid ${bc}; border-left: ${bw}px solid ${bc};`,
+    });
+
+    // Middle lines: left side only — no top/bottom so adjacent lines don't each
+    // show a horizontal separator, which is what caused the "individual row" look.
+    this._middleDecType = vscode.window.createTextEditorDecorationType({
+      isWholeLine: true,
+      textDecoration: `none; border-left: ${bw}px solid ${bc};`,
+    });
+
+    // Closing line of each block: bottom cap + left side ends here.
+    this._closingDecType = vscode.window.createTextEditorDecorationType({
+      isWholeLine: true,
+      textDecoration: `none; border-bottom: ${bw}px solid ${bc}; border-left: ${bw}px solid ${bc};`,
     });
   }
 
   _disposeDecorationTypes() {
-    for (const dt of this._bgDecTypes) dt.dispose();
-    this._bgDecTypes = [];
-    if (this._outlineDecType) {
-      this._outlineDecType.dispose();
-      this._outlineDecType = null;
+    for (const dt of [this._bgDecType, this._openingDecType, this._middleDecType, this._closingDecType]) {
+      if (dt) dt.dispose();
     }
+    this._bgDecType      = null;
+    this._openingDecType = null;
+    this._middleDecType  = null;
+    this._closingDecType = null;
   }
 
   // ── Block detection ────────────────────────────────────────────────────────
@@ -234,7 +259,8 @@ class BlockDecorator {
 
     const maxLevel = Math.max(0, ...indentLevels.filter(l => l !== null));
 
-    for (let level = 1; level <= maxLevel && level <= MAX_DEPTH_LAYERS; level++) {
+    // Cap at 20 levels — deep Python nesting beyond this is pathological.
+    for (let level = 1; level <= maxLevel && level <= 20; level++) {
       let blockStart = -1;
 
       // Iterate one past the last line so any open block is closed by the sentinel.
@@ -285,30 +311,39 @@ class BlockDecorator {
       this._blockCache.set(docKey, { version: docVersion, blocks });
     }
 
-    // Build per-layer background range arrays and the shared outline range array.
-    //
-    // A block at depth D contributes its range to layers 0..D so that every line
-    // inside D+1 enclosing blocks receives D+1 stacked background layers,
-    // producing the depth-proportional tint without per-depth colour values.
-    const depthRanges   = Array.from({ length: MAX_DEPTH_LAYERS }, () => []);
-    const outlineRanges = [];
+    // Build range arrays for background fill and the three border-side types.
+    const bgRanges      = [];
+    const openingRanges = [];
+    const middleRanges  = [];
+    const closingRanges = [];
 
-    for (const { startLine, endLine, depth } of blocks) {
-      const endChar    = editor.document.lineAt(endLine).text.length;
-      const blockRange = new vscode.Range(startLine, 0, endLine, endChar);
+    for (const { startLine, endLine } of blocks) {
+      const doc         = editor.document;
+      const openingChar = doc.lineAt(startLine).text.length;
+      const closingChar = doc.lineAt(endLine).text.length;
 
-      const clampedDepth = Math.min(depth, MAX_DEPTH_LAYERS - 1);
-      for (let d = 0; d <= clampedDepth; d++) {
-        depthRanges[d].push(blockRange);
+      // Background fill spans the full block.
+      bgRanges.push(new vscode.Range(startLine, 0, endLine, closingChar));
+
+      // Opening line: top cap + left side starts.
+      openingRanges.push(new vscode.Range(startLine, 0, startLine, openingChar));
+
+      // Closing line: bottom cap + left side ends.
+      closingRanges.push(new vscode.Range(endLine, 0, endLine, closingChar));
+
+      // Middle lines as a single range — avoids creating one Range object per line
+      // for large blocks. isWholeLine: true applies the decoration to every line
+      // within the range, so a single range covers all middle lines efficiently.
+      if (endLine - startLine > 1) {
+        const midEndChar = doc.lineAt(endLine - 1).text.length;
+        middleRanges.push(new vscode.Range(startLine + 1, 0, endLine - 1, midEndChar));
       }
-
-      outlineRanges.push(blockRange);
     }
 
-    for (let d = 0; d < MAX_DEPTH_LAYERS; d++) {
-      editor.setDecorations(this._bgDecTypes[d], depthRanges[d]);
-    }
-    editor.setDecorations(this._outlineDecType, outlineRanges);
+    editor.setDecorations(this._bgDecType,      bgRanges);
+    editor.setDecorations(this._openingDecType, openingRanges);
+    editor.setDecorations(this._middleDecType,  middleRanges);
+    editor.setDecorations(this._closingDecType, closingRanges);
   }
 
   /** Toggle the feature on/off and refresh the active editor. */
@@ -328,8 +363,8 @@ class BlockDecorator {
    */
   reloadConfig() {
     const cfg            = vscode.workspace.getConfiguration('mojiPro.codeBlocks');
-    const newBorderColor = cfg.get('borderColor',     'rgba(128,128,128,0.35)');
-    const newBgColor     = cfg.get('backgroundColor', 'rgba(128,128,128,0.04)');
+    const newBorderColor = cfg.get('borderColor',     'rgba(128,128,128,0.4)');
+    const newBgColor     = cfg.get('backgroundColor', 'rgba(128,128,128,0.06)');
     const newBorderWidth = cfg.get('borderWidth',     1);
 
     const styleChanged =
@@ -360,8 +395,9 @@ class BlockDecorator {
   // ── Helpers ────────────────────────────────────────────────────────────────
 
   _clearAll(editor) {
-    for (const dt of this._bgDecTypes) editor.setDecorations(dt, []);
-    if (this._outlineDecType) editor.setDecorations(this._outlineDecType, []);
+    for (const dt of [this._bgDecType, this._openingDecType, this._middleDecType, this._closingDecType]) {
+      if (dt) editor.setDecorations(dt, []);
+    }
   }
 }
 
