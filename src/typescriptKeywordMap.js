@@ -70,7 +70,7 @@ const TYPESCRIPT_KEYWORD_EMOJI_MAP = {
   'true':         '✅',   // check mark      – true
   'false':        '❌',   // cross mark      – false
   'null':         '🚫',   // prohibited      – null value
-  'undefined':    '❓',   // question        – undefined
+  'undefined':    '😕',   // confused face   – undefined
 
   // ── Async Keywords ──────────────────────────────────────────────────────
   'async':        '🔮',   // crystal ball    – async function
