@@ -111,6 +111,14 @@
           "default": true,
           "description": "Enable or disable emoji keyword decorations."
         },
+        "mojiPro.customEmojiOverrides": {
+          "type": "object",
+          "default": {},
+          "description": "Per-keyword emoji overrides. Keys use the internal category-prefixed format (e.g. 'await', 'py:for', 'tag:div'). Managed by the Moji Pro settings panel — use the panel rather than editing this directly.",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
         "mojiPro.displayMode": {
           "type": "string",
           "enum": [
@@ -136,10 +144,25 @@
           "default": true,
           "description": "Enable code block highlighting — applies a subtle background tint to each detected code block."
         },
-        "mojiPro.codeBlocks.backgroundColor": {
+        "mojiPro.codeBlocks.functionColor": {
           "type": "string",
-          "default": "rgba(128,128,128,0.04)",
-          "description": "CSS color for the block background tint. Accepts any valid CSS color string (e.g. rgba, hex, named colors)."
+          "default": "rgba(86,156,214,0.08)",
+          "description": "Background tint for function, method, and class blocks. Accepts any valid CSS color string (e.g. rgba, hex, named colors)."
+        },
+        "mojiPro.codeBlocks.loopColor": {
+          "type": "string",
+          "default": "rgba(78,201,176,0.08)",
+          "description": "Background tint for loop blocks (for, while, do). Accepts any valid CSS color string."
+        },
+        "mojiPro.codeBlocks.controlColor": {
+          "type": "string",
+          "default": "rgba(197,134,192,0.08)",
+          "description": "Background tint for control flow blocks (if, else, switch, try, catch, finally). Accepts any valid CSS color string."
+        },
+        "mojiPro.codeBlocks.objectColor": {
+          "type": "string",
+          "default": "rgba(206,145,120,0.08)",
+          "description": "Background tint for object literal blocks and other unlabeled blocks. Accepts any valid CSS color string."
         },
         "mojiPro.htmlTags": {
           "type": "boolean",

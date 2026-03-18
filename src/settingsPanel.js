@@ -34,6 +34,21 @@ function escapeHtml(str) {
     .replace(/'/g, '&#39;');
 }
 
+/**
+ * Extracts the RGB components of a CSS color string and returns a hex value
+ * suitable for seeding an <input type="color">. Falls back to #808080 for
+ * unrecognised formats — the text input remains the source of truth for alpha.
+ * @param {string} colorStr  e.g. 'rgba(86,156,214,0.08)' or '#5698d6'
+ * @returns {string}  e.g. '#569cd6'
+ */
+function rgbaToHex(colorStr) {
+  const m = colorStr.match(/rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/);
+  if (!m) return '#808080';
+  return '#' + [m[1], m[2], m[3]]
+    .map(n => parseInt(n, 10).toString(16).padStart(2, '0'))
+    .join('');
+}
+
 let currentPanel          = undefined;
 let currentLicenseManager = undefined; // Reference held for message handler access
 
@@ -61,11 +76,22 @@ const TOGGLE_ALL_MAP = {
 
 /**
  * Opens (or focuses) the Moji Pro settings panel.
+ * Settings changes are accumulated in memory while the panel is open and
+ * written to VS Code config in a single batch when the panel is closed.
+ * This avoids race conditions between real-time writes, the debounce guard,
+ * and the active-editor check in the onDidChangeConfiguration handler.
  * @param {vscode.ExtensionContext} context
  * @param {import('./licenseManager').LicenseManager} licenseManager
+ * @param {() => void} onDisposeCallback  Called after all pending changes are
+ *   written to config — use this to reload decorators and update open editors.
  */
-async function openSettingsPanel(context, licenseManager) {
+async function openSettingsPanel(context, licenseManager, onDisposeCallback) {
   currentLicenseManager = licenseManager;
+
+  // Accumulate all setting changes made during this panel session. Written to
+  // VS Code config in a single batch on panel close — avoids race conditions
+  // with the debounce guard and active-editor check in onDidChangeConfiguration.
+  const pendingChanges = new Map();
 
   const column = vscode.window.activeTextEditor
     ? vscode.window.activeTextEditor.viewColumn
@@ -90,6 +116,30 @@ async function openSettingsPanel(context, licenseManager) {
 
   currentPanel.webview.html = await getWebviewContent();
 
+  // Writes all queued setting changes to VS Code config and fires the decorator
+  // reload callback. Shared between the Apply button and the onDidDispose handler.
+  async function flushPendingSettings() {
+    if (pendingChanges.size === 0) return;
+    // VS Code's configuration API requires getConfiguration(section).update(key)
+    // rather than getConfiguration().update(fullDottedKey) for keys with more than
+    // one level of nesting (e.g. mojiPro.jsKeyword.await). Using the root config
+    // object with a three-segment key throws "Unable to write into user settings".
+    // Sequential awaits are also required — concurrent update() calls corrupt settings.json.
+    try {
+      for (const [fullKey, value] of pendingChanges) {
+        const lastDot = fullKey.lastIndexOf('.');
+        const section = fullKey.slice(0, lastDot);
+        const key     = fullKey.slice(lastDot + 1);
+        await vscode.workspace
+          .getConfiguration(section)
+          .update(key, value, vscode.ConfigurationTarget.Global);
+      }
+    } catch (err) {
+      vscode.window.showErrorMessage(`Moji Pro: Failed to save settings — ${err.message}`);
+    }
+    if (typeof onDisposeCallback === 'function') onDisposeCallback();
+  }
+
   // Handle messages from the webview
   currentPanel.webview.onDidReceiveMessage(
     async (message) => {
@@ -97,10 +147,8 @@ async function openSettingsPanel(context, licenseManager) {
         // Guard: only accept keys that belong to this extension — prevents the webview
         // from writing arbitrary VS Code settings if a CSP bypass ever occurred.
         if (typeof message.key !== 'string' || !message.key.startsWith('mojiPro.')) return;
-        // Config update triggers onDidChangeConfiguration which re-applies decorations.
-        // The webview already updated its own checkbox state — no re-render needed.
-        const config = vscode.workspace.getConfiguration();
-        await config.update(message.key, message.value, vscode.ConfigurationTarget.Global);
+        // Queue the change — all pending changes are flushed to config on panel close.
+        pendingChanges.set(message.key, message.value);
       } else if (message.command === 'activateLicense') {
         const result = await currentLicenseManager.activate(message.key);
         if (result.success) {
@@ -117,27 +165,67 @@ async function openSettingsPanel(context, licenseManager) {
       } else if (message.command === 'toggleAll') {
         const entry = TOGGLE_ALL_MAP[message.category];
         if (!entry) return;
-
-        const config = vscode.workspace.getConfiguration();
-        try {
-          await Promise.all(
-            Object.keys(entry.map).map(key =>
-              config.update(`${entry.prefix}.${key}`, message.value, vscode.ConfigurationTarget.Global)
-            )
-          );
-        } catch (err) {
-          vscode.window.showErrorMessage(`Moji Pro: Failed to update settings — ${err.message}`);
+        // Queue all per-keyword toggles — flushed to config on panel close.
+        for (const key of Object.keys(entry.map)) {
+          pendingChanges.set(`${entry.prefix}.${key}`, message.value);
         }
+      } else if (message.command === 'applySettings') {
+        await flushPendingSettings();
+      } else if (message.command === 'saveEmojiCustomization') {
+        // Basic guard — both fields must be non-empty strings
+        if (typeof message.overrideKey !== 'string' || !message.overrideKey) return;
+        if (typeof message.emoji !== 'string' || !message.emoji) return;
+
+        // Merge the new override into the existing overrides object and persist.
+        // Writing directly to VS Code config (not via pendingChanges) triggers
+        // onDidChangeConfiguration immediately, so the decorator rebuilds and the
+        // user sees the new emoji in their editor without needing to click Apply.
+        const existingOverrides = vscode.workspace
+          .getConfiguration('mojiPro')
+          .get('customEmojiOverrides', {});
+        const updatedOverrides = Object.assign({}, existingOverrides, { [message.overrideKey]: message.emoji });
+
+        try {
+          await vscode.workspace
+            .getConfiguration('mojiPro')
+            .update('customEmojiOverrides', updatedOverrides, vscode.ConfigurationTarget.Global);
+          currentPanel.webview.postMessage({
+            command: 'emojiCustomizationSaved',
+            overrideKey: message.overrideKey,
+            emoji: message.emoji,
+          });
+        } catch (err) {
+          vscode.window.showErrorMessage(`Moji Pro: Failed to save emoji customization — ${err.message}`);
+        }
+      } else if (message.command === 'revertAllEmojis') {
+        // Clear all custom overrides and notify the webview to restore default emoji buttons.
+        try {
+          await vscode.workspace
+            .getConfiguration('mojiPro')
+            .update('customEmojiOverrides', {}, vscode.ConfigurationTarget.Global);
+          currentPanel.webview.postMessage({ command: 'allEmojisReverted' });
+        } catch (err) {
+          vscode.window.showErrorMessage(`Moji Pro: Failed to revert emojis — ${err.message}`);
+        }
+      } else if (message.command === 'openUnicodeChart') {
+        // Open the Unicode full emoji list anchored to the current emoji's code point.
+        // The anchor format on unicode.org is the lowercase hex code point (e.g. #1f600).
+        const anchor = typeof message.anchor === 'string' ? message.anchor : '';
+        const url    = 'https://unicode.org/emoji/charts/full-emoji-list.html' + (anchor ? '#' + anchor : '');
+        vscode.env.openExternal(vscode.Uri.parse(url));
       }
     },
     undefined,
     context.subscriptions
   );
 
-  // Clean up when panel is closed
+  // Flush any remaining unsaved changes when the panel is closed, then fire the
+  // decorator reload callback. Changes applied via the Apply button are cleared
+  // from pendingChanges, so this is a no-op if the user already applied them.
   currentPanel.onDidDispose(
-    () => {
+    async () => {
       currentPanel = undefined;
+      await flushPendingSettings();
     },
     undefined,
     context.subscriptions
@@ -170,7 +258,11 @@ function getCurrentSettings() {
 
   const settings = {
     codeBlocks: {
-      enabled: codeBlocksCfg.get('enabled', true),
+      enabled:       codeBlocksCfg.get('enabled',       true),
+      functionColor: codeBlocksCfg.get('functionColor', 'rgba(86,156,214,0.08)'),
+      loopColor:     codeBlocksCfg.get('loopColor',     'rgba(78,201,176,0.08)'),
+      controlColor:  codeBlocksCfg.get('controlColor',  'rgba(197,134,192,0.08)'),
+      objectColor:   codeBlocksCfg.get('objectColor',   'rgba(206,145,120,0.08)'),
     },
     masterToggles: {
       javascriptKeywords: mainCfg.get('javascriptKeywords', true),
@@ -262,6 +354,11 @@ function getCurrentSettings() {
     settings.java[key] = javaCfg.get(key, true);
   }
 
+  // Custom emoji overrides — keyed by the same internal category-prefixed format
+  // the decorator uses (e.g. 'await', 'py:for', 'tag:div'). Read once here so
+  // getWebviewContent can mark customised emoji items and pre-fill editor inputs.
+  settings.customEmojiOverrides = mainCfg.get('customEmojiOverrides', {});
+
   return settings;
 }
 
@@ -275,81 +372,92 @@ async function getWebviewContent() {
   const licenseValid     = currentLicenseManager ? currentLicenseManager.isValid : false;
   const licenseMaskedKey = currentLicenseManager ? (await currentLicenseManager.getMaskedKey()) : null;
 
+  // Helper that resolves effective emoji and customized flag from the overrides map.
+  // prefix must match the decorator's CATEGORY_CONFIG prefix (e.g. '' for JS, 'py:' for Python).
+  // Defined before the buildItem calls below — const is not hoisted like function declarations.
+  const overrides = settings.customEmojiOverrides;
+  function buildItem(category, key, defaultEmoji, displayName, checked, prefix) {
+    const overrideKey    = `${prefix}${key}`;
+    const effectiveEmoji = overrides[overrideKey] || defaultEmoji;
+    const isCustomized   = !!overrides[overrideKey];
+    return createCheckboxItem(category, key, defaultEmoji, effectiveEmoji, displayName, checked, isCustomized);
+  }
+
   // Build checkbox lists for each category
   const jsItems = Object.entries(KEYWORD_EMOJI_MAP)
-    .map(([key, emoji]) => createCheckboxItem('javascript', key, emoji, key, settings.javascript[key]))
+    .map(([key, emoji]) => buildItem('javascript', key, emoji, key, settings.javascript[key], ''))
     .join('');
 
   const tagItems = Object.entries(HTML_TAG_EMOJI_MAP)
-    .map(([key, emoji]) => createCheckboxItem('tags', key, emoji, `&lt;${key}&gt;`, settings.tags[key]))
+    .map(([key, emoji]) => buildItem('tags', key, emoji, `&lt;${key}&gt;`, settings.tags[key], 'tag:'))
     .join('');
 
   const voidItems = Object.entries(HTML_VOID_EMOJI_MAP)
-    .map(([key, emoji]) => createCheckboxItem('void', key, emoji, `&lt;${key}&gt;`, settings.void[key]))
+    .map(([key, emoji]) => buildItem('void', key, emoji, `&lt;${key}&gt;`, settings.void[key], 'void:'))
     .join('');
 
   const attrItems = Object.entries(HTML_ATTR_EMOJI_MAP)
-    .map(([key, emoji]) => createCheckboxItem('attr', key, emoji, key, settings.attr[key]))
+    .map(([key, emoji]) => buildItem('attr', key, emoji, key, settings.attr[key], 'attr:'))
     .join('');
 
   // CSS items
   const cssAtRuleItems = Object.entries(CSS_ATRULE_EMOJI_MAP)
-    .map(([key, emoji]) => createCheckboxItem('cssAtRule', key, emoji, `@${key}`, settings.cssAtRule[key]))
+    .map(([key, emoji]) => buildItem('cssAtRule', key, emoji, `@${key}`, settings.cssAtRule[key], 'cssAtRule:'))
     .join('');
 
   const cssLayoutItems = Object.entries(CSS_LAYOUT_EMOJI_MAP)
-    .map(([key, emoji]) => createCheckboxItem('cssLayout', key, emoji, key, settings.cssLayout[key]))
+    .map(([key, emoji]) => buildItem('cssLayout', key, emoji, key, settings.cssLayout[key], 'cssLayout:'))
     .join('');
 
   const cssBoxItems = Object.entries(CSS_BOX_EMOJI_MAP)
-    .map(([key, emoji]) => createCheckboxItem('cssBox', key, emoji, key, settings.cssBox[key]))
+    .map(([key, emoji]) => buildItem('cssBox', key, emoji, key, settings.cssBox[key], 'cssBox:'))
     .join('');
 
   const cssVisualItems = Object.entries(CSS_VISUAL_EMOJI_MAP)
-    .map(([key, emoji]) => createCheckboxItem('cssVisual', key, emoji, key, settings.cssVisual[key]))
+    .map(([key, emoji]) => buildItem('cssVisual', key, emoji, key, settings.cssVisual[key], 'cssVisual:'))
     .join('');
 
   const cssPseudoItems = Object.entries(CSS_PSEUDO_EMOJI_MAP)
-    .map(([key, emoji]) => createCheckboxItem('cssPseudo', key, emoji, `:${key}`, settings.cssPseudo[key]))
+    .map(([key, emoji]) => buildItem('cssPseudo', key, emoji, `:${key}`, settings.cssPseudo[key], 'cssPseudo:'))
     .join('');
 
   const cssValueItems = Object.entries(CSS_VALUE_EMOJI_MAP)
-    .map(([key, emoji]) => createCheckboxItem('cssValue', key, emoji, key === 'important' ? '!important' : key, settings.cssValue[key]))
+    .map(([key, emoji]) => buildItem('cssValue', key, emoji, key === 'important' ? '!important' : key, settings.cssValue[key], 'cssValue:'))
     .join('');
 
   // Python items
   const pythonItems = Object.entries(PYTHON_KEYWORD_EMOJI_MAP)
-    .map(([key, emoji]) => createCheckboxItem('python', key, emoji, key, settings.python[key]))
+    .map(([key, emoji]) => buildItem('python', key, emoji, key, settings.python[key], 'py:'))
     .join('');
 
   // C items
   const cItems = Object.entries(C_KEYWORD_EMOJI_MAP)
-    .map(([key, emoji]) => createCheckboxItem('c', key, emoji, key, settings.c[key]))
+    .map(([key, emoji]) => buildItem('c', key, emoji, key, settings.c[key], 'c:'))
     .join('');
 
   // C++ items
   const cppItems = Object.entries(CPP_KEYWORD_EMOJI_MAP)
-    .map(([key, emoji]) => createCheckboxItem('cpp', key, emoji, key, settings.cpp[key]))
+    .map(([key, emoji]) => buildItem('cpp', key, emoji, key, settings.cpp[key], 'cpp:'))
     .join('');
 
   // C# items
   const csharpItems = Object.entries(CSHARP_KEYWORD_EMOJI_MAP)
-    .map(([key, emoji]) => createCheckboxItem('csharp', key, emoji, key, settings.csharp[key]))
+    .map(([key, emoji]) => buildItem('csharp', key, emoji, key, settings.csharp[key], 'csharp:'))
     .join('');
 
   // SQL items
   const sqlItems = Object.entries(SQL_KEYWORD_EMOJI_MAP)
-    .map(([key, emoji]) => createCheckboxItem('sql', key, emoji, key, settings.sql[key]))
+    .map(([key, emoji]) => buildItem('sql', key, emoji, key, settings.sql[key], 'sql:'))
     .join('');
 
   // TypeScript items
   const typescriptItems = Object.entries(TYPESCRIPT_KEYWORD_EMOJI_MAP)
-    .map(([key, emoji]) => createCheckboxItem('typescript', key, emoji, key, settings.typescript[key]))
+    .map(([key, emoji]) => buildItem('typescript', key, emoji, key, settings.typescript[key], 'ts:'))
     .join('');
 
   // Java items
   const javaItems = Object.entries(JAVA_KEYWORD_EMOJI_MAP)
-    .map(([key, emoji]) => createCheckboxItem('java', key, emoji, key, settings.java[key]))
+    .map(([key, emoji]) => buildItem('java', key, emoji, key, settings.java[key], 'java:'))
     .join('');
 
   const jsCount = Object.keys(KEYWORD_EMOJI_MAP).length;
@@ -480,6 +588,33 @@ async function getWebviewContent() {
 
     .bulk-btn:hover { background: var(--button-hover-bg); }
 
+    .apply-bar {
+      position: sticky;
+      bottom: 0;
+      display: flex;
+      justify-content: flex-end;
+      padding: 12px 0 4px 0;
+      background: var(--bg-color);
+      border-top: 1px solid var(--border-color);
+      margin-top: 20px;
+      z-index: 10;
+    }
+
+    .apply-btn {
+      padding: 8px 24px;
+      background: var(--focus-border);
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.95em;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+    }
+
+    .apply-btn:hover { opacity: 0.88; }
+    .apply-btn:active { opacity: 0.75; }
+
     .emoji-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -493,24 +628,100 @@ async function getWebviewContent() {
       padding: 8px 12px;
       background: var(--tab-inactive-bg);
       border-radius: 4px;
-      cursor: pointer;
       transition: background 0.15s;
+      flex-wrap: wrap;
     }
 
     .emoji-item:hover { background: var(--tab-active-bg); }
 
-    .emoji-item input[type="checkbox"] {
+    /* Minimal label wrapper — only covers the checkbox hit area */
+    .emoji-item-check {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    .emoji-item-check input[type="checkbox"] {
       width: 18px;
       height: 18px;
       cursor: pointer;
       accent-color: var(--focus-border);
     }
 
-    .emoji-item .emoji {
+    /* Clickable emoji button — replaces the old static .emoji span */
+    .emoji-btn {
       font-size: 1.3em;
-      width: 28px;
-      text-align: center;
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: none;
+      border: 1px solid transparent;
+      border-radius: 4px;
+      cursor: pointer;
+      padding: 0;
+      transition: border-color 0.15s, background 0.15s;
+      flex-shrink: 0;
     }
+
+    .emoji-btn:hover {
+      border-color: var(--focus-border);
+      background: var(--tab-active-bg);
+    }
+
+    /* Small accent dot after the emoji when a custom override is active */
+    .emoji-btn.customized::after {
+      content: '●';
+      font-size: 0.4em;
+      vertical-align: super;
+      color: var(--focus-border);
+      margin-left: 1px;
+      line-height: 1;
+    }
+
+    /* Inline editor — rendered as a sibling to .emoji-btn, hidden by default.
+       flex-wrap on .emoji-item lets it occupy the full card width on its own row. */
+    .emoji-editor {
+      display: none;
+      align-items: center;
+      gap: 4px;
+      width: 100%;
+      margin-top: 4px;
+    }
+
+    .emoji-unicode-input {
+      width: 120px;
+      padding: 3px 7px;
+      font-family: var(--vscode-editor-font-family), monospace;
+      font-size: 0.88em;
+      background: var(--vscode-input-background);
+      color: var(--vscode-input-foreground);
+      border: 1px solid var(--vscode-input-border, var(--border-color));
+      border-radius: 3px;
+      outline: none;
+    }
+
+    .emoji-unicode-input:focus { border-color: var(--focus-border); }
+
+    .emoji-unicode-input.invalid { border-color: #e06060; }
+
+    .emoji-editor-save,
+    .emoji-editor-cancel,
+    .emoji-chart-open {
+      padding: 3px 7px;
+      background: var(--button-bg);
+      color: var(--button-fg);
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+      font-size: 0.88em;
+      flex-shrink: 0;
+    }
+
+    .emoji-editor-save:hover,
+    .emoji-editor-cancel:hover,
+    .emoji-chart-open:hover { background: var(--button-hover-bg); }
 
     .emoji-item .name {
       flex: 1;
@@ -535,6 +746,69 @@ async function getWebviewContent() {
       font-weight: 500;
       margin-bottom: 15px;
       font-size: 1.1em;
+    }
+
+    /* ── Code block color rows ────────────────────────────────────────── */
+
+    .block-colors {
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 15px;
+      margin-top: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .block-colors-description {
+      font-size: 0.9em;
+      opacity: 0.75;
+      margin: 0 0 8px 0;
+    }
+
+    .block-color-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 10px;
+      background: var(--tab-inactive-bg);
+      border-radius: 4px;
+    }
+
+    .block-color-picker {
+      width: 32px;
+      height: 32px;
+      padding: 2px;
+      border: 1px solid var(--border-color);
+      border-radius: 4px;
+      cursor: pointer;
+      background: none;
+      flex-shrink: 0;
+    }
+
+    .block-color-picker::-webkit-color-swatch-wrapper { padding: 0; }
+    .block-color-picker::-webkit-color-swatch { border: none; border-radius: 2px; }
+
+    .block-color-label {
+      flex: 1;
+      font-size: 0.95em;
+    }
+
+    .block-color-input {
+      width: 220px;
+      padding: 4px 8px;
+      font-family: var(--vscode-editor-font-family), monospace;
+      font-size: 0.9em;
+      background: var(--vscode-input-background);
+      color: var(--vscode-input-foreground);
+      border: 1px solid var(--vscode-input-border, var(--border-color));
+      border-radius: 3px;
+      outline: none;
+      flex-shrink: 0;
+    }
+
+    .block-color-input:focus {
+      border-color: var(--focus-border);
     }
 
     /* ── License section ──────────────────────────────────────────────── */
@@ -909,6 +1183,43 @@ async function getWebviewContent() {
       <input type="checkbox" id="master-codeblocks" data-setting-key="mojiPro.codeBlocks.enabled" ${settings.codeBlocks.enabled ? 'checked' : ''}>
       <label for="master-codeblocks">Enable code block highlighting</label>
     </div>
+    <div class="block-colors">
+      <p class="block-colors-description">Customize the background tint for each block type. Accepts any valid CSS color string (e.g. rgba(86,156,214,0.08)).</p>
+      <div class="block-color-row">
+        <input type="color" class="block-color-picker" data-color-key="mojiPro.codeBlocks.functionColor" value="${rgbaToHex(settings.codeBlocks.functionColor)}">
+        <span class="block-color-label">Function / Method / Class</span>
+        <input class="block-color-input" type="text" data-color-key="mojiPro.codeBlocks.functionColor" value="${escapeHtml(settings.codeBlocks.functionColor)}">
+      </div>
+      <div class="block-color-row">
+        <input type="color" class="block-color-picker" data-color-key="mojiPro.codeBlocks.loopColor" value="${rgbaToHex(settings.codeBlocks.loopColor)}">
+        <span class="block-color-label">Loop (for, while, do)</span>
+        <input class="block-color-input" type="text" data-color-key="mojiPro.codeBlocks.loopColor" value="${escapeHtml(settings.codeBlocks.loopColor)}">
+      </div>
+      <div class="block-color-row">
+        <input type="color" class="block-color-picker" data-color-key="mojiPro.codeBlocks.controlColor" value="${rgbaToHex(settings.codeBlocks.controlColor)}">
+        <span class="block-color-label">Control Flow (if, else, switch, try)</span>
+        <input class="block-color-input" type="text" data-color-key="mojiPro.codeBlocks.controlColor" value="${escapeHtml(settings.codeBlocks.controlColor)}">
+      </div>
+      <div class="block-color-row">
+        <input type="color" class="block-color-picker" data-color-key="mojiPro.codeBlocks.objectColor" value="${rgbaToHex(settings.codeBlocks.objectColor)}">
+        <span class="block-color-label">Object / Data Block</span>
+        <input class="block-color-input" type="text" data-color-key="mojiPro.codeBlocks.objectColor" value="${escapeHtml(settings.codeBlocks.objectColor)}">
+      </div>
+      <div class="bulk-actions" style="margin-top:12px;">
+        <button class="bulk-btn" id="btn-reset-block-colors" type="button">Reset Colors to Default</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="apply-bar">
+    <!-- Revert confirmation — hidden until user clicks "Revert All Emojis" -->
+    <span id="revert-confirm" style="display:none; align-items:center; gap:8px; font-size:0.9em; margin-right:auto;">
+      Reset all emojis to defaults?
+      <button class="bulk-btn" id="btn-revert-confirm-yes" type="button">Yes, reset</button>
+      <button class="bulk-btn" id="btn-revert-confirm-no" type="button">Cancel</button>
+    </span>
+    <button class="bulk-btn" id="btn-revert-emojis" type="button" style="margin-right:auto;">Revert All Emojis</button>
+    <button class="apply-btn" id="btn-apply-settings" type="button">Apply Settings</button>
   </div>
 
   <script nonce="${nonce}">
@@ -953,6 +1264,89 @@ async function getWebviewContent() {
       });
     });
 
+    // Block type color pickers + text inputs.
+    // The color picker handles the RGB component; the text input holds the full
+    // CSS string (including alpha). They stay in sync:
+    //   picker → rebuilds rgba by preserving the current alpha from the text input
+    //   text   → parses RGB back into hex to keep the picker's swatch current
+    //
+    // NOTE: all regex backslashes are doubled (\\d, \\s, \\( etc.) because this
+    // code lives inside a JS template literal — Node.js strips a single backslash
+    // from unrecognised escape sequences, so \d → d in the output. A double
+    // backslash (\\) survives as a single \ in the emitted HTML.
+    (function() {
+      function parseAlpha(colorStr) {
+        var m = colorStr.match(/rgba\\(\\s*\\d+\\s*,\\s*\\d+\\s*,\\s*\\d+\\s*,\\s*([\\d.]+)\\s*\\)/);
+        return m ? parseFloat(m[1]) : 1;
+      }
+      function hexToRgba(hex, alpha) {
+        var r = parseInt(hex.slice(1, 3), 16);
+        var g = parseInt(hex.slice(3, 5), 16);
+        var b = parseInt(hex.slice(5, 7), 16);
+        return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
+      }
+      function rgbaToHex(colorStr) {
+        var m = colorStr.match(/rgba?\\(\\s*(\\d+)\\s*,\\s*(\\d+)\\s*,\\s*(\\d+)/);
+        if (!m) return null;
+        return '#' + [m[1], m[2], m[3]].map(function(n) {
+          return parseInt(n, 10).toString(16).padStart(2, '0');
+        }).join('');
+      }
+
+      // Reset block colors to the defaults baked into package.json / blockDecorator.js.
+      // Updates both the picker swatch and the text input so the UI reflects the change
+      // immediately, then queues each default via toggleSetting so Apply will persist them.
+      var DEFAULT_BLOCK_COLORS = {
+        'mojiPro.codeBlocks.functionColor': 'rgba(86,156,214,0.08)',
+        'mojiPro.codeBlocks.loopColor':     'rgba(78,201,176,0.08)',
+        'mojiPro.codeBlocks.controlColor':  'rgba(197,134,192,0.08)',
+        'mojiPro.codeBlocks.objectColor':   'rgba(206,145,120,0.08)',
+      };
+      var btnResetColors = document.getElementById('btn-reset-block-colors');
+      if (btnResetColors) {
+        btnResetColors.addEventListener('click', function() {
+          document.querySelectorAll('.block-color-row').forEach(function(row) {
+            var picker    = row.querySelector('.block-color-picker');
+            var textInput = row.querySelector('.block-color-input');
+            if (!picker || !textInput) return;
+            var key          = picker.dataset.colorKey;
+            var defaultColor = DEFAULT_BLOCK_COLORS[key];
+            if (!defaultColor) return;
+            textInput.value = defaultColor;
+            var hex = rgbaToHex(defaultColor);
+            if (hex) picker.value = hex;
+            vscode.postMessage({ command: 'toggleSetting', key: key, value: defaultColor });
+          });
+        });
+      }
+
+      document.querySelectorAll('.block-color-row').forEach(function(row) {
+        var picker    = row.querySelector('.block-color-picker');
+        var textInput = row.querySelector('.block-color-input');
+        if (!picker || !textInput) return;
+        var key = picker.dataset.colorKey;
+
+        // Picker change → rebuild rgba preserving current alpha, sync text input, persist.
+        picker.addEventListener('input', function() {
+          var alpha   = parseAlpha(textInput.value);
+          var newRgba = hexToRgba(picker.value, alpha);
+          textInput.value = newRgba;
+          vscode.postMessage({ command: 'toggleSetting', key: key, value: newRgba });
+        });
+
+        // Text input live → parse RGB back into hex so the picker swatch stays current.
+        textInput.addEventListener('input', function() {
+          var hex = rgbaToHex(textInput.value);
+          if (hex) picker.value = hex;
+        });
+
+        // Text input commit (blur/Enter) → persist the full CSS string to VS Code config.
+        textInput.addEventListener('change', function() {
+          vscode.postMessage({ command: 'toggleSetting', key: key, value: textInput.value });
+        });
+      });
+    })();
+
     // Bulk select/deselect buttons
     document.querySelectorAll('[data-toggle-all]').forEach(function(btn) {
       btn.addEventListener('click', function() {
@@ -973,6 +1367,187 @@ async function getWebviewContent() {
         if (!prefix) return;
         vscode.postMessage({ command: 'toggleSetting', key: prefix + this.dataset.key, value: this.checked });
       });
+    });
+
+    // ── Emoji customization ──────────────────────────────────────────────
+    // Maps webview category names to the decorator's internal key prefix (must
+    // match CATEGORY_CONFIG prefixes in decorator.js and the keys stored in
+    // mojiPro.customEmojiOverrides).
+    var OVERRIDE_PREFIX_MAP = {
+      javascript: '',
+      tags:       'tag:',
+      void:       'void:',
+      attr:       'attr:',
+      cssAtRule:  'cssAtRule:',
+      cssLayout:  'cssLayout:',
+      cssBox:     'cssBox:',
+      cssVisual:  'cssVisual:',
+      cssPseudo:  'cssPseudo:',
+      cssValue:   'cssValue:',
+      python:     'py:',
+      c:          'c:',
+      cpp:        'cpp:',
+      csharp:     'csharp:',
+      sql:        'sql:',
+      typescript: 'ts:',
+      java:       'java:'
+    };
+
+    // Converts a user-entered string to a single emoji character, or returns null
+    // if the input is not recognisable. Accepts:
+    //   U+1F600   hex with U+ prefix
+    //   1F600     bare hex (4–6 digits)
+    //   0x1F600   hex with 0x prefix
+    //   🎉         pasted emoji directly (any length up to 4 code points to allow
+    //              compound emoji like ZWJ sequences and skin-tone variants)
+    function parseUnicodeInputToEmoji(str) {
+      str = str.trim();
+      var hex = str.replace(/^[Uu]\\+/, '').replace(/^0[Xx]/, '');
+      if (/^[0-9a-fA-F]{4,6}$/.test(hex)) {
+        var cp = parseInt(hex, 16);
+        if (cp >= 1 && cp <= 0x10FFFF) {
+          try { return String.fromCodePoint(cp); } catch(e) {}
+        }
+      }
+      // Accept a directly-pasted emoji (1–4 code points covers virtually all real emoji)
+      var chars = Array.from(str);
+      if (chars.length >= 1 && chars.length <= 4) return str;
+      return null;
+    }
+
+    // Close all open inline editors and restore their emoji buttons.
+    function closeAllEmojiEditors() {
+      document.querySelectorAll('.emoji-editor').forEach(function(ed) {
+        if (ed.style.display !== 'none') {
+          ed.style.display = 'none';
+          var btn = ed.previousElementSibling;
+          if (btn && btn.classList.contains('emoji-btn')) btn.style.display = '';
+          var input = ed.querySelector('.emoji-unicode-input');
+          if (input) input.classList.remove('invalid');
+        }
+      });
+    }
+
+    // Open the inline editor for a given .emoji-btn, pre-filled with the
+    // current emoji's code point in U+XXXX format.
+    document.addEventListener('click', function(e) {
+      var emojiBtn = e.target.closest('.emoji-btn');
+      if (emojiBtn) {
+        var category = emojiBtn.dataset.category;
+        var key      = emojiBtn.dataset.key;
+        var editor   = document.getElementById('editor-' + category + '-' + key);
+        if (!editor) return;
+
+        // If this editor is already open, close it (toggle behaviour)
+        if (editor.style.display !== 'none') {
+          closeAllEmojiEditors();
+          emojiBtn.style.display = '';
+          return;
+        }
+
+        closeAllEmojiEditors();
+
+        // Pre-fill input with the current emoji's primary code point in U+ format
+        var currentEmoji = emojiBtn.textContent.trim();
+        var cp           = currentEmoji.codePointAt(0);
+        var input        = editor.querySelector('.emoji-unicode-input');
+        input.value      = 'U+' + cp.toString(16).toUpperCase().padStart(4, '0');
+        input.classList.remove('invalid');
+
+        emojiBtn.style.display = 'none';
+        editor.style.display   = 'flex';
+        input.focus();
+        input.select();
+        return;
+      }
+
+      // Save button — validate input, send customisation to extension host
+      var saveBtn = e.target.closest('.emoji-editor-save');
+      if (saveBtn) {
+        var editor   = saveBtn.closest('.emoji-editor');
+        var input    = editor.querySelector('.emoji-unicode-input');
+        var category = editor.dataset.category;
+        var key      = editor.dataset.key;
+        var emoji    = parseUnicodeInputToEmoji(input.value);
+
+        if (!emoji) {
+          input.classList.add('invalid');
+          input.focus();
+          return;
+        }
+
+        var prefix      = OVERRIDE_PREFIX_MAP[category] !== undefined ? OVERRIDE_PREFIX_MAP[category] : '';
+        var overrideKey = prefix + key;
+        // Send the validated emoji to the extension host for immediate persistence.
+        // The extension writes directly to mojiPro.customEmojiOverrides and fires
+        // onDidChangeConfiguration, which triggers a decorator rebuild — so the new
+        // emoji appears in the editor without requiring an explicit Apply.
+        vscode.postMessage({ command: 'saveEmojiCustomization', overrideKey: overrideKey, emoji: emoji });
+        return;
+      }
+
+      // Cancel button — discard edit, restore button
+      var cancelBtn = e.target.closest('.emoji-editor-cancel');
+      if (cancelBtn) {
+        var editor  = cancelBtn.closest('.emoji-editor');
+        var emojiBtn = editor.previousElementSibling;
+        editor.style.display = 'none';
+        if (emojiBtn && emojiBtn.classList.contains('emoji-btn')) emojiBtn.style.display = '';
+        return;
+      }
+
+      // Chart open button — derive the Unicode chart anchor from the current emoji
+      // and open the full emoji list at that code point in the system browser.
+      var chartBtn = e.target.closest('.emoji-chart-open');
+      if (chartBtn) {
+        var editor      = chartBtn.closest('.emoji-editor');
+        var emojiBtnEl  = editor.previousElementSibling;
+        var currentEmoji = emojiBtnEl ? emojiBtnEl.textContent.trim() : '';
+        var cp          = currentEmoji.codePointAt ? currentEmoji.codePointAt(0) : 0;
+        var anchor      = cp ? cp.toString(16).toLowerCase() : '';
+        vscode.postMessage({ command: 'openUnicodeChart', anchor: anchor });
+        return;
+      }
+
+      // Close any open editor when the user clicks outside an emoji item
+      if (!e.target.closest('.emoji-item')) {
+        closeAllEmojiEditors();
+      }
+    });
+
+    // Escape key closes any open inline editor
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') closeAllEmojiEditors();
+    });
+
+    // Receive confirmation from extension host and update the emoji button in the UI
+    window.addEventListener('message', function(event) {
+      var msg = event.data;
+      if (msg.command === 'emojiCustomizationSaved') {
+        // Find the button whose category+key produced this overrideKey and update its display
+        document.querySelectorAll('.emoji-btn').forEach(function(btn) {
+          var prefix = OVERRIDE_PREFIX_MAP[btn.dataset.category] !== undefined
+            ? OVERRIDE_PREFIX_MAP[btn.dataset.category] : '';
+          if (prefix + btn.dataset.key === msg.overrideKey) {
+            btn.textContent = msg.emoji;
+            btn.classList.add('customized');
+            btn.style.display = '';
+            var editor = document.getElementById('editor-' + btn.dataset.category + '-' + btn.dataset.key);
+            if (editor) editor.style.display = 'none';
+          }
+        });
+      } else if (msg.command === 'allEmojisReverted') {
+        // Restore every emoji button to its default emoji (stored in data-default-emoji)
+        // and remove the customised indicator.
+        document.querySelectorAll('.emoji-btn').forEach(function(btn) {
+          btn.textContent = btn.dataset.defaultEmoji || btn.textContent;
+          btn.classList.remove('customized');
+          btn.style.display = '';
+        });
+        document.querySelectorAll('.emoji-editor').forEach(function(ed) {
+          ed.style.display = 'none';
+        });
+      }
     });
 
     // ── License section interactions ────────────────────────────────────
@@ -1047,6 +1622,45 @@ async function getWebviewContent() {
           if (keyInput) { keyInput.value = ''; }
         }
       });
+
+      // Apply Settings button — flushes all pending changes immediately without
+      // requiring the user to close the panel.
+      var btnApply = document.getElementById('btn-apply-settings');
+      if (btnApply) {
+        btnApply.addEventListener('click', function() {
+          btnApply.textContent = 'Applying\u2026';
+          btnApply.disabled = true;
+          vscode.postMessage({ command: 'applySettings' });
+          // Re-enable after a short delay to give the extension host time to write config.
+          setTimeout(function() {
+            btnApply.textContent = 'Apply Settings';
+            btnApply.disabled = false;
+          }, 800);
+        });
+      }
+
+      // Revert All Emojis — shows an inline confirmation before sending to extension host.
+      // Avoids window.confirm() which is unreliable inside VS Code webviews.
+      var btnRevert      = document.getElementById('btn-revert-emojis');
+      var revertConfirm  = document.getElementById('revert-confirm');
+      var btnRevertYes   = document.getElementById('btn-revert-confirm-yes');
+      var btnRevertNo    = document.getElementById('btn-revert-confirm-no');
+
+      if (btnRevert && revertConfirm) {
+        btnRevert.addEventListener('click', function() {
+          btnRevert.style.display = 'none';
+          revertConfirm.style.display = 'flex';
+        });
+        btnRevertNo.addEventListener('click', function() {
+          revertConfirm.style.display = 'none';
+          btnRevert.style.display = '';
+        });
+        btnRevertYes.addEventListener('click', function() {
+          revertConfirm.style.display = 'none';
+          btnRevert.style.display = '';
+          vscode.postMessage({ command: 'revertAllEmojis' });
+        });
+      }
     })();
   </script>
 </body>
@@ -1054,15 +1668,38 @@ async function getWebviewContent() {
 }
 
 /**
- * Create HTML for a single checkbox item.
+ * Create HTML for a single emoji keyword row.
+ *
+ * @param {string} category      - Webview category name (e.g. 'javascript', 'python', 'tags')
+ * @param {string} key           - Keyword key within the category map (e.g. 'await', 'div')
+ * @param {string} defaultEmoji  - The original emoji from the keyword map — stored in data-default-emoji
+ *                                 so the webview can restore it when "Revert All" is triggered.
+ * @param {string} effectiveEmoji - The emoji currently in use (custom override or default)
+ * @param {string} displayName   - Label shown next to the emoji (may include HTML like &lt;div&gt;)
+ * @param {boolean} checked      - Whether the per-keyword toggle is currently enabled
+ * @param {boolean} isCustomized - Whether the user has an active custom override for this keyword
  */
-function createCheckboxItem(category, key, emoji, displayName, checked) {
+function createCheckboxItem(category, key, defaultEmoji, effectiveEmoji, displayName, checked, isCustomized) {
+  // The checkbox and emoji button are siblings, not nested — clicking the emoji
+  // button must not also toggle the checkbox (which a <label> wrapper would do).
+  const safeDefault = escapeHtml(defaultEmoji);
   return `
-    <label class="emoji-item">
-      <input type="checkbox" ${checked ? 'checked' : ''} data-category="${category}" data-key="${key}">
-      <span class="emoji">${emoji}</span>
+    <div class="emoji-item">
+      <label class="emoji-item-check" for="cb-${category}-${key}">
+        <input type="checkbox" id="cb-${category}-${key}" ${checked ? 'checked' : ''} data-category="${category}" data-key="${key}">
+      </label>
+      <button class="emoji-btn${isCustomized ? ' customized' : ''}" type="button"
+        data-category="${category}" data-key="${key}"
+        data-default-emoji="${safeDefault}"
+        title="Click to customize emoji">${effectiveEmoji}</button>
+      <span class="emoji-editor" id="editor-${category}-${key}" data-category="${category}" data-key="${key}" style="display:none">
+        <input class="emoji-unicode-input" type="text" placeholder="U+1F600">
+        <button class="emoji-editor-save" type="button" title="Save">&#10003;</button>
+        <button class="emoji-editor-cancel" type="button" title="Cancel">&#10005;</button>
+        <button class="emoji-chart-open" type="button" data-category="${category}" data-key="${key}" title="Browse Unicode chart">&#8599;</button>
+      </span>
       <span class="name">${displayName}</span>
-    </label>
+    </div>
   `;
 }
 

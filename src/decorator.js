@@ -94,10 +94,15 @@ class KeywordDecorator {
   _buildDecorationTypes() {
     this._disposeDecorationTypes();
 
-    const config     = vscode.workspace.getConfiguration('mojiPro');
-    this._mode       = config.get('displayMode', 'overlay');
-    this._opacity    = config.get('overlayOpacity', 1);
-    this._editorFont = vscode.workspace.getConfiguration('editor').get('fontSize', 14);
+    const config          = vscode.workspace.getConfiguration('mojiPro');
+    this._mode            = config.get('displayMode', 'overlay');
+    this._opacity         = config.get('overlayOpacity', 1);
+    this._editorFont      = vscode.workspace.getConfiguration('editor').get('fontSize', 14);
+    // Serialised signature used in reloadConfig to detect override changes without
+    // a deep-equality check — emoji overrides are baked into contentText so any
+    // change requires a full decoration-type rebuild.
+    const customOverrides = config.get('customEmojiOverrides', {});
+    this._overridesSig    = JSON.stringify(customOverrides);
 
     const addDecoration = (key, emoji) => {
       /** @type {vscode.DecorationRenderOptions} */
@@ -124,10 +129,12 @@ class KeywordDecorator {
       this.decorationTypes.set(key, vscode.window.createTextEditorDecorationType(options));
     };
 
-    for (const { configNs, map, prefix } of CATEGORY_CONFIG) {
-      const itemCfg = vscode.workspace.getConfiguration(configNs);
-      for (const [key, emoji] of Object.entries(map)) {
-        addDecoration(`${prefix}${key}`, emoji);
+    for (const { map, prefix } of CATEGORY_CONFIG) {
+      for (const [key, defaultEmoji] of Object.entries(map)) {
+        const overrideKey   = `${prefix}${key}`;
+        // Apply per-keyword override if one exists; otherwise fall back to the map default.
+        const effectiveEmoji = customOverrides[overrideKey] || defaultEmoji;
+        addDecoration(overrideKey, effectiveEmoji);
       }
     }
 
@@ -259,8 +266,13 @@ class KeywordDecorator {
     const newOpacity = config.get('overlayOpacity', 1);
     const newFont    = vscode.workspace.getConfiguration('editor').get('fontSize', 14);
 
-    if (newMode !== this._mode || newOpacity !== this._opacity || newFont !== this._editorFont) {
-      // Visual style changed — must recreate decoration types (unavoidable full rebuild)
+    const newOverridesSig = JSON.stringify(
+      config.get('customEmojiOverrides', {})
+    );
+
+    if (newMode !== this._mode || newOpacity !== this._opacity || newFont !== this._editorFont || newOverridesSig !== this._overridesSig) {
+      // Visual style or emoji overrides changed — must recreate decoration types since
+      // the emoji character is baked into each type's contentText CSS property.
       this._buildDecorationTypes();
     } else {
       // Only keyword enable/disable changed — update the enabled set with no type disposal
