@@ -6,36 +6,36 @@ const KEYWORD_EMOJI_MAP = {
   'break':      '🛑',   // stop sign       – exit loop / switch
   'case':       '📋',   // clipboard       – pattern match branch
   'catch':      '🥅',   // goal net        – catch thrown errors
-  'class':      '🧑‍🏫',   // teacher         – class declaration
+  'class':      '⭐',    // star            – class declaration
   'const':      '🔒',   // lock            – immutable binding
   'continue':   '⏭️',   // skip forward    – next iteration
   'debugger':   '🐛',   // bug             – breakpoint
   'default':    '📌',   // pin             – fallback branch
   'delete':     '🗑️',   // wastebasket     – remove property
-  'do':         '🔄',   // arrows circle   – do-while loop
+  'do':         '♾️',   // infinity        – do-while loop
   'else':       '↪️',    // right curve     – alternative branch
   'enum':       '📊',   // bar chart       – enumeration (reserved)
   'export':     '🚀',   // rocket          – module export
-  'extends':    '🧬',   // DNA             – inheritance
-  'finally':    '🏁',   // chequered flag  – guaranteed cleanup
-  'for':        '🔁',   // repeat arrows   – for loop
-  'function':   '⚡',   // lightning       – function declaration
+  'extends':    '🪜',   // ladder          – inheritance
+  'finally':    '🏆',   // trophy          – guaranteed cleanup
+  'for':        '🔂',   // repeat once     – for loop
+  'function':   '⚙️',   // gear            – function declaration
   'if':         '❓',   // question mark   – conditional
   'import':     '📥',   // inbox tray      – module import
-  'in':         '📍',   // pin location    – property membership
+  'in':         '🕵️',   // detective       – property membership
   'instanceof': '🔎',   // magnify glass   – prototype check
   'new':        '✨',   // sparkles        – instance creation
   'return':     '🔙',   // back arrow      – return value
-  'super':      '🦸',   // superhero       – parent class ref
+  'super':      '🌟',   // star            – parent class ref
   'switch':     '🎚️',   // level slider    – multi-branch
-  'this':       '👆',   // point up        – current context
+  'this':       '☝🏻',  // index pointing up – current context
   'throw':      '💥',   // collision       – throw error
   'try':        '🤞',   // crossed fingers – attempt block
   'typeof':     '🏷️',   // label           – type check
   'var':        '📝',   // memo            – variable (legacy)
   'void':       '🕳️',   // hole            – discard value
-  'while':      '🔂',   // repeat once     – while loop
-  'with':       '🤝',   // handshake       – with statement
+  'while':      '🔁',   // repeat arrows   – while loop
+  'with':       '🍻',   // clinking beers  – with statement
   'yield':      '🌾',   // rice sheaf      – generator yield
 };
 

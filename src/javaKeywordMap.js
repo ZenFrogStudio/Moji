@@ -8,61 +8,61 @@ const JAVA_KEYWORD_EMOJI_MAP = {
   'switch':       '🎚️',   // level slider     – multi-branch
   'case':         '📋',   // clipboard        – switch case
   'default':      '📌',   // pin              – default case
-  'for':          '🔁',   // repeat arrows    – for loop
-  'while':        '🔂',   // repeat once      – while loop
-  'do':           '🔄',   // arrows           – do-while loop
+  'for':          '🔂',   // repeat once      – for loop
+  'while':        '🔁',   // repeat arrows    – while loop
+  'do':           '♾️',   // infinity         – do-while loop
   'break':        '🛑',   // stop sign        – exit loop
   'continue':     '⏭️',   // skip forward     – next iteration
   'return':       '🔙',   // back arrow       – return value
   'yield':        '🌾',   // wheat            – switch yield
 
   // ── Data Types ──────────────────────────────────────────────────────────
-  'int':          '🔢',   // numbers          – integer
-  'long':         '📐',   // ruler            – long integer
-  'short':        '📏',   // ruler            – short integer
+  'int':          '#️⃣',   // hash key         – integer
+  'long':         '📏',   // ruler            – long integer
+  'short':        '🤏',   // pinching hand    – short integer
   'byte':         '🔣',   // symbols          – byte
   'float':        '🎈',   // balloon          – floating point
   'double':       '🎭',   // masks            – double precision
   'char':         '🔤',   // letters          – character
   'boolean':      '🔘',   // radio button     – boolean
   'void':         '🕳️',   // hole             – no return
-  'var':          '🏷️',   // label            – local variable type inference
+  'var':          '🔖',   // bookmark         – local variable type inference (matches C# var)
 
   // ── Boolean & Null Literals ─────────────────────────────────────────────
-  'true':         '✅',   // check mark       – true
-  'false':        '❌',   // cross mark       – false
+  'true':         '👍',   // thumbs up        – true
+  'false':        '👎',   // thumbs down      – false
   'null':         '🚫',   // prohibited       – null value
 
   // ── Access Modifiers ────────────────────────────────────────────────────
   'public':       '🌍',   // globe            – public access
-  'private':      '🔐',   // locked key       – private access
+  'private':      '🤫',   // shushing         – private access
   'protected':    '🛡️',   // shield           – protected access
 
   // ── Class & Type Modifiers ──────────────────────────────────────────────
-  'class':        '🧑‍🏫',   // teacher          – class
+  'class':        '⭐',    // star             – class
   'interface':    '🔌',   // plug             – interface
   'enum':         '📊',   // bar chart        – enumeration
-  'record':       '📀',   // disc             – record type
-  'abstract':     '🎨',   // art palette      – abstract
+  'record':       '🎥',   // video camera     – record type
+  'abstract':     '🖌️',   // paintbrush       – abstract
   'final':        '🏁',   // checkered flag   – final/immutable
-  'static':       '🏛️',   // classical bldg   – static member
+  'static':       '🧱',   // brick            – static member
   'sealed':       '🔐',   // locked           – sealed class
   'permits':      '✅',   // check            – permits clause
 
   // ── OOP Keywords ────────────────────────────────────────────────────────
-  'extends':      '🧬',   // dna              – inheritance
-  'implements':   '✅',   // check mark       – implements interface
+  'extends':      '🪜',   // ladder           – inheritance
+  'implements':   '🛠️',   // tools            – implements interface
   'new':          '✨',   // sparkles         – instance creation
-  'this':         '👆',   // point up         – current instance
-  'super':        '🦸',   // superhero        – parent class ref
+  'this':         '☝🏻',  // index pointing up – current instance
+  'super':        '🌟',   // star             – parent class ref
   'instanceof':   '🔎',   // magnifier        – type check
 
   // ── Exception Handling ──────────────────────────────────────────────────
   'try':          '🤞',   // crossed fingers  – try block
   'catch':        '🥅',   // goal net         – catch exception
-  'finally':      '🏁',   // checkered flag   – finally block
+  'finally':      '🏆',   // trophy           – finally block
   'throw':        '💥',   // collision        – throw exception
-  'throws':       '⚠️',   // warning          – throws declaration
+  'throws':       '🚨',   // siren            – throws declaration
 
   // ── Package & Import ────────────────────────────────────────────────────
   'package':      '📦',   // package          – package declaration
@@ -74,7 +74,7 @@ const JAVA_KEYWORD_EMOJI_MAP = {
   'transient':    '💨',   // wind             – transient field
 
   // ── Other Modifiers ─────────────────────────────────────────────────────
-  'native':       '⚙️',   // gear             – native method
+  'native':       '🏕️',   // camping          – native method
   'strictfp':     '📐',   // ruler            – strict floating point
 
   // ── Assertions ──────────────────────────────────────────────────────────
@@ -82,12 +82,12 @@ const JAVA_KEYWORD_EMOJI_MAP = {
 
   // ── Modules (Java 9+) ───────────────────────────────────────────────────
   'module':       '🧩',   // puzzle piece     – module
-  'requires':     '📋',   // clipboard        – requires
-  'exports':      '📤',   // outbox           – exports
-  'opens':        '🔓',   // unlocked         – opens
+  'requires':     '👮',   // guard            – requires
+  'exports':      '🚀',   // rocket           – exports
+  'opens':        '🚪',   // door             – opens
   'uses':         '🔧',   // wrench           – uses
   'provides':     '🎁',   // gift             – provides
-  'with':         '🤝',   // handshake        – with
+  'with':         '🍻',   // clinking beers   – with
   'to':           '➡️',   // arrow            – to
 };
 

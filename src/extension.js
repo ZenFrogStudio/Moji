@@ -70,7 +70,22 @@ async function activate(context) {
 
   context.subscriptions.push(
     vscode.commands.registerCommand('mojiPro.openSettings', () => {
-      openSettingsPanel(context, licenseManager);
+      openSettingsPanel(context, licenseManager, () => {
+        // Reload all decorator configs and repaint every visible editor once
+        // the settings panel has written its pending changes to VS Code config.
+        // visibleTextEditors is used because activeTextEditor is undefined while
+        // the webview panel has focus, and remains undefined until an editor tab
+        // is explicitly clicked after the panel closes.
+        decorator.reloadConfig();
+        decorator.enabled = vscode.workspace
+          .getConfiguration('mojiPro')
+          .get('enabled', true);
+        blockDecorator.reloadConfig();
+        for (const editor of vscode.window.visibleTextEditors) {
+          decorator.updateEditor(editor);
+          blockDecorator.updateEditor(editor);
+        }
+      });
     })
   );
 
@@ -261,9 +276,12 @@ async function activate(context) {
 
           blockDecorator.reloadConfig();
 
-          if (vscode.window.activeTextEditor) {
-            decorator.updateEditor(vscode.window.activeTextEditor);
-            blockDecorator.updateEditor(vscode.window.activeTextEditor);
+          // Use visibleTextEditors (not activeTextEditor) so that settings changes
+          // made from the settings panel — which causes activeTextEditor to be
+          // undefined — still immediately apply to all open code editors.
+          for (const editor of vscode.window.visibleTextEditors) {
+            decorator.updateEditor(editor);
+            blockDecorator.updateEditor(editor);
           }
         }, 100);
       }
@@ -274,6 +292,9 @@ async function activate(context) {
 
   context.subscriptions.push({ dispose: () => decorator.dispose() });
   context.subscriptions.push({ dispose: () => blockDecorator.dispose() });
+  // Clear any in-flight debounce timers so their callbacks don't fire against
+  // disposed decorator objects after the extension is deactivated.
+  context.subscriptions.push({ dispose: () => { clearTimeout(updateTimer); clearTimeout(configTimer); } });
 }
 
 function deactivate() {

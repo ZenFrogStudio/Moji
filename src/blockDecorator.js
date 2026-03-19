@@ -1,6 +1,7 @@
-// Adds code block highlighting to the editor: a configurable background tint
-// applied to every line within each detected multi-line block, so users can
-// quickly identify code block boundaries and their contents at a glance.
+// Adds code block highlighting to the editor: a faint background tint applied
+// to every line within each detected multi-line block. Each block type gets a
+// distinct color so the nature of the block (function, loop, control flow, or
+// object/data) is visually apparent at a glance without being distracting.
 //
 // Supported block strategies:
 //   bracket-based  – JS, TS, Java, C, C++, C#, CSS/SCSS/Less  ({} delimiters)
@@ -22,19 +23,34 @@ const BLOCK_SUPPORTED_LANGUAGES = new Set([
   ...INDENT_BLOCK_LANGUAGES,
 ]);
 
+// All recognized block types — order is stable and used for setDecorations calls.
+const BLOCK_TYPES = ['function', 'loop', 'control', 'object'];
+
+// Default faint tints tuned to VS Code's default token color palette so the
+// block types feel semantically consistent with the editor's existing syntax colors.
+const DEFAULT_COLORS = {
+  function: 'rgba(86,156,214,0.08)',   // blue   — aligns with VS Code's function token color
+  loop:     'rgba(78,201,176,0.08)',   // teal   — aligns with VS Code's iteration token color
+  control:  'rgba(197,134,192,0.08)', // purple — aligns with VS Code's control-flow token color
+  object:   'rgba(206,145,120,0.08)', // orange — aligns with VS Code's property/object token color
+};
+
 class BlockDecorator {
   constructor() {
-    /** @type {vscode.TextEditorDecorationType | null} Background fill for all lines within a block. */
-    this._bgDecType = null;
+    /**
+     * One decoration type per block type, keyed by BLOCK_TYPES string.
+     * @type {Map<string, vscode.TextEditorDecorationType>}
+     */
+    this._decTypes = new Map();
 
     /** @type {Map<string, {version: number, blocks: Array}>} Per-document scan cache. */
     this._blockCache = new Map();
 
     this.enabled = false;
 
-    // Cached config value — compared in reloadConfig to detect style changes
-    // that require rebuilding the decoration type (unavoidable dispose/recreate).
-    this._cfgBackgroundColor = null;
+    // Cached color values — compared in reloadConfig to detect changes that
+    // require rebuilding decoration types (VS Code forces dispose/recreate).
+    this._cfgColors = {};
 
     this._buildDecorationTypes();
   }
@@ -45,26 +61,83 @@ class BlockDecorator {
     this._disposeDecorationTypes();
 
     const cfg = vscode.workspace.getConfiguration('mojiPro.codeBlocks');
-    this._cfgBackgroundColor = cfg.get('backgroundColor', 'rgba(128,128,128,0.06)');
+    for (const blockType of BLOCK_TYPES) {
+      const color = cfg.get(`${blockType}Color`, DEFAULT_COLORS[blockType]);
+      this._cfgColors[blockType] = color;
 
-    this._bgDecType = vscode.window.createTextEditorDecorationType({
-      isWholeLine: true,
-      backgroundColor: this._cfgBackgroundColor,
-    });
+      this._decTypes.set(blockType, vscode.window.createTextEditorDecorationType({
+        isWholeLine: true,
+        backgroundColor: color,
+      }));
+    }
   }
 
   _disposeDecorationTypes() {
-    if (this._bgDecType) this._bgDecType.dispose();
-    this._bgDecType = null;
+    for (const decType of this._decTypes.values()) decType.dispose();
+    this._decTypes.clear();
+    this._cfgColors = {};
+  }
+
+  // ── Block classification ────────────────────────────────────────────────────
+
+  /**
+   * Classifies a bracket-based block by inspecting the text of the line that
+   * contains the opening `{`. Priority order: loop → control → function → object,
+   * so `if (fn()) {` is correctly classified as control rather than function.
+   * @param {vscode.TextDocument} document
+   * @param {number} startLine  Zero-based line number of the opening `{`.
+   * @returns {'loop'|'control'|'function'|'object'}
+   */
+  _classifyBracketBlock(document, startLine) {
+    const lineText = document.lineAt(startLine).text;
+
+    // Loop: for/while/do always introduce a repeating body block.
+    if (/\b(for|while|do)\b/.test(lineText)) return 'loop';
+
+    // Control flow: if/else/switch/try/catch/finally introduce conditional
+    // or error-handling blocks — checked before function to handle `if (fn()) {`.
+    if (/\b(if|else|switch|try|catch|finally)\b/.test(lineText)) return 'control';
+
+    // Function/class: explicit `function`/`class` keyword, arrow `=>`, or a
+    // method-like signature pattern (e.g. `methodName(args) {`).
+    if (
+      /\b(function|class)\b/.test(lineText) ||
+      /=>/.test(lineText) ||
+      /\w+\s*\([^)]*\)\s*\{/.test(lineText)
+    ) {
+      return 'function';
+    }
+
+    // Default: object literal, namespace block, module pattern, or other unlabeled block.
+    return 'object';
+  }
+
+  /**
+   * Classifies an indent-based (Python) block by inspecting the header line
+   * immediately before the block body — the line ending with a colon that
+   * introduces the indented block.
+   * @param {vscode.TextDocument} document
+   * @param {number} startLine  Zero-based first line of the indented block body.
+   * @returns {'loop'|'control'|'function'|'object'}
+   */
+  _classifyIndentBlock(document, startLine) {
+    if (startLine === 0) return 'object';
+    const headerText = document.lineAt(startLine - 1).text.trimStart();
+
+    if (/^(for|while)\b/.test(headerText)) return 'loop';
+    if (/^(if|elif|else|try|except|finally|with)\b/.test(headerText)) return 'control';
+    if (/^(async\s+)?def\b/.test(headerText) || /^class\b/.test(headerText)) return 'function';
+
+    return 'object';
   }
 
   // ── Block detection ────────────────────────────────────────────────────────
 
   /**
-   * Returns [{startLine, endLine}] for all multi-line blocks in the document.
+   * Returns [{startLine, endLine, blockType}] for all multi-line blocks.
    * Routes to the appropriate detection strategy based on language.
    * @param {vscode.TextDocument} document
-   * @returns {{startLine: number, endLine: number}[]}
+   * @returns {{startLine: number, endLine: number, blockType: string}[]}
    */
   _detectBlocks(document) {
     if (INDENT_BLOCK_LANGUAGES.has(document.languageId)) {
@@ -150,7 +223,8 @@ class BlockDecorator {
         const endLine   = charToLine(i);
         if (endLine > startLine) {
           // Only record multi-line blocks — single-line {} clutter the view.
-          blocks.push({ startLine, endLine });
+          const blockType = this._classifyBracketBlock(document, startLine);
+          blocks.push({ startLine, endLine, blockType });
         }
       }
 
@@ -209,7 +283,8 @@ class BlockDecorator {
           let endLine = l - 1;
           while (endLine > blockStart && indentLevels[endLine] === null) endLine--;
           if (endLine > blockStart) {
-            blocks.push({ startLine: blockStart, endLine });
+            const blockType = this._classifyIndentBlock(document, blockStart);
+            blocks.push({ startLine: blockStart, endLine, blockType });
           }
           blockStart = -1;
         }
@@ -245,11 +320,20 @@ class BlockDecorator {
       this._blockCache.set(docKey, { version: docVersion, blocks });
     }
 
-    const bgRanges = blocks.map(({ startLine, endLine }) =>
-      new vscode.Range(startLine, 0, endLine, editor.document.lineAt(endLine).text.length)
-    );
+    // Group ranges by block type — VS Code requires one setDecorations call per
+    // decoration type, so we can't mix all blocks into a single call.
+    const rangesByType = {};
+    for (const blockType of BLOCK_TYPES) rangesByType[blockType] = [];
 
-    editor.setDecorations(this._bgDecType, bgRanges);
+    for (const { startLine, endLine, blockType } of blocks) {
+      rangesByType[blockType].push(
+        new vscode.Range(startLine, 0, endLine, editor.document.lineAt(endLine).text.length)
+      );
+    }
+
+    for (const blockType of BLOCK_TYPES) {
+      editor.setDecorations(this._decTypes.get(blockType), rangesByType[blockType]);
+    }
   }
 
   /** Toggle the feature on/off and refresh the active editor. */
@@ -264,15 +348,19 @@ class BlockDecorator {
 
   /**
    * Re-read settings after a configuration change.
-   * Rebuilds decoration types only when the visual style changed; otherwise
-   * just updates the enabled flag to avoid a dispose/recreate flash.
+   * Rebuilds decoration types only when a color changed; otherwise just updates
+   * the enabled flag to avoid a dispose/recreate flash.
    */
   reloadConfig() {
-    const cfg        = vscode.workspace.getConfiguration('mojiPro.codeBlocks');
-    const newBgColor = cfg.get('backgroundColor', 'rgba(128,128,128,0.06)');
+    const cfg = vscode.workspace.getConfiguration('mojiPro.codeBlocks');
 
-    if (newBgColor !== this._cfgBackgroundColor) {
-      // Background color changed — must recreate the decoration type (unavoidable full rebuild).
+    // Rebuild only if any block type color actually changed — avoids a visible
+    // decoration flash when unrelated settings change in the same config event.
+    const anyColorChanged = BLOCK_TYPES.some(blockType =>
+      cfg.get(`${blockType}Color`, DEFAULT_COLORS[blockType]) !== this._cfgColors[blockType]
+    );
+
+    if (anyColorChanged) {
       this._buildDecorationTypes();
     }
 
@@ -293,7 +381,7 @@ class BlockDecorator {
   // ── Helpers ────────────────────────────────────────────────────────────────
 
   _clearAll(editor) {
-    if (this._bgDecType) editor.setDecorations(this._bgDecType, []);
+    for (const decType of this._decTypes.values()) editor.setDecorations(decType, []);
   }
 }
 

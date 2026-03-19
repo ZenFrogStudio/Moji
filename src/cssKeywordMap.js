@@ -3,7 +3,7 @@
 // At-rules (prefixed with @)
 const CSS_ATRULE_EMOJI_MAP = {
   'media': '📺',
-  'keyframes': '🎬',
+  'keyframes': '🎞️',
   'import': '📥',
   'font-face': '🔤',
   'supports': '✅',
@@ -11,18 +11,18 @@ const CSS_ATRULE_EMOJI_MAP = {
 
 // Layout properties
 const CSS_LAYOUT_EMOJI_MAP = {
-  'display': '🖥️',
-  'flex': '📦',
-  'grid': '🔲',
+  'display': '📺',
+  'flex': '🩹',
+  'grid': '🎛️',
   'position': '📍',
   'float': '🎈',
 };
 
 // Box model properties
 const CSS_BOX_EMOJI_MAP = {
-  'margin': '⬜',
-  'padding': '🔳',
-  'border': '🔲',
+  'margin': '😶‍🌫️',
+  'padding': '☁️',
+  'border': '〰️',
   'width': '↔️',
   'height': '↕️',
 };

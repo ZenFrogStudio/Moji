@@ -11,7 +11,7 @@ const HTML_TAG_EMOJI_MAP = {
   'body':       '🧍',  // bone            – document body
 
   // Generic containers
-  'div':        '🧱',  // package         – generic block container
+  'div':        '🫙',  // jar             – generic block container
   'span':       '🦇',  // bookmark        – generic inline container
 
   // Text content
@@ -25,25 +25,25 @@ const HTML_TAG_EMOJI_MAP = {
   'h6':         '6️⃣',  // keycap six      – heading level 6
 
   // Lists
-  'ul':         '📝',  // memo            – unordered list
+  'ul':         '🔵',  // blue circle     – unordered list
   'ol':         '🔢',  // numbers         – ordered list
   'li':         '▪️',   // black square    – list item
 
   // Table
-  'table':      '📊',  // bar chart       – data table
+  'table':      '🧊',  // ice cube        – data table
   'tr':         '➡️',   // right arrow     – table row
-  'td':         '📎',  // paperclip       – table data cell
-  'th':         '🏷️',  // label           – table header cell
+  'td':         '💠',  // diamond dot     – table data cell
+  'th':         '🧢',  // cap             – table header cell
   'thead':      '🔝',  // top arrow       – table head group
   'tbody':      '📋',  // clipboard       – table body group
   'tfoot':      '🔚',  // end arrow       – table foot group
 
   // Forms
-  'form':       '📑',  // bookmark tabs   – input form
-  'button':     '🔘',  // radio button    – clickable button
+  'form':       '🗳️',  // ballot box      – input form
+  'button':     '🔴',  // red circle      – clickable button
   'select':     '🛒',  // open folder     – dropdown select
   'option':     '☑️',   // check box       – select option
-  'textarea':   '✏️',   // pencil          – multiline text input
+  'textarea':   '🗛',   // text style      – multiline text input
   'label':      '🪧',  // placard         – form control label
 
   // Semantic sections
@@ -51,17 +51,17 @@ const HTML_TAG_EMOJI_MAP = {
   'header':     '📰',  // newspaper       – page header
   'footer':     '👟',  // running shoe    – page footer
   'main':       '🏠',  // house           – main content area
-  'section':    '📐',  // triangular ruler – thematic section
+  'section':    '🗒️',  // notepad         – thematic section
   'article':    '📓',  // notebook        – self-contained article
-  'aside':      '📌',  // pushpin         – tangential content
+  'aside':      '🪝',  // hook            – tangential content
 
   // Embedded content & scripting
-  'script':     '📜',  // lightning       – executable script
+  'script':     '⚡',  // lightning       – executable script
   'style':      '🎨',  // artist palette  – embedded stylesheet
   'title':      '👑',  // crown           – document title
-  'video':      '🎬',  // clapper board   – video player
+  'video':      '📽️',  // film projector  – video player
   'audio':      '🔊',  // speaker high    – audio player
-  'canvas':     '🖌️',  // paintbrush      – drawing surface
+  'canvas':     '👝',  // clutch bag      – drawing surface
   'iframe':     '🪟',  // window          – nested browsing context
   'picture':    '📸',  // camera flash    – responsive image container
 
@@ -72,7 +72,7 @@ const HTML_TAG_EMOJI_MAP = {
   'em':         '✍️',   // writing hand    – stress emphasis
   'blockquote': '🗨️',  // speech bubble   – extended quotation
   'mark':       '🖍️',  // crayon          – highlighted text
-  'del':        '❌',  // cross mark      – deleted text
+  'del':        '🗑️',  // wastebasket     – deleted text
   'ins':        '➕',  // plus sign       – inserted text
   'small':      '🔹',  // small diamond   – side comment
   'sub':        '⬇️',  // down arrow      – subscript
@@ -81,15 +81,15 @@ const HTML_TAG_EMOJI_MAP = {
   // Interactive & misc
   'figure':     '🎞️',  // film frames     – figure with optional caption
   'figcaption': '💬',  // speech balloon  – figure caption
-  'details':    '🔍',  // magnifying glass– disclosure widget
+  'details':    '🔽',  // down button     – disclosure widget
   'summary':    '📖',  // open book       – disclosure summary
   'dialog':     '💭',  // thought balloon – dialog box
-  'template':   '🧩',  // puzzle piece    – content template
-  'slot':       '🔌',  // plug            – shadow DOM slot
+  'template':   '🖨️',  // printer         – content template
+  'slot':       '🎰',  // slot machine    – shadow DOM slot
   'fieldset':   '🔲',  // black square btn– field grouping
-  'legend':     '🏆',  // trophy          – fieldset caption
-  'output':     '📤',  // outbox tray     – calculation result
-  'progress':   '⏳',  // hourglass       – progress indicator
+  'legend':     '🗾',  // map of japan    – fieldset caption
+  'output':     '📣',  // megaphone       – calculation result
+  'progress':   '📈',  // chart up        – progress indicator
   'meter':      '📏',  // straight ruler  – scalar gauge
   'datalist':   '📃',  // page with curl  – predefined options
   'map':        '🗺️',  // world map       – image map
@@ -104,9 +104,9 @@ const HTML_VOID_EMOJI_MAP = {
   'hr':         '➖',   // minus sign      – horizontal rule / thematic break
   'meta':       'ℹ️',   // info            – document metadata
   'link':       '⛓️',   // chains          – external resource link
-  'source':     '📡',  // satellite dish  – media source
+  'source':     '🎙️',  // microphone      – media source
   'embed':      '📼',  // videocassette   – embedded content
-  'area':       '📍',  // pin             – image map clickable area
+  'area':       '🏞️',  // landscape       – image map clickable area
   'track':      '🎵',  // musical note    – text track (captions / subtitles)
   'wbr':        '✂️',   // scissors        – word break opportunity
   'col':        '🗄️',  // file cabinet    – table column
@@ -116,12 +116,12 @@ const HTML_VOID_EMOJI_MAP = {
 // ── HTML attribute names ─────────────────────────────────────────────────────
 
 const HTML_ATTR_EMOJI_MAP = {
-  'class':       '🧑‍🏫',  // classical bldg  – CSS class name
+  'class':       '⭐',  // classical bldg  – CSS class name
   'id':          '🆔',  // id button       – unique identifier
-  'href':        '🌍',  // globe europe    – hyperlink reference
-  'src':         '📥',  // inbox tray      – source URL
+  'href':        '🏹',  // bow and arrow   – hyperlink reference
+  'src':         '💿',  // disc            – source URL
   'alt':         '🗣️',  // speaking head   – alternative text
-  'style':       '🎭',  // performing arts – inline CSS styles
+  'style':       '😎',  // sunglasses      – inline CSS styles
   'type':        '🔤',  // abc             – input / mime type
   'name':        '📛',  // name badge      – element name
   'value':       '💎',  // gem             – element value
@@ -132,10 +132,10 @@ const HTML_ATTR_EMOJI_MAP = {
   'rel':         '🤝',  // handshake       – link relationship
   'width':       '↔️',   // left-right arrow– element width
   'height':      '↕️',   // up-down arrow   – element height
-  'disabled':    '🚫',  // prohibited      – disabled state
+  'disabled':    '🚷',  // no pedestrians  – disabled state
   'required':    '❗',  // exclamation     – required field
   'checked':     '✅',  // check mark      – checked state
-  'readonly':    '🔒',  // locked padlock  – read-only field
+  'readonly':    '👁️‍🗨️',  // eye speech      – read-only field
   'hidden':      '👻',  // ghost           – hidden element
   'autofocus':   '🔦',  // flashlight      – automatic focus
   'defer':       '⏱️',   // stopwatch       – deferred script loading
@@ -143,10 +143,10 @@ const HTML_ATTR_EMOJI_MAP = {
   'charset':     '🔠',  // input latin     – character encoding
   'lang':        '🌎',  // globe americas  – language code
   'role':        '🎪',  // circus tent     – ARIA role
-  'tabindex':    '#️⃣',  // hash key        – tab order index
-  'for':         '🔁',  // repeat          – associated control id
-  'loading':     '⏰',  // alarm clock     – lazy / eager loading
-  'content':     '📜',  // scroll          – meta content value
+  'tabindex':    '🎫',  // ticket          – tab order index
+  'for':         '🔀',  // twisted arrows  – associates label with its form control
+  'loading':     '⏬',  // inbox down      – lazy / eager resource loading
+  'content':     '🧾',  // receipt         – meta content value
 };
 
 module.exports = { HTML_TAG_EMOJI_MAP, HTML_VOID_EMOJI_MAP, HTML_ATTR_EMOJI_MAP };

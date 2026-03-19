@@ -9,10 +9,10 @@ const PYTHON_KEYWORD_EMOJI_MAP = {
 
   // Control Flow
   'if':         '❓',   // question mark    – conditional
-  'elif':       '🔀',   // shuffle arrows   – else if branch
+  'elif':       '⁉️',   // exclamation question – else if branch
   'else':       '↪️',   // right curve      – alternative branch
-  'for':        '🔁',   // repeat arrows    – for loop
-  'while':      '🔂',   // repeat once      – while loop
+  'for':        '🔂',   // repeat once      – for loop
+  'while':      '🔁',   // repeat arrows    – while loop
   'break':      '🛑',   // stop sign        – exit loop
   'continue':   '⏭️',   // skip forward     – next iteration
   'pass':       '⏩',   // fast forward     – placeholder/no-op
@@ -20,41 +20,41 @@ const PYTHON_KEYWORD_EMOJI_MAP = {
   'case':       '📋',   // clipboard        – match case branch
 
   // Functions & Classes
-  'def':        '⚡',   // lightning        – function definition
+  'def':        '⚙️',   // gear             – function definition
   'return':     '🔙',   // back arrow       – return value
   'yield':      '🌾',   // rice sheaf       – generator yield
   'lambda':     'λ',    // lambda letter    – anonymous function
-  'class':      '🧑‍🏫',   // teacher          – class declaration
+  'class':      '⭐',    // star             – class declaration
 
   // Exception Handling
   'try':        '🤞',   // crossed fingers  – attempt block
   'except':     '🥅',   // goal net         – catch exception
-  'finally':    '🏁',   // chequered flag   – guaranteed cleanup
+  'finally':    '🏆',   // trophy           – guaranteed cleanup
   'raise':      '💥',   // collision        – raise exception
   'assert':     '🔍',   // magnifying glass – assertion check
 
   // Imports
   'import':     '📥',   // inbox tray       – module import
-  'from':       '📤',   // outbox tray      – import source
-  'as':         '🏷️',   // label            – alias
+  'from':       '🚢',   // ship             – import source
+  'as':         '📛',   // name badge       – alias
 
   // Variable Scope
   'global':     '🌐',   // globe            – global scope
   'nonlocal':   '📡',   // satellite dish   – enclosing scope
 
   // Operators / Logic
-  'and':        '🤝',   // handshake        – logical and
-  'or':         '🔀',   // shuffle          – logical or (shared with elif contextually)
-  'not':        '🚷',   // no pedestrians   – logical negation
-  'in':         '📍',   // pin location     – membership test
-  'is':         '🔗',   // link             – identity test
+  'and':        '➕',   // plus             – logical and
+  'or':         '⚖️',   // scales           – logical or
+  'not':        '➖',   // minus            – logical negation
+  'in':         '🕵️',   // detective        – membership test
+  'is':         '🪪',   // id card          – identity test
 
   // Async
-  'async':      '🔮',   // crystal ball     – async definition
+  'async':      '⏰',   // alarm clock      – async definition
   'await':      '⏳',   // hourglass        – await coroutine
 
   // Context Management
-  'with':       '🎁',   // gift box         – context manager
+  'with':       '🍻',   // clinking beers   – context manager
 
   // Deletion
   'del':        '🗑️',   // wastebasket      – delete reference
