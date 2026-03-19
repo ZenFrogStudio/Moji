@@ -65,8 +65,9 @@ Moji uses VS Code's decoration APIs to render emojis alongside code keywords:
 
 - **Multi-language**: JavaScript, TypeScript, Python, C, C++, C#, Java, SQL, HTML, and CSS
 - **Code Block Highlighting**: thin connected outline around each `{}` block and indented scope, with a subtle background tint — on by default, fully configurable
+- **Customizable emojis**: replace any keyword's emoji with one of your own — changes persist across sessions
 - **Non-invasive**: Source code never modified
-- **Reversible**: Toggle on/off anytime
+- **Reversible**: Toggle on/off anytime, or revert all emoji customizations to defaults in one click
 - **Configurable**: Enable/disable individual emojis via Settings panel
 - **Consistent**: One emoji per keyword, everywhere
 
@@ -97,6 +98,14 @@ Once installed, emojis appear automatically in supported language files.
 - Open Command Palette
 - Type: `Moji Pro: Settings`
 - Use the visual settings panel to enable/disable individual emojis or adjust code block options
+
+**Customize an emoji:**
+- Open the Settings panel (`Moji Pro: Settings`)
+- Click any emoji in the list — an inline editor opens in place
+- Type a unicode code point (e.g. `U+1F680`) or paste an emoji directly, then click ✓
+- Use the ↗ button to browse the full Unicode emoji chart in your browser
+- Customized emojis are marked with a small dot (●) and apply immediately to open editors
+- To restore defaults, click **Revert All Emojis** in the bottom bar of the settings panel
 
 **Display modes:**
 - **Overlay** (default): Emoji appears before the keyword, keyword remains visible
@@ -137,6 +146,9 @@ Only if they also have the extension installed. Source files are unaffected.
 
 **Can I disable specific emojis?**
 Yes. Open the Settings panel (`Moji Pro: Settings`) to toggle individual emojis on/off.
+
+**Can I change what emoji is used for a keyword?**
+Yes. Click any emoji in the Settings panel to open an inline editor. Enter a unicode code point (`U+XXXX`) or paste an emoji, then save. Changes apply immediately and persist across sessions. Use **Revert All Emojis** in the settings panel to restore all defaults at once.
 
 ---
 
