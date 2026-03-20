@@ -3,8 +3,8 @@
 
 const PYTHON_KEYWORD_EMOJI_MAP = {
   // Literals / Constants
-  'True':       '✅',   // check mark       – boolean true
-  'False':      '❌',   // cross mark       – boolean false
+  'True':       '👍',   // check mark       – boolean true
+  'False':      '👎',   // cross mark       – boolean false
   'None':       '🚫',   // prohibited       – null/nothing
 
   // Control Flow

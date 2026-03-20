@@ -22,7 +22,7 @@ const JAVA_KEYWORD_EMOJI_MAP = {
   'short':        '🤏',   // pinching hand    – short integer
   'byte':         '🔣',   // symbols          – byte
   'float':        '🎈',   // balloon          – floating point
-  'double':       '🎭',   // masks            – double precision
+  'double':       '👬',   // Men holding      – double precision
   'char':         '🔤',   // letters          – character
   'boolean':      '🔘',   // radio button     – boolean
   'void':         '🕳️',   // hole             – no return
