@@ -125,8 +125,13 @@ async function openSettingsPanel(context, licenseManager, onDisposeCallback) {
     // one level of nesting (e.g. mojiPro.jsKeyword.await). Using the root config
     // object with a three-segment key throws "Unable to write into user settings".
     // Sequential awaits are also required — concurrent update() calls corrupt settings.json.
+    // Snapshot and clear before writing — prevents onDidDispose from re-flushing
+    // the same entries if the user closes the panel after clicking Apply.
+    const changesToWrite = new Map(pendingChanges);
+    pendingChanges.clear();
+
     try {
-      for (const [fullKey, value] of pendingChanges) {
+      for (const [fullKey, value] of changesToWrite) {
         const lastDot = fullKey.lastIndexOf('.');
         const section = fullKey.slice(0, lastDot);
         const key     = fullKey.slice(lastDot + 1);

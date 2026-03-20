@@ -81,6 +81,12 @@ async function activate(context) {
           .getConfiguration('mojiPro')
           .get('enabled', true);
         blockDecorator.reloadConfig();
+        // Explicitly set enabled after reloadConfig to guard against any edge case
+        // where cfg.get returns an unexpected value (e.g. schema not yet propagated
+        // on first install). Mirrors the same safety pattern used for decorator.enabled.
+        blockDecorator.enabled = vscode.workspace
+          .getConfiguration('mojiPro.codeBlocks')
+          .get('enabled', true);
         for (const editor of vscode.window.visibleTextEditors) {
           decorator.updateEditor(editor);
           blockDecorator.updateEditor(editor);

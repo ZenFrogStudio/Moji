@@ -364,7 +364,7 @@ class BlockDecorator {
       this._buildDecorationTypes();
     }
 
-    this.enabled = cfg.get('enabled', false);
+    this.enabled = cfg.get('enabled', true);
     this._blockCache.clear();
   }
 
