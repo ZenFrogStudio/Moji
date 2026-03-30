@@ -46,6 +46,11 @@ const CSHARP_LANGUAGES = new Set(['csharp']);
 const SQL_LANGUAGES = new Set(['sql', 'mysql', 'postgres', 'plpgsql']);
 const TS_LANGUAGES = new Set(['typescript', 'typescriptreact']);
 const JAVA_LANGUAGES = new Set(['java']);
+const JSX_REACT_LANGUAGES = new Set(['javascriptreact', 'typescriptreact']);
+
+// Used by the JSX text filter (module-level for performance)
+const JSX_TEXT_LINE_RE = /^[A-Za-z0-9][A-Za-z0-9 ,.!?'"\-]*$/;
+const JSX_CODE_START_RE = /^\s*(import|export|const|let|var|function|class|return|if|else|for|while|do|switch|case|try|catch|throw|async|await|type|interface|enum|from|default|new|delete|typeof|void|instanceof|in|of|extends|implements|super|this|null|undefined|true|false)\b/;
 
 const SUPPORTED_LANGUAGES = new Set([...JS_LANGUAGES, ...HTML_LANGUAGES, ...CSS_LANGUAGES, ...PYTHON_LANGUAGES, ...C_LANGUAGES, ...CPP_LANGUAGES, ...CSHARP_LANGUAGES, ...SQL_LANGUAGES, ...TS_LANGUAGES, ...JAVA_LANGUAGES]);
 
@@ -216,6 +221,42 @@ class KeywordDecorator {
         matches = scanJavaKeywords(editor.document);
       } else {
         matches = scanKeywords(editor.document);
+      }
+
+      // For JSX/TSX: filter matches that fall inside JSX text nodes (not code keywords).
+      if (JSX_REACT_LANGUAGES.has(langId)) {
+        matches = matches.filter(({ range }) => {
+          const lineText = editor.document.lineAt(range.start.line).text;
+          const matchPos = range.start.character;
+          const matchLen = range.end.character - range.start.character;
+
+          // Strategy 1 — inline JSX text: keyword sits between '>' and '<' on same line
+          // with no code-syntax characters in the span between them.
+          const before = lineText.substring(0, matchPos);
+          const after = lineText.substring(matchPos + matchLen);
+          const lastGT = before.lastIndexOf('>');
+          const nextLT = after.indexOf('<');
+          if (lastGT !== -1 && nextLT !== -1) {
+            const span = before.substring(lastGT + 1)
+                       + lineText.substring(matchPos, matchPos + matchLen)
+                       + after.substring(0, nextLT);
+            if (!/[=(){};:@#$|&{}]/.test(span)) return false;
+          }
+
+          // Strategy 2 — multi-line JSX text: whole line is pure prose in a JSX context.
+          const trimmed = lineText.trim();
+          if (
+            trimmed.length > 0
+            && /\s/.test(trimmed)
+            && JSX_TEXT_LINE_RE.test(trimmed)
+            && !/[<>{}]/.test(trimmed)
+            && !JSX_CODE_START_RE.test(lineText)
+          ) {
+            return false;
+          }
+
+          return true;
+        });
       }
 
       // Cache the scan results

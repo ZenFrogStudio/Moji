@@ -62,6 +62,22 @@ function* counter() {
 const val = obj.return;
 const cls = elem.class;
 
+// ── Fix 1 verification: object property keys ────────────────────────────────
+// None of the keys below should be decorated (they are property names, not keywords):
+const htmlAttrs = { for: 'nameInput', class: 'btn', type: 'submit' };
+const refs      = { for: inputEl, this: selfRef, get: getFn };
+const nested    = { a: 1, for: 2, b: { this: 3 } };
+
+// Destructuring – 'for' and 'this' are property keys here, NOT keywords:
+const { for: forAttr, this: thisRef } = someObj;
+
+// Real keywords immediately AFTER a block open – must still be decorated:
+if (htmlAttrs) {
+  for (const [key, val2] of Object.entries(htmlAttrs)) {
+    if (this.map) return key;
+  }
+}
+
 export default processItems;
 
 

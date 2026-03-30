@@ -39,7 +39,7 @@ Moji uses VS Code's decoration APIs to render emojis alongside code keywords:
 
 ```javascript
 🔙 return user;
-💥 throw new Error();
+💥 throw new Error();                                                                   
 ⏳ await fetchData();
 ❓ if (isValid) { ... }
 ```

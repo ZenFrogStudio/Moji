@@ -28,7 +28,7 @@ function createScanner(keywordMap, skipPatterns, flags = 'g', keywordPrefix = ''
   // - Keyword pattern comes last (captures real keywords)
   const patterns = [
     ...skipPatterns,
-    `(?<![.])\\b(${keywordAlt})\\b`,  // Keyword pattern (negative lookbehind for ".")
+    `(?<![.])(?<!(?:[{,])[ \\t]*)\\b(${keywordAlt})\\b`,  // Keyword pattern (skip property keys and after ".")
   ];
 
   const regex = new RegExp(patterns.join('|'), flags);
