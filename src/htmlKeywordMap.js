@@ -11,7 +11,7 @@ const HTML_TAG_EMOJI_MAP = {
   'body':       '🧍',  // bone            – document body
 
   // Generic containers
-  'div':        '🫙',  // jar             – generic block container
+  'div':        '🥃',  // jar             – generic block container
   'span':       '🦇',  // bookmark        – generic inline container
 
   // Text content
@@ -103,7 +103,7 @@ const HTML_VOID_EMOJI_MAP = {
   'br':         '↩️',   // return arrow    – line break
   'hr':         '➖',   // minus sign      – horizontal rule / thematic break
   'meta':       'ℹ️',   // info            – document metadata
-  'link':       '⛓️',   // chains          – external resource link
+  'link':       '🔗',   // chains          – external resource link
   'source':     '🎙️',  // microphone      – media source
   'embed':      '📼',  // videocassette   – embedded content
   'area':       '🏞️',  // landscape       – image map clickable area
