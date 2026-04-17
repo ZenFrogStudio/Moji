@@ -93,6 +93,10 @@
       {
         "command": "mojiPro.toggleCodeBlocks",
         "title": "Moji Pro: Toggle Code Block Highlighting"
+      },
+      {
+        "command": "mojiPro.toggleReactComponentOutlines",
+        "title": "Moji Pro: Toggle React Component Outlines"
       }
     ],
     "menus": {
@@ -3719,6 +3723,29 @@
           "type": "boolean",
           "default": true,
           "description": "➡️ to – to"
+        },
+        "mojiPro.reactComponentOutlines.enabled": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable React component outlines — draws thin borders around React components in JSX/TSX files."
+        },
+        "mojiPro.reactComponentOutlines.color": {
+          "type": "string",
+          "default": "rgba(207,130,58,1)",
+          "description": "Color of React component outlines. Accepts any valid CSS color string (e.g. rgba, hex, named colors)."
+        },
+        "mojiPro.reactComponentOutlines.width": {
+          "type": "number",
+          "default": 1,
+          "minimum": 1,
+          "maximum": 3,
+          "description": "Width of component outline borders (1-3 pixels)."
+        },
+        "mojiPro.reactComponentOutlines.style": {
+          "type": "string",
+          "enum": ["solid", "dashed", "dotted"],
+          "default": "solid",
+          "description": "Border style for React component outlines."
         }
       }
     }

@@ -3,6 +3,7 @@
 const vscode = require('vscode');
 const { KeywordDecorator } = require('./decorator');
 const { BlockDecorator }   = require('./blockDecorator');
+const { ComponentOutlineDecorator } = require('./componentOutlineDecorator');
 const { openSettingsPanel } = require('./settingsPanel');
 const { LicenseManager }   = require('./licenseManager');
 
@@ -11,6 +12,9 @@ let decorator;
 
 /** @type {BlockDecorator | undefined} */
 let blockDecorator;
+
+/** @type {ComponentOutlineDecorator | undefined} */
+let componentOutlineDecorator;
 
 /** @type {LicenseManager | undefined} */
 let licenseManager;
@@ -49,9 +53,16 @@ async function activate(context) {
     .getConfiguration('mojiPro.codeBlocks')
     .get('enabled', true);
 
+  // React component outlines are opt-in — reads its own enabled flag from settings.
+  componentOutlineDecorator         = new ComponentOutlineDecorator();
+  componentOutlineDecorator.enabled = vscode.workspace
+    .getConfiguration('mojiPro.reactComponentOutlines')
+    .get('enabled', false);
+
   if (vscode.window.activeTextEditor) {
     decorator.updateEditor(vscode.window.activeTextEditor);
     blockDecorator.updateEditor(vscode.window.activeTextEditor);
+    componentOutlineDecorator.updateEditor(vscode.window.activeTextEditor);
   }
 
   // ── Commands ───────────────────────────────────────────────────────────
@@ -65,6 +76,12 @@ async function activate(context) {
   context.subscriptions.push(
     vscode.commands.registerCommand('mojiPro.toggleCodeBlocks', () => {
       blockDecorator.toggle();
+    })
+  );
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand('mojiPro.toggleReactComponentOutlines', () => {
+      componentOutlineDecorator.toggle();
     })
   );
 
@@ -87,9 +104,14 @@ async function activate(context) {
         blockDecorator.enabled = vscode.workspace
           .getConfiguration('mojiPro.codeBlocks')
           .get('enabled', true);
+        componentOutlineDecorator.reloadConfig();
+        componentOutlineDecorator.enabled = vscode.workspace
+          .getConfiguration('mojiPro.reactComponentOutlines')
+          .get('enabled', false);
         for (const editor of vscode.window.visibleTextEditors) {
           decorator.updateEditor(editor);
           blockDecorator.updateEditor(editor);
+          componentOutlineDecorator.updateEditor(editor);
         }
       });
     })
@@ -227,6 +249,7 @@ async function activate(context) {
         }
         decorator.updateEditor(editor);
         blockDecorator.updateEditor(editor);
+        componentOutlineDecorator.updateEditor(editor);
       }
     })
   );
@@ -237,6 +260,7 @@ async function activate(context) {
       const uri = document.uri.toString();
       decorator.clearCacheForDocument(uri);
       blockDecorator.clearCacheForDocument(uri);
+      componentOutlineDecorator.clearCacheForDocument(uri);
     })
   );
 
@@ -250,6 +274,7 @@ async function activate(context) {
         updateTimer = setTimeout(() => {
           decorator.updateEditor(editor);
           blockDecorator.updateEditor(editor);
+          componentOutlineDecorator.updateEditor(editor);
         }, 100);
       }
     })
@@ -282,12 +307,15 @@ async function activate(context) {
 
           blockDecorator.reloadConfig();
 
+          componentOutlineDecorator.reloadConfig();
+
           // Use visibleTextEditors (not activeTextEditor) so that settings changes
           // made from the settings panel — which causes activeTextEditor to be
           // undefined — still immediately apply to all open code editors.
           for (const editor of vscode.window.visibleTextEditors) {
             decorator.updateEditor(editor);
             blockDecorator.updateEditor(editor);
+            componentOutlineDecorator.updateEditor(editor);
           }
         }, 100);
       }
@@ -298,6 +326,7 @@ async function activate(context) {
 
   context.subscriptions.push({ dispose: () => decorator.dispose() });
   context.subscriptions.push({ dispose: () => blockDecorator.dispose() });
+  context.subscriptions.push({ dispose: () => componentOutlineDecorator.dispose() });
   // Clear any in-flight debounce timers so their callbacks don't fire against
   // disposed decorator objects after the extension is deactivated.
   context.subscriptions.push({ dispose: () => { clearTimeout(updateTimer); clearTimeout(configTimer); } });

@@ -243,6 +243,7 @@ async function openSettingsPanel(context, licenseManager, onDisposeCallback) {
 function getCurrentSettings() {
   const mainCfg        = vscode.workspace.getConfiguration('mojiPro');
   const codeBlocksCfg  = vscode.workspace.getConfiguration('mojiPro.codeBlocks');
+  const reactComponentOutlinesCfg = vscode.workspace.getConfiguration('mojiPro.reactComponentOutlines');
   const jsCfg = vscode.workspace.getConfiguration('mojiPro.jsKeyword');
   const tagCfg = vscode.workspace.getConfiguration('mojiPro.htmlTag');
   const voidCfg = vscode.workspace.getConfiguration('mojiPro.htmlVoid');
@@ -268,6 +269,12 @@ function getCurrentSettings() {
       loopColor:     codeBlocksCfg.get('loopColor',     'rgba(78,201,176,0.08)'),
       controlColor:  codeBlocksCfg.get('controlColor',  'rgba(197,134,192,0.08)'),
       objectColor:   codeBlocksCfg.get('objectColor',   'rgba(206,145,120,0.08)'),
+    },
+    reactComponentOutlines: {
+      enabled: reactComponentOutlinesCfg.get('enabled', false),
+      color:   reactComponentOutlinesCfg.get('color', 'rgba(207,130,58,1)'),
+      width:   reactComponentOutlinesCfg.get('width', 1),
+      style:   reactComponentOutlinesCfg.get('style', 'solid'),
     },
     masterToggles: {
       javascriptKeywords: mainCfg.get('javascriptKeywords', true),
@@ -1214,6 +1221,35 @@ async function getWebviewContent() {
         <button class="bulk-btn" id="btn-reset-block-colors" type="button">Reset Colors to Default</button>
       </div>
     </div>
+
+    <!-- React Component Outlines (merged into Code Blocks tab) -->
+    <div class="section" style="margin-top:20px;">
+      <div class="section-title">React Component Outlines</div>
+      <div class="master-toggle">
+        <input type="checkbox" id="master-reactcomponents" data-setting-key="mojiPro.reactComponentOutlines.enabled" ${settings.reactComponentOutlines && settings.reactComponentOutlines.enabled ? 'checked' : ''}>
+        <label for="master-reactcomponents">Enable React component outlines</label>
+      </div>
+      <div class="block-colors">
+        <p class="block-colors-description">Customize the visual outline around React components in JSX/TSX files. Outlines help identify component boundaries and improve code architecture understanding.</p>
+        <div class="block-color-row">
+          <input type="color" class="block-color-picker" data-color-key="mojiPro.reactComponentOutlines.color" value="${rgbaToHex(settings.reactComponentOutlines ? settings.reactComponentOutlines.color : 'rgba(207,130,58,1)')}">
+          <span class="block-color-label">Outline Color</span>
+          <input class="block-color-input" type="text" data-color-key="mojiPro.reactComponentOutlines.color" value="${escapeHtml(settings.reactComponentOutlines ? settings.reactComponentOutlines.color : 'rgba(207,130,58,1)')}">
+        </div>
+        <div class="block-color-row">
+          <span class="block-color-label">Border Width (1-3 px)</span>
+          <input class="block-color-input" type="number" data-setting-key="mojiPro.reactComponentOutlines.width" value="${settings.reactComponentOutlines ? settings.reactComponentOutlines.width : 1}" min="1" max="3" style="width:60px;">
+        </div>
+        <div class="block-color-row">
+          <span class="block-color-label">Border Style</span>
+          <select data-setting-key="mojiPro.reactComponentOutlines.style" style="padding:4px 8px; background:var(--vscode-input-background); color:var(--vscode-input-foreground); border:1px solid var(--vscode-input-border, var(--border-color)); border-radius:3px;">
+            <option value="solid" ${(!settings.reactComponentOutlines || settings.reactComponentOutlines.style === 'solid') ? 'selected' : ''}>Solid</option>
+            <option value="dashed" ${settings.reactComponentOutlines && settings.reactComponentOutlines.style === 'dashed' ? 'selected' : ''}>Dashed</option>
+            <option value="dotted" ${settings.reactComponentOutlines && settings.reactComponentOutlines.style === 'dotted' ? 'selected' : ''}>Dotted</option>
+          </select>
+        </div>
+      </div>
+    </div>
   </div>
 
   <div class="apply-bar">
@@ -1262,10 +1298,13 @@ async function getWebviewContent() {
       });
     });
 
-    // Master toggle checkboxes
-    document.querySelectorAll('[data-setting-key]').forEach(function(cb) {
-      cb.addEventListener('change', function() {
-        vscode.postMessage({ command: 'toggleSetting', key: this.dataset.settingKey, value: this.checked });
+    // Master toggle checkboxes, number inputs, and select dropdowns
+    document.querySelectorAll('[data-setting-key]').forEach(function(el) {
+      el.addEventListener('change', function() {
+        var value = this.type === 'checkbox' ? this.checked :
+                    this.type === 'number'   ? Number(this.value) :
+                    this.value;
+        vscode.postMessage({ command: 'toggleSetting', key: this.dataset.settingKey, value: value });
       });
     });
 
