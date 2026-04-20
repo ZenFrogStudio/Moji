@@ -2,6 +2,56 @@
 
 All notable changes to Moji Pro will be documented in this file.
 
+## [1.4.8] - 2026-04-20
+
+### Removed
+- Removed the abandoned React component scrollbar-marker experiment after visual testing showed it conflicts with VS Code diagnostics and produces noisy markers.
+
+### Changed
+- Kept React component outlines focused on in-editor component boundaries.
+
+### Fixed
+- Added regression coverage proving JSX child elements inside a class component are not treated as separate React component outlines.
+
+## [1.4.5] - 2026-04-19
+
+### Changed
+- Replaced per-decoration settings writes with compact `mojiPro.disabledDecorations` storage to keep VS Code `settings.json` clean.
+- Added migration for legacy per-keyword settings into the compact disabled-decorations object.
+- Marked legacy per-decoration settings as deprecated for this release before future removal.
+
+## [1.4.4] - 2026-04-19
+
+### Added
+- Added `npm test` with a lightweight Node test harness for JavaScript, HTML, CSS, and React component detection behavior.
+
+### Fixed
+- Added regression coverage for scanner edge cases around comments, strings, object property keys, raw HTML content, CSS comments, and non-JSX PascalCase declarations.
+
+## [1.4.3] - 2026-04-19
+
+### Fixed
+- Refreshed all visible editors after license state changes so settings-panel activation/deactivation applies immediately.
+- Fixed React component outline settings reloads during editor-switch/configuration debounce handling.
+- Reduced React outline false positives by requiring detected components to return JSX.
+- Hardened settings-panel message handling with explicit setting allowlists, typed value validation, safe external URL opening, and escaped keyword row rendering.
+- Added an atomic license activation RPC to prevent concurrent device activations from bypassing the device limit.
+
+## [1.4.2] - 2026-04-19
+
+### Fixed
+- Fixed license API rate limiting by aligning the Edge Function RPC parameters with the database function signature.
+- Fixed post-purchase license lookup after the Stripe migration by querying `stripe_checkout_session_id`.
+- Disabled the legacy Paddle webhook endpoint to avoid writes to the removed Paddle transaction column and prevent license keys from being logged.
+- Hardened license API request validation for malformed JSON, license keys, device fingerprints, and checkout session IDs.
+
+## [1.4.0] - 2026-04-18
+
+### Added
+- **Emoji size setting** — new `mojiPro.emojiSize` option with "large" (default) and "small" (75% size) modes
+- **General Settings tab** in the settings panel — provides a central location for global display options
+- Size toggle applies to both replace and overlay display modes
+
 ## [1.3.0] - 2026-03-18
 
 ### Added

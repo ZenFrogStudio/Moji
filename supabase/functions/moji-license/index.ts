@@ -11,6 +11,9 @@ const supabase = createClient(
 );
 
 const MAX_ACTIVE_DEVICES = 5;
+const LICENSE_KEY_FORMAT = /^MOJI-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}$/i;
+const MAX_DEVICE_FINGERPRINT_LENGTH = 200;
+const MAX_TRANSACTION_ID_LENGTH = 200;
 
 // Rate limits per endpoint: [max requests, window in minutes]
 const RATE_LIMITS: Record<string, [number, number]> = {
@@ -37,8 +40,14 @@ Deno.serve(async (req) => {
   }
 
   const url = new URL(req.url);
-  const body = await req.json();
   const endpoint = url.pathname.split("/").pop() || "";
+
+  let body: Record<string, unknown>;
+  try {
+    body = await req.json();
+  } catch (_err) {
+    return json({ error: "Invalid JSON body" }, 400);
+  }
 
   // Rate limit check
   const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim()
@@ -73,95 +82,73 @@ Deno.serve(async (req) => {
 // ─── Activate ────────────────────────────────────────────────────
 // Called by Moji on VS Code startup
 // Expects: { license_key: string, device_fingerprint: string }
-async function activate(body: { license_key?: string; device_fingerprint?: string }) {
+async function activate(body: { license_key?: unknown; device_fingerprint?: unknown }) {
   const { license_key, device_fingerprint } = body;
 
-  if (!license_key || !device_fingerprint) {
+  if (
+    typeof license_key !== "string" ||
+    license_key.trim().length === 0 ||
+    typeof device_fingerprint !== "string" ||
+    device_fingerprint.trim().length === 0
+  ) {
     return json({ error: "license_key and device_fingerprint are required" }, 400);
   }
 
-  // 1. Look up the license
-  const { data: license, error: licenseError } = await supabase
-    .from("licenses")
-    .select("id, is_active, max_active_devices")
-    .eq("license_key", license_key)
-    .single();
+  const licenseKey = license_key.trim();
+  const deviceFingerprint = device_fingerprint.trim();
 
-  if (licenseError || !license) {
-    return json({ valid: false, error: "Invalid license key" }, 404);
+  if (!LICENSE_KEY_FORMAT.test(licenseKey)) {
+    return json({ valid: false, error: "Invalid license key format" }, 400);
   }
 
-  if (!license.is_active) {
-    return json({ valid: false, error: "License has been revoked" }, 403);
+  if (deviceFingerprint.length > MAX_DEVICE_FINGERPRINT_LENGTH) {
+    return json({ error: "device_fingerprint is too long" }, 400);
   }
 
-  // 2. Check if this device is already active on this license
-  const { data: existing } = await supabase
-    .from("activations")
-    .select("id")
-    .eq("license_id", license.id)
-    .eq("device_fingerprint", device_fingerprint)
-    .is("deactivated_at", null)
-    .single();
-
-  if (existing) {
-    return json({ valid: true, message: "Device already activated" });
-  }
-
-  // 3. Count current active devices
-  const { count } = await supabase
-    .from("activations")
-    .select("id", { count: "exact", head: true })
-    .eq("license_id", license.id)
-    .is("deactivated_at", null);
-
-  const maxDevices = license.max_active_devices ?? MAX_ACTIVE_DEVICES;
-
-  if ((count ?? 0) >= maxDevices) {
-    return json({
-      valid: false,
-      error: `Device limit reached (${maxDevices}). Deactivate a device to free a slot.`,
-      active_devices: count,
-      max_devices: maxDevices,
-    }, 403);
-  }
-
-  // 4. Activate this device
-  const { error: insertError } = await supabase
-    .from("activations")
-    .insert({
-      license_id: license.id,
-      device_fingerprint: device_fingerprint,
+  const { data: activationResult, error: activationError } = await supabase
+    .rpc("activate_license_device", {
+      p_license_key: licenseKey,
+      p_device_fingerprint: deviceFingerprint,
+      p_default_max_devices: MAX_ACTIVE_DEVICES,
     });
 
-  if (insertError) {
-    console.error("Activation insert error:", insertError);
+  if (activationError) {
+    console.error("License activation RPC error:", activationError);
     return json({ error: "Failed to activate device" }, 500);
   }
 
-  return json({
-    valid: true,
-    message: "Device activated",
-    active_devices: (count ?? 0) + 1,
-    max_devices: maxDevices,
-  });
+  if (!activationResult || typeof activationResult !== "object" || Array.isArray(activationResult)) {
+    return json({ error: "Invalid activation response" }, 500);
+  }
+
+  const activationPayload = activationResult as Record<string, unknown>;
+  const status = typeof activationPayload.status === "number" ? activationPayload.status : 200;
+  const { status: _status, ...responseBody } = activationPayload;
+
+  return json(responseBody, status);
 }
 
 // ─── Lookup by Transaction ────────────────────────────────────────
 // Called by the post-purchase success page
-// Returns the license key for a given Paddle transaction ID
+// Returns the license key for a given Stripe Checkout Session ID
 // Expects: { transaction_id: string }
-async function lookupByTransaction(body: { transaction_id?: string }) {
+async function lookupByTransaction(body: { transaction_id?: unknown }) {
   const { transaction_id } = body;
 
-  if (!transaction_id) {
+  if (typeof transaction_id !== "string" || transaction_id.trim().length === 0) {
     return json({ error: "transaction_id is required" }, 400);
+  }
+
+  const transactionId = transaction_id.trim();
+
+  if (transactionId.length > MAX_TRANSACTION_ID_LENGTH) {
+    return json({ error: "transaction_id is too long" }, 400);
   }
 
   const { data: license, error: licenseError } = await supabase
     .from("licenses")
     .select("license_key")
-    .eq("paddle_transaction_id", transaction_id)
+    .eq("stripe_checkout_session_id", transactionId)
     .single();
 
   if (licenseError || !license) {
@@ -174,18 +161,34 @@ async function lookupByTransaction(body: { transaction_id?: string }) {
 // ─── Deactivate ──────────────────────────────────────────────────
 // Called when user wants to free up a device slot
 // Expects: { license_key: string, device_fingerprint: string }
-async function deactivate(body: { license_key?: string; device_fingerprint?: string }) {
+async function deactivate(body: { license_key?: unknown; device_fingerprint?: unknown }) {
   const { license_key, device_fingerprint } = body;
 
-  if (!license_key || !device_fingerprint) {
+  if (
+    typeof license_key !== "string" ||
+    license_key.trim().length === 0 ||
+    typeof device_fingerprint !== "string" ||
+    device_fingerprint.trim().length === 0
+  ) {
     return json({ error: "license_key and device_fingerprint are required" }, 400);
+  }
+
+  const licenseKey = license_key.trim();
+  const deviceFingerprint = device_fingerprint.trim();
+
+  if (!LICENSE_KEY_FORMAT.test(licenseKey)) {
+    return json({ error: "Invalid license key format" }, 400);
+  }
+
+  if (deviceFingerprint.length > MAX_DEVICE_FINGERPRINT_LENGTH) {
+    return json({ error: "device_fingerprint is too long" }, 400);
   }
 
   // 1. Look up the license
   const { data: license, error: licenseError } = await supabase
     .from("licenses")
     .select("id")
-    .eq("license_key", license_key)
+    .eq("license_key", licenseKey)
     .single();
 
   if (licenseError || !license) {
@@ -197,7 +200,7 @@ async function deactivate(body: { license_key?: string; device_fingerprint?: str
     .from("activations")
     .update({ deactivated_at: new Date().toISOString() })
     .eq("license_id", license.id)
-    .eq("device_fingerprint", device_fingerprint)
+    .eq("device_fingerprint", deviceFingerprint)
     .is("deactivated_at", null)
     .select("id");
 
@@ -222,9 +225,9 @@ async function checkRateLimit(
 ): Promise<boolean> {
   try {
     const { data, error } = await supabase.rpc("check_rate_limit", {
-      p_ip: ip,
+      p_key: ip,
       p_endpoint: endpoint,
-      p_max_requests: maxRequests,
+      p_limit: maxRequests,
       p_window_minutes: windowMinutes,
     });
 

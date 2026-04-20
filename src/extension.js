@@ -6,6 +6,8 @@ const { BlockDecorator }   = require('./blockDecorator');
 const { ComponentOutlineDecorator } = require('./componentOutlineDecorator');
 const { openSettingsPanel } = require('./settingsPanel');
 const { LicenseManager }   = require('./licenseManager');
+const { DECORATION_CATEGORIES } = require('./decorationCategories');
+const settingsStore = require('./settingsStore');
 
 /** @type {KeywordDecorator | undefined} */
 let decorator;
@@ -21,7 +23,65 @@ let licenseManager;
 
 const PURCHASE_URL = 'https://lucidiancreative.com/moji-checkout.html';
 
+function openHttpExternal(url) {
+  const uri = vscode.Uri.parse(url);
+  if (uri.scheme !== 'https' && uri.scheme !== 'http') return;
+  vscode.env.openExternal(uri);
+}
+
+async function migrateLegacyDecorationSettings(context) {
+  const MIGRATION_KEY = 'settingsMigration.compactDecorations.v1';
+  if (context.globalState.get(MIGRATION_KEY)) return;
+
+  let nextDisabledDecorations = settingsStore.getDisabledDecorations();
+  const legacyKeysToRemove = [];
+
+  for (const { id, legacyConfigNs, map } of DECORATION_CATEGORIES) {
+    const legacyConfig = vscode.workspace.getConfiguration(legacyConfigNs);
+
+    for (const key of Object.keys(map)) {
+      const inspected = legacyConfig.inspect(key);
+      if (!inspected || typeof inspected.globalValue === 'undefined') continue;
+
+      if (inspected.globalValue === false) {
+        nextDisabledDecorations = settingsStore.setDecorationEnabled(
+          nextDisabledDecorations,
+          id,
+          key,
+          false
+        );
+      }
+
+      if (inspected.globalValue === true || inspected.globalValue === false) {
+        legacyKeysToRemove.push({ legacyConfigNs, key });
+      }
+    }
+  }
+
+  try {
+    if (legacyKeysToRemove.length > 0) {
+      await settingsStore.saveDisabledDecorations(nextDisabledDecorations);
+
+      for (const { legacyConfigNs, key } of legacyKeysToRemove) {
+        await vscode.workspace
+          .getConfiguration(legacyConfigNs)
+          .update(key, undefined, vscode.ConfigurationTarget.Global);
+      }
+    }
+
+    await context.globalState.update(MIGRATION_KEY, true);
+  } catch (err) {
+    vscode.window.showWarningMessage(`Moji Pro: Could not migrate legacy decoration settings - ${err.message}`);
+  }
+}
+
 async function activate(context) {
+
+
+
+
+
+
   // ── License check ──────────────────────────────────────────────────────
 
   licenseManager = new LicenseManager(context.secrets, context.globalState);
@@ -37,6 +97,13 @@ async function activate(context) {
       }
     });
   }
+
+  await migrateLegacyDecorationSettings(context);
+
+
+
+
+
 
   // ── Decorator setup ────────────────────────────────────────────────────
 
@@ -64,6 +131,48 @@ async function activate(context) {
     blockDecorator.updateEditor(vscode.window.activeTextEditor);
     componentOutlineDecorator.updateEditor(vscode.window.activeTextEditor);
   }
+
+  function reloadDecoratorConfig() {
+    decorator.reloadConfig();
+    decorator.enabled = vscode.workspace
+      .getConfiguration('mojiPro')
+      .get('enabled', true);
+
+    blockDecorator.reloadConfig();
+    blockDecorator.enabled = vscode.workspace
+      .getConfiguration('mojiPro.codeBlocks')
+      .get('enabled', true);
+
+    componentOutlineDecorator.reloadConfig();
+    componentOutlineDecorator.enabled = vscode.workspace
+      .getConfiguration('mojiPro.reactComponentOutlines')
+      .get('enabled', false);
+  }
+
+  function repaintEditors() {
+    const editors = vscode.window.visibleTextEditors.length
+      ? vscode.window.visibleTextEditors
+      : (vscode.window.activeTextEditor ? [vscode.window.activeTextEditor] : []);
+
+    for (const editor of editors) {
+      decorator.updateEditor(editor);
+      blockDecorator.updateEditor(editor);
+      componentOutlineDecorator.updateEditor(editor);
+    }
+  }
+
+  function refreshDecoratorLicenseState() {
+    decorator.licensed = licenseManager.isValid;
+    decorator.enabled = vscode.workspace
+      .getConfiguration('mojiPro')
+      .get('enabled', true);
+    repaintEditors();
+  }
+
+
+
+
+
 
   // ── Commands ───────────────────────────────────────────────────────────
 
@@ -93,33 +202,15 @@ async function activate(context) {
         // visibleTextEditors is used because activeTextEditor is undefined while
         // the webview panel has focus, and remains undefined until an editor tab
         // is explicitly clicked after the panel closes.
-        decorator.reloadConfig();
-        decorator.enabled = vscode.workspace
-          .getConfiguration('mojiPro')
-          .get('enabled', true);
-        blockDecorator.reloadConfig();
-        // Explicitly set enabled after reloadConfig to guard against any edge case
-        // where cfg.get returns an unexpected value (e.g. schema not yet propagated
-        // on first install). Mirrors the same safety pattern used for decorator.enabled.
-        blockDecorator.enabled = vscode.workspace
-          .getConfiguration('mojiPro.codeBlocks')
-          .get('enabled', true);
-        componentOutlineDecorator.reloadConfig();
-        componentOutlineDecorator.enabled = vscode.workspace
-          .getConfiguration('mojiPro.reactComponentOutlines')
-          .get('enabled', false);
-        for (const editor of vscode.window.visibleTextEditors) {
-          decorator.updateEditor(editor);
-          blockDecorator.updateEditor(editor);
-          componentOutlineDecorator.updateEditor(editor);
-        }
+        reloadDecoratorConfig();
+        repaintEditors();
       });
     })
   );
 
   context.subscriptions.push(
     vscode.commands.registerCommand('mojiPro.purchaseLicense', () => {
-      vscode.env.openExternal(vscode.Uri.parse(PURCHASE_URL));
+      openHttpExternal(PURCHASE_URL);
     })
   );
 
@@ -133,7 +224,7 @@ async function activate(context) {
           'Buy Moji Pro'
         );
         if (choice === 'Buy Moji Pro') {
-          vscode.env.openExternal(vscode.Uri.parse(PURCHASE_URL));
+          openHttpExternal(PURCHASE_URL);
           return;
         }
         if (choice !== 'I have a key') return; // dismissed
@@ -154,13 +245,7 @@ async function activate(context) {
         vscode.window.showInformationMessage(
           'Moji Pro: License activated successfully! Enjoy your emojis.'
         );
-        decorator.licensed = true;
-        decorator.enabled = vscode.workspace
-          .getConfiguration('mojiPro')
-          .get('enabled', true);
-        if (vscode.window.activeTextEditor) {
-          decorator.updateEditor(vscode.window.activeTextEditor);
-        }
+        refreshDecoratorLicenseState();
       } else {
         vscode.window.showErrorMessage(
           `Moji Pro: Activation failed — ${result.error}`
@@ -200,10 +285,7 @@ async function activate(context) {
 
       await licenseManager.deactivate();
 
-      decorator.licensed = false;
-      if (vscode.window.activeTextEditor) {
-        decorator.updateEditor(vscode.window.activeTextEditor);
-      }
+      refreshDecoratorLicenseState();
 
       vscode.window.showInformationMessage(
         'Moji Pro: License deactivated. JS, HTML, and CSS emojis remain active.'
@@ -215,15 +297,14 @@ async function activate(context) {
   // after license state changes without directly coupling settingsPanel to decorator.
   context.subscriptions.push(
     vscode.commands.registerCommand('mojiPro._refreshDecorator', () => {
-      decorator.licensed = licenseManager.isValid;
-      decorator.enabled = vscode.workspace
-        .getConfiguration('mojiPro')
-        .get('enabled', true);
-      if (vscode.window.activeTextEditor) {
-        decorator.updateEditor(vscode.window.activeTextEditor);
-      }
+      refreshDecoratorLicenseState();
     })
   );
+
+
+
+
+
 
   // ── Editor lifecycle events ────────────────────────────────────────────
 
@@ -245,6 +326,7 @@ async function activate(context) {
             .getConfiguration('mojiPro')
             .get('enabled', true);
           blockDecorator.reloadConfig();
+          componentOutlineDecorator.reloadConfig();
           lastEditorSwitchRefresh = Date.now();
         }
         decorator.updateEditor(editor);
@@ -280,6 +362,11 @@ async function activate(context) {
     })
   );
 
+
+
+
+
+
   // ── Configuration changes ──────────────────────────────────────────────
 
   let configTimer;
@@ -298,30 +385,22 @@ async function activate(context) {
           // can arrive after the editor switch has already applied the correct config.
           if (Date.now() - lastEditorSwitchRefresh < 500) return;
 
-          const newEnabled = vscode.workspace
-            .getConfiguration('mojiPro')
-            .get('enabled', true);
-
-          decorator.reloadConfig();
-          decorator.enabled = newEnabled;
-
-          blockDecorator.reloadConfig();
-
-          componentOutlineDecorator.reloadConfig();
+          reloadDecoratorConfig();
 
           // Use visibleTextEditors (not activeTextEditor) so that settings changes
           // made from the settings panel — which causes activeTextEditor to be
           // undefined — still immediately apply to all open code editors.
-          for (const editor of vscode.window.visibleTextEditors) {
-            decorator.updateEditor(editor);
-            blockDecorator.updateEditor(editor);
-            componentOutlineDecorator.updateEditor(editor);
-          }
+          repaintEditors();
         }, 100);
       }
     })
   );
 
+
+
+
+
+  
   // ── Cleanup ────────────────────────────────────────────────────────────
 
   context.subscriptions.push({ dispose: () => decorator.dispose() });

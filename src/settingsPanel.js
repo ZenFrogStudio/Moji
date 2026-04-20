@@ -19,6 +19,11 @@ const { CSHARP_KEYWORD_EMOJI_MAP } = require('./csharpKeywordMap');
 const { SQL_KEYWORD_EMOJI_MAP } = require('./sqlKeywordMap');
 const { TYPESCRIPT_KEYWORD_EMOJI_MAP } = require('./typescriptKeywordMap');
 const { JAVA_KEYWORD_EMOJI_MAP } = require('./javaKeywordMap');
+const {
+  DECORATION_CATEGORIES,
+  getCategoryByPanelId,
+} = require('./decorationCategories');
+const settingsStore = require('./settingsStore');
 const crypto = require('crypto');
 
 function getNonce() {
@@ -53,26 +58,108 @@ let currentPanel          = undefined;
 let currentLicenseManager = undefined; // Reference held for message handler access
 
 // Maps webview category names to their keyword map and VS Code config namespace.
-// Single source of truth — eliminates the if-else chain in the toggleAll handler.
-const TOGGLE_ALL_MAP = {
-  javascript: { map: KEYWORD_EMOJI_MAP,           prefix: 'mojiPro.jsKeyword'      },
-  tags:       { map: HTML_TAG_EMOJI_MAP,           prefix: 'mojiPro.htmlTag'        },
-  void:       { map: HTML_VOID_EMOJI_MAP,          prefix: 'mojiPro.htmlVoid'       },
-  attr:       { map: HTML_ATTR_EMOJI_MAP,          prefix: 'mojiPro.htmlAttr'       },
-  cssAtRule:  { map: CSS_ATRULE_EMOJI_MAP,         prefix: 'mojiPro.cssAtRule'      },
-  cssLayout:  { map: CSS_LAYOUT_EMOJI_MAP,         prefix: 'mojiPro.cssLayout'      },
-  cssBox:     { map: CSS_BOX_EMOJI_MAP,            prefix: 'mojiPro.cssBox'         },
-  cssVisual:  { map: CSS_VISUAL_EMOJI_MAP,         prefix: 'mojiPro.cssVisual'      },
-  cssPseudo:  { map: CSS_PSEUDO_EMOJI_MAP,         prefix: 'mojiPro.cssPseudo'      },
-  cssValue:   { map: CSS_VALUE_EMOJI_MAP,          prefix: 'mojiPro.cssValue'       },
-  python:     { map: PYTHON_KEYWORD_EMOJI_MAP,     prefix: 'mojiPro.pyKeyword'      },
-  c:          { map: C_KEYWORD_EMOJI_MAP,          prefix: 'mojiPro.cKeyword'       },
-  cpp:        { map: CPP_KEYWORD_EMOJI_MAP,        prefix: 'mojiPro.cppKeyword'     },
-  csharp:     { map: CSHARP_KEYWORD_EMOJI_MAP,     prefix: 'mojiPro.csharpKeyword'  },
-  sql:        { map: SQL_KEYWORD_EMOJI_MAP,        prefix: 'mojiPro.sqlKeyword'     },
-  typescript: { map: TYPESCRIPT_KEYWORD_EMOJI_MAP, prefix: 'mojiPro.tsKeyword'      },
-  java:       { map: JAVA_KEYWORD_EMOJI_MAP,       prefix: 'mojiPro.javaKeyword'    },
-};
+// Derived from shared category metadata to keep panel validation and rendering aligned.
+const TOGGLE_ALL_MAP = Object.fromEntries(
+  DECORATION_CATEGORIES.map(category => [category.panelId, category])
+);
+
+const OVERRIDE_PREFIX_MAP = Object.fromEntries(
+  DECORATION_CATEGORIES.map(category => [category.panelId, category.prefix])
+);
+
+const BOOLEAN_SETTING_KEYS = new Set([
+  'mojiPro.enabled',
+  'mojiPro.javascriptKeywords',
+  'mojiPro.htmlTags',
+  'mojiPro.htmlVoidElements',
+  'mojiPro.htmlAttributes',
+  'mojiPro.cssAtRules',
+  'mojiPro.cssLayout',
+  'mojiPro.cssBox',
+  'mojiPro.cssVisual',
+  'mojiPro.cssPseudo',
+  'mojiPro.cssValues',
+  'mojiPro.pythonKeywords',
+  'mojiPro.cKeywords',
+  'mojiPro.cppKeywords',
+  'mojiPro.csharpKeywords',
+  'mojiPro.sqlKeywords',
+  'mojiPro.typescriptKeywords',
+  'mojiPro.javaKeywords',
+  'mojiPro.codeBlocks.enabled',
+  'mojiPro.reactComponentOutlines.enabled',
+]);
+
+const STRING_SETTING_KEYS = new Set([
+  'mojiPro.codeBlocks.functionColor',
+  'mojiPro.codeBlocks.loopColor',
+  'mojiPro.codeBlocks.controlColor',
+  'mojiPro.codeBlocks.objectColor',
+  'mojiPro.reactComponentOutlines.color',
+]);
+
+const ENUM_SETTING_VALUES = new Map([
+  ['mojiPro.displayMode', new Set(['replace', 'overlay'])],
+  ['mojiPro.emojiSize', new Set(['small', 'large'])],
+  ['mojiPro.reactComponentOutlines.style', new Set(['solid', 'dashed', 'dotted'])],
+]);
+
+const NUMBER_SETTING_RANGES = new Map([
+  ['mojiPro.overlayOpacity', { min: 0, max: 1 }],
+  ['mojiPro.reactComponentOutlines.width', { min: 1, max: 3 }],
+]);
+
+const OVERRIDE_KEYS = new Set();
+for (const [category, entry] of Object.entries(TOGGLE_ALL_MAP)) {
+  const overridePrefix = OVERRIDE_PREFIX_MAP[category] || '';
+  for (const key of Object.keys(entry.map)) {
+    OVERRIDE_KEYS.add(`${overridePrefix}${key}`);
+  }
+}
+
+function isAllowedSettingChange(key, value) {
+  if (BOOLEAN_SETTING_KEYS.has(key)) return typeof value === 'boolean';
+  if (STRING_SETTING_KEYS.has(key)) return typeof value === 'string' && value.length <= 200;
+  if (ENUM_SETTING_VALUES.has(key)) return typeof value === 'string' && ENUM_SETTING_VALUES.get(key).has(value);
+
+  if (NUMBER_SETTING_RANGES.has(key)) {
+    const range = NUMBER_SETTING_RANGES.get(key);
+    return typeof value === 'number'
+      && Number.isFinite(value)
+      && value >= range.min
+      && value <= range.max;
+  }
+
+  return false;
+}
+
+function getAllowedPanelCategory(panelId) {
+  return typeof panelId === 'string' ? getCategoryByPanelId(panelId) : undefined;
+}
+
+function isAllowedDecorationChange(panelId, key, enabled) {
+  const category = getAllowedPanelCategory(panelId);
+  return !!category
+    && typeof key === 'string'
+    && Object.prototype.hasOwnProperty.call(category.map, key)
+    && typeof enabled === 'boolean';
+}
+
+function isAllowedEmojiOverride(overrideKey, emoji) {
+  const chars = typeof emoji === 'string' ? Array.from(emoji) : [];
+  return typeof overrideKey === 'string'
+    && OVERRIDE_KEYS.has(overrideKey)
+    && typeof emoji === 'string'
+    && emoji.length <= 32
+    && chars.length >= 1
+    && chars.length <= 4;
+}
+
+function openHttpExternal(url) {
+  const uri = vscode.Uri.parse(url);
+  if (uri.scheme !== 'https' && uri.scheme !== 'http') return;
+  vscode.env.openExternal(uri);
+}
 
 /**
  * Opens (or focuses) the Moji Pro settings panel.
@@ -92,6 +179,8 @@ async function openSettingsPanel(context, licenseManager, onDisposeCallback) {
   // VS Code config in a single batch on panel close — avoids race conditions
   // with the debounce guard and active-editor check in onDidChangeConfiguration.
   const pendingChanges = new Map();
+  let stagedDisabledDecorations = settingsStore.getDisabledDecorations();
+  let decorationChangesPending = false;
 
   const column = vscode.window.activeTextEditor
     ? vscode.window.activeTextEditor.viewColumn
@@ -119,16 +208,19 @@ async function openSettingsPanel(context, licenseManager, onDisposeCallback) {
   // Writes all queued setting changes to VS Code config and fires the decorator
   // reload callback. Shared between the Apply button and the onDidDispose handler.
   async function flushPendingSettings() {
-    if (pendingChanges.size === 0) return;
+    if (pendingChanges.size === 0 && !decorationChangesPending) return;
     // VS Code's configuration API requires getConfiguration(section).update(key)
     // rather than getConfiguration().update(fullDottedKey) for keys with more than
-    // one level of nesting (e.g. mojiPro.jsKeyword.await). Using the root config
+    // one level of nesting (e.g. mojiPro.reactComponentOutlines.width). Using the root config
     // object with a three-segment key throws "Unable to write into user settings".
     // Sequential awaits are also required — concurrent update() calls corrupt settings.json.
     // Snapshot and clear before writing — prevents onDidDispose from re-flushing
     // the same entries if the user closes the panel after clicking Apply.
     const changesToWrite = new Map(pendingChanges);
+    const disabledDecorationsToWrite = stagedDisabledDecorations;
+    const shouldWriteDecorations = decorationChangesPending;
     pendingChanges.clear();
+    decorationChangesPending = false;
 
     try {
       for (const [fullKey, value] of changesToWrite) {
@@ -138,6 +230,9 @@ async function openSettingsPanel(context, licenseManager, onDisposeCallback) {
         await vscode.workspace
           .getConfiguration(section)
           .update(key, value, vscode.ConfigurationTarget.Global);
+      }
+      if (shouldWriteDecorations) {
+        await settingsStore.saveDisabledDecorations(disabledDecorationsToWrite);
       }
     } catch (err) {
       vscode.window.showErrorMessage(`Moji Pro: Failed to save settings — ${err.message}`);
@@ -149,11 +244,21 @@ async function openSettingsPanel(context, licenseManager, onDisposeCallback) {
   currentPanel.webview.onDidReceiveMessage(
     async (message) => {
       if (message.command === 'toggleSetting') {
-        // Guard: only accept keys that belong to this extension — prevents the webview
-        // from writing arbitrary VS Code settings if a CSP bypass ever occurred.
-        if (typeof message.key !== 'string' || !message.key.startsWith('mojiPro.')) return;
+        // Guard: only accept settings surfaced by this panel, with values matching
+        // their schema. This prevents arbitrary settings writes after a CSP bypass.
+        if (!isAllowedSettingChange(message.key, message.value)) return;
         // Queue the change — all pending changes are flushed to config on panel close.
         pendingChanges.set(message.key, message.value);
+      } else if (message.command === 'toggleDecoration') {
+        if (!isAllowedDecorationChange(message.category, message.key, message.enabled)) return;
+        const category = getAllowedPanelCategory(message.category);
+        stagedDisabledDecorations = settingsStore.setDecorationEnabled(
+          stagedDisabledDecorations,
+          category.id,
+          message.key,
+          message.enabled
+        );
+        decorationChangesPending = true;
       } else if (message.command === 'activateLicense') {
         const result = await currentLicenseManager.activate(message.key);
         if (result.success) {
@@ -167,19 +272,21 @@ async function openSettingsPanel(context, licenseManager, onDisposeCallback) {
         await currentLicenseManager.deactivate();
         currentPanel.webview.postMessage({ command: 'licenseDeactivated' });
         vscode.commands.executeCommand('mojiPro._refreshDecorator');
-      } else if (message.command === 'toggleAll') {
-        const entry = TOGGLE_ALL_MAP[message.category];
-        if (!entry) return;
-        // Queue all per-keyword toggles — flushed to config on panel close.
-        for (const key of Object.keys(entry.map)) {
-          pendingChanges.set(`${entry.prefix}.${key}`, message.value);
-        }
+      } else if (message.command === 'toggleDecorationCategory') {
+        const category = getAllowedPanelCategory(message.category);
+        if (!category || typeof message.enabled !== 'boolean') return;
+        // Stage the compact category change until Apply or panel close.
+        stagedDisabledDecorations = settingsStore.setCategoryEnabled(
+          stagedDisabledDecorations,
+          category.id,
+          message.enabled,
+          Object.keys(category.map)
+        );
+        decorationChangesPending = true;
       } else if (message.command === 'applySettings') {
         await flushPendingSettings();
       } else if (message.command === 'saveEmojiCustomization') {
-        // Basic guard — both fields must be non-empty strings
-        if (typeof message.overrideKey !== 'string' || !message.overrideKey) return;
-        if (typeof message.emoji !== 'string' || !message.emoji) return;
+        if (!isAllowedEmojiOverride(message.overrideKey, message.emoji)) return;
 
         // Merge the new override into the existing overrides object and persist.
         // Writing directly to VS Code config (not via pendingChanges) triggers
@@ -215,9 +322,11 @@ async function openSettingsPanel(context, licenseManager, onDisposeCallback) {
       } else if (message.command === 'openUnicodeChart') {
         // Open the Unicode full emoji list anchored to the current emoji's code point.
         // The anchor format on unicode.org is the lowercase hex code point (e.g. #1f600).
-        const anchor = typeof message.anchor === 'string' ? message.anchor : '';
+        const anchor = typeof message.anchor === 'string' && /^[0-9a-f]{1,6}$/i.test(message.anchor)
+          ? message.anchor.toLowerCase()
+          : '';
         const url    = 'https://unicode.org/emoji/charts/full-emoji-list.html' + (anchor ? '#' + anchor : '');
-        vscode.env.openExternal(vscode.Uri.parse(url));
+        openHttpExternal(url);
       }
     },
     undefined,
@@ -244,25 +353,10 @@ function getCurrentSettings() {
   const mainCfg        = vscode.workspace.getConfiguration('mojiPro');
   const codeBlocksCfg  = vscode.workspace.getConfiguration('mojiPro.codeBlocks');
   const reactComponentOutlinesCfg = vscode.workspace.getConfiguration('mojiPro.reactComponentOutlines');
-  const jsCfg = vscode.workspace.getConfiguration('mojiPro.jsKeyword');
-  const tagCfg = vscode.workspace.getConfiguration('mojiPro.htmlTag');
-  const voidCfg = vscode.workspace.getConfiguration('mojiPro.htmlVoid');
-  const attrCfg = vscode.workspace.getConfiguration('mojiPro.htmlAttr');
-  const cssAtRuleCfg = vscode.workspace.getConfiguration('mojiPro.cssAtRule');
-  const cssLayoutCfg = vscode.workspace.getConfiguration('mojiPro.cssLayout');
-  const cssBoxCfg = vscode.workspace.getConfiguration('mojiPro.cssBox');
-  const cssVisualCfg = vscode.workspace.getConfiguration('mojiPro.cssVisual');
-  const cssPseudoCfg = vscode.workspace.getConfiguration('mojiPro.cssPseudo');
-  const cssValueCfg = vscode.workspace.getConfiguration('mojiPro.cssValue');
-  const pyCfg = vscode.workspace.getConfiguration('mojiPro.pyKeyword');
-  const cCfg = vscode.workspace.getConfiguration('mojiPro.cKeyword');
-  const cppCfg = vscode.workspace.getConfiguration('mojiPro.cppKeyword');
-  const csharpCfg = vscode.workspace.getConfiguration('mojiPro.csharpKeyword');
-  const sqlCfg = vscode.workspace.getConfiguration('mojiPro.sqlKeyword');
-  const tsCfg = vscode.workspace.getConfiguration('mojiPro.tsKeyword');
-  const javaCfg = vscode.workspace.getConfiguration('mojiPro.javaKeyword');
+  const disabledDecorations = settingsStore.getDisabledDecorations();
 
   const settings = {
+    emojiSize: mainCfg.get('emojiSize', 'large'),
     codeBlocks: {
       enabled:       codeBlocksCfg.get('enabled',       true),
       functionColor: codeBlocksCfg.get('functionColor', 'rgba(86,156,214,0.08)'),
@@ -271,10 +365,10 @@ function getCurrentSettings() {
       objectColor:   codeBlocksCfg.get('objectColor',   'rgba(206,145,120,0.08)'),
     },
     reactComponentOutlines: {
-      enabled: reactComponentOutlinesCfg.get('enabled', false),
-      color:   reactComponentOutlinesCfg.get('color', 'rgba(207,130,58,1)'),
-      width:   reactComponentOutlinesCfg.get('width', 1),
-      style:   reactComponentOutlinesCfg.get('style', 'solid'),
+      enabled:             reactComponentOutlinesCfg.get('enabled', false),
+      color:               reactComponentOutlinesCfg.get('color', 'rgba(207,130,58,1)'),
+      width:               reactComponentOutlinesCfg.get('width', 1),
+      style:               reactComponentOutlinesCfg.get('style', 'solid'),
     },
     masterToggles: {
       javascriptKeywords: mainCfg.get('javascriptKeywords', true),
@@ -314,56 +408,13 @@ function getCurrentSettings() {
     java: {},
   };
 
-  for (const key of Object.keys(KEYWORD_EMOJI_MAP)) {
-    settings.javascript[key] = jsCfg.get(key, true);
-  }
-  for (const key of Object.keys(HTML_TAG_EMOJI_MAP)) {
-    settings.tags[key] = tagCfg.get(key, true);
-  }
-  for (const key of Object.keys(HTML_VOID_EMOJI_MAP)) {
-    settings.void[key] = voidCfg.get(key, true);
-  }
-  for (const key of Object.keys(HTML_ATTR_EMOJI_MAP)) {
-    settings.attr[key] = attrCfg.get(key, true);
-  }
-  for (const key of Object.keys(CSS_ATRULE_EMOJI_MAP)) {
-    settings.cssAtRule[key] = cssAtRuleCfg.get(key, true);
-  }
-  for (const key of Object.keys(CSS_LAYOUT_EMOJI_MAP)) {
-    settings.cssLayout[key] = cssLayoutCfg.get(key, true);
-  }
-  for (const key of Object.keys(CSS_BOX_EMOJI_MAP)) {
-    settings.cssBox[key] = cssBoxCfg.get(key, true);
-  }
-  for (const key of Object.keys(CSS_VISUAL_EMOJI_MAP)) {
-    settings.cssVisual[key] = cssVisualCfg.get(key, true);
-  }
-  for (const key of Object.keys(CSS_PSEUDO_EMOJI_MAP)) {
-    settings.cssPseudo[key] = cssPseudoCfg.get(key, true);
-  }
-  for (const key of Object.keys(CSS_VALUE_EMOJI_MAP)) {
-    settings.cssValue[key] = cssValueCfg.get(key, true);
-  }
-  for (const key of Object.keys(PYTHON_KEYWORD_EMOJI_MAP)) {
-    settings.python[key] = pyCfg.get(key, true);
-  }
-  for (const key of Object.keys(C_KEYWORD_EMOJI_MAP)) {
-    settings.c[key] = cCfg.get(key, true);
-  }
-  for (const key of Object.keys(CPP_KEYWORD_EMOJI_MAP)) {
-    settings.cpp[key] = cppCfg.get(key, true);
-  }
-  for (const key of Object.keys(CSHARP_KEYWORD_EMOJI_MAP)) {
-    settings.csharp[key] = csharpCfg.get(key, true);
-  }
-  for (const key of Object.keys(SQL_KEYWORD_EMOJI_MAP)) {
-    settings.sql[key] = sqlCfg.get(key, true);
-  }
-  for (const key of Object.keys(TYPESCRIPT_KEYWORD_EMOJI_MAP)) {
-    settings.typescript[key] = tsCfg.get(key, true);
-  }
-  for (const key of Object.keys(JAVA_KEYWORD_EMOJI_MAP)) {
-    settings.java[key] = javaCfg.get(key, true);
+  for (const category of DECORATION_CATEGORIES) {
+    const target = settings[category.panelId];
+    if (!target) continue;
+
+    for (const key of Object.keys(category.map)) {
+      target[key] = settingsStore.isDecorationEnabled(disabledDecorations, category.id, key);
+    }
   }
 
   // Custom emoji overrides — keyed by the same internal category-prefixed format
@@ -385,7 +436,7 @@ async function getWebviewContent() {
   const licenseMaskedKey = currentLicenseManager ? (await currentLicenseManager.getMaskedKey()) : null;
 
   // Helper that resolves effective emoji and customized flag from the overrides map.
-  // prefix must match the decorator's CATEGORY_CONFIG prefix (e.g. '' for JS, 'py:' for Python).
+  // prefix must match DECORATION_CATEGORIES (e.g. '' for JS, 'py:' for Python).
   // Defined before the buildItem calls below — const is not hoisted like function declarations.
   const overrides = settings.customEmojiOverrides;
   function buildItem(category, key, defaultEmoji, displayName, checked, prefix) {
@@ -401,11 +452,11 @@ async function getWebviewContent() {
     .join('');
 
   const tagItems = Object.entries(HTML_TAG_EMOJI_MAP)
-    .map(([key, emoji]) => buildItem('tags', key, emoji, `&lt;${key}&gt;`, settings.tags[key], 'tag:'))
+    .map(([key, emoji]) => buildItem('tags', key, emoji, `<${key}>`, settings.tags[key], 'tag:'))
     .join('');
 
   const voidItems = Object.entries(HTML_VOID_EMOJI_MAP)
-    .map(([key, emoji]) => buildItem('void', key, emoji, `&lt;${key}&gt;`, settings.void[key], 'void:'))
+    .map(([key, emoji]) => buildItem('void', key, emoji, `<${key}>`, settings.void[key], 'void:'))
     .join('');
 
   const attrItems = Object.entries(HTML_ATTR_EMOJI_MAP)
@@ -823,6 +874,36 @@ async function getWebviewContent() {
       border-color: var(--focus-border);
     }
 
+    /* ── General settings ─────────────────────────────────────────────── */
+
+    .toggle-group {
+      display: flex;
+      gap: 24px;
+      margin: 12px 0;
+    }
+
+    .toggle-option {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      padding: 8px 16px;
+      background: var(--tab-inactive-bg);
+      border-radius: 4px;
+      transition: background 0.15s;
+    }
+
+    .toggle-option:hover {
+      background: var(--vscode-list-hoverBackground);
+    }
+
+    .toggle-option input[type="radio"] {
+      accent-color: var(--vscode-focusBorder);
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+    }
+
     /* ── License section ──────────────────────────────────────────────── */
 
     .license-section {
@@ -918,7 +999,10 @@ async function getWebviewContent() {
   </div>
 
   <div class="tabs">
-    <button class="tab active" data-tab="javascript" type="button">
+    <button class="tab active" data-tab="general" type="button">
+      General
+    </button>
+    <button class="tab" data-tab="javascript" type="button">
       JavaScript <span class="count">(${jsCount})</span>
     </button>
     <button class="tab" data-tab="html" type="button">
@@ -953,8 +1037,26 @@ async function getWebviewContent() {
     </button>
   </div>
 
+  <!-- General Tab -->
+  <div id="general" class="tab-content active">
+    <h3>Emoji Size</h3>
+    <p style="color: var(--vscode-descriptionForeground); margin-bottom: 12px;">
+      Adjust the display size of emoji decorations in the editor.
+    </p>
+    <div class="toggle-group">
+      <label class="toggle-option">
+        <input type="radio" name="emojiSize" value="large" data-setting-key="mojiPro.emojiSize" ${settings.emojiSize === 'large' ? 'checked' : ''}>
+        <span>Large (Default)</span>
+      </label>
+      <label class="toggle-option">
+        <input type="radio" name="emojiSize" value="small" data-setting-key="mojiPro.emojiSize" ${settings.emojiSize === 'small' ? 'checked' : ''}>
+        <span>Small (75%)</span>
+      </label>
+    </div>
+  </div>
+
   <!-- JavaScript Tab -->
-  <div id="javascript" class="tab-content active">
+  <div id="javascript" class="tab-content">
     <div class="master-toggle">
       <input type="checkbox" id="master-javascript" data-setting-key="mojiPro.javascriptKeywords" ${settings.masterToggles.javascriptKeywords ? 'checked' : ''}>
       <label for="master-javascript">Enable JavaScript keyword emojis</label>
@@ -1266,26 +1368,6 @@ async function getWebviewContent() {
   <script nonce="${nonce}">
     const vscode = acquireVsCodeApi();
 
-    const CONFIG_MAP = {
-      javascript: 'mojiPro.jsKeyword.',
-      tags: 'mojiPro.htmlTag.',
-      void: 'mojiPro.htmlVoid.',
-      attr: 'mojiPro.htmlAttr.',
-      cssAtRule: 'mojiPro.cssAtRule.',
-      cssLayout: 'mojiPro.cssLayout.',
-      cssBox: 'mojiPro.cssBox.',
-      cssVisual: 'mojiPro.cssVisual.',
-      cssPseudo: 'mojiPro.cssPseudo.',
-      cssValue: 'mojiPro.cssValue.',
-      python: 'mojiPro.pyKeyword.',
-      c: 'mojiPro.cKeyword.',
-      cpp: 'mojiPro.cppKeyword.',
-      csharp: 'mojiPro.csharpKeyword.',
-      sql: 'mojiPro.sqlKeyword.',
-      typescript: 'mojiPro.tsKeyword.',
-      java: 'mojiPro.javaKeyword.'
-    };
-
     // Tab buttons — handled entirely client-side, no round-trip to extension host
     document.querySelectorAll('[data-tab]').forEach(function(btn) {
       btn.addEventListener('click', function() {
@@ -1400,22 +1482,25 @@ async function getWebviewContent() {
         if (section) {
           section.querySelectorAll('.emoji-item input[type="checkbox"]').forEach(function(cb) { cb.checked = value; });
         }
-        vscode.postMessage({ command: 'toggleAll', category: category, value: value });
+        vscode.postMessage({ command: 'toggleDecorationCategory', category: category, enabled: value });
       });
     });
 
     // Individual emoji checkboxes
-    document.querySelectorAll('[data-category]').forEach(function(cb) {
+    document.querySelectorAll('.emoji-item input[type="checkbox"][data-category]').forEach(function(cb) {
       cb.addEventListener('change', function() {
-        var prefix = CONFIG_MAP[this.dataset.category];
-        if (!prefix) return;
-        vscode.postMessage({ command: 'toggleSetting', key: prefix + this.dataset.key, value: this.checked });
+        vscode.postMessage({
+          command: 'toggleDecoration',
+          category: this.dataset.category,
+          key: this.dataset.key,
+          enabled: this.checked
+        });
       });
     });
 
     // ── Emoji customization ──────────────────────────────────────────────
     // Maps webview category names to the decorator's internal key prefix (must
-    // match CATEGORY_CONFIG prefixes in decorator.js and the keys stored in
+    // match DECORATION_CATEGORIES prefixes and the keys stored in
     // mojiPro.customEmojiOverrides).
     var OVERRIDE_PREFIX_MAP = {
       javascript: '',
@@ -1726,23 +1811,27 @@ async function getWebviewContent() {
 function createCheckboxItem(category, key, defaultEmoji, effectiveEmoji, displayName, checked, isCustomized) {
   // The checkbox and emoji button are siblings, not nested — clicking the emoji
   // button must not also toggle the checkbox (which a <label> wrapper would do).
+  const safeCategory = escapeHtml(category);
+  const safeKey = escapeHtml(key);
   const safeDefault = escapeHtml(defaultEmoji);
+  const safeEffective = escapeHtml(effectiveEmoji);
+  const safeDisplayName = escapeHtml(displayName);
   return `
     <div class="emoji-item">
-      <label class="emoji-item-check" for="cb-${category}-${key}">
-        <input type="checkbox" id="cb-${category}-${key}" ${checked ? 'checked' : ''} data-category="${category}" data-key="${key}">
+      <label class="emoji-item-check" for="cb-${safeCategory}-${safeKey}">
+        <input type="checkbox" id="cb-${safeCategory}-${safeKey}" ${checked ? 'checked' : ''} data-category="${safeCategory}" data-key="${safeKey}">
       </label>
       <button class="emoji-btn${isCustomized ? ' customized' : ''}" type="button"
-        data-category="${category}" data-key="${key}"
+        data-category="${safeCategory}" data-key="${safeKey}"
         data-default-emoji="${safeDefault}"
-        title="Click to customize emoji">${effectiveEmoji}</button>
-      <span class="emoji-editor" id="editor-${category}-${key}" data-category="${category}" data-key="${key}" style="display:none">
+        title="Click to customize emoji">${safeEffective}</button>
+      <span class="emoji-editor" id="editor-${safeCategory}-${safeKey}" data-category="${safeCategory}" data-key="${safeKey}" style="display:none">
         <input class="emoji-unicode-input" type="text" placeholder="U+1F600">
         <button class="emoji-editor-save" type="button" title="Save">&#10003;</button>
         <button class="emoji-editor-cancel" type="button" title="Cancel">&#10005;</button>
-        <button class="emoji-chart-open" type="button" data-category="${category}" data-key="${key}" title="Browse Unicode chart">&#8599;</button>
+        <button class="emoji-chart-open" type="button" data-category="${safeCategory}" data-key="${safeKey}" title="Browse Unicode chart">&#8599;</button>
       </span>
-      <span class="name">${displayName}</span>
+      <span class="name">${safeDisplayName}</span>
     </div>
   `;
 }

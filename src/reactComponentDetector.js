@@ -85,11 +85,16 @@ function detectReactComponents(document) {
       const funcMatch = remaining.match(/^function\s+([A-Z][a-zA-Z0-9_]*)\s*\(/);
       if (funcMatch) {
         const componentName = funcMatch[1];
-        const openBracePos = findOpeningBrace(text, i + funcMatch[0].length);
+        const openBracePos = findOpeningBrace(text, i + funcMatch[0].length - 1);
         if (openBracePos !== -1) {
+          const closeBracePos = findMatchingCloseBracePos(text, openBracePos);
           const startLine = charToLine(openBracePos);
-          const endLine = findMatchingCloseBrace(text, openBracePos, charToLine);
-          if (endLine !== -1 && endLine > startLine) {
+          const endLine = closeBracePos === -1 ? -1 : charToLine(closeBracePos);
+          if (
+            closeBracePos !== -1
+            && endLine > startLine
+            && hasReturnedJsx(text, openBracePos + 1, closeBracePos)
+          ) {
             components.push({ startLine, endLine, name: componentName });
           }
         }
@@ -98,14 +103,19 @@ function detectReactComponents(document) {
       }
 
       // Class component: class ComponentName extends ...
-      const classMatch = remaining.match(/^class\s+([A-Z][a-zA-Z0-9_]*)\s*(extends|\{)/);
+      const classMatch = remaining.match(/^class\s+([A-Z][a-zA-Z0-9_]*)\s+extends\b/);
       if (classMatch) {
         const componentName = classMatch[1];
-        const openBracePos = findOpeningBrace(text, i + classMatch[0].length - (classMatch[2] === '{' ? 1 : 0));
+        const openBracePos = findOpeningBrace(text, i + classMatch[0].length);
         if (openBracePos !== -1) {
+          const closeBracePos = findMatchingCloseBracePos(text, openBracePos);
           const startLine = charToLine(openBracePos);
-          const endLine = findMatchingCloseBrace(text, openBracePos, charToLine);
-          if (endLine !== -1 && endLine > startLine) {
+          const endLine = closeBracePos === -1 ? -1 : charToLine(closeBracePos);
+          if (
+            closeBracePos !== -1
+            && endLine > startLine
+            && hasReturnedJsx(text, openBracePos + 1, closeBracePos)
+          ) {
             components.push({ startLine, endLine, name: componentName });
           }
         }
@@ -131,16 +141,27 @@ function detectReactComponents(document) {
         
         if (text[bodyStart] === '{') {
           // Block body
+          const closeBracePos = findMatchingCloseBracePos(text, bodyStart);
           startLine = charToLine(bodyStart);
-          endLine = findMatchingCloseBrace(text, bodyStart, charToLine);
+          endLine = closeBracePos === -1 ? -1 : charToLine(closeBracePos);
+          if (closeBracePos !== -1 && !hasReturnedJsx(text, bodyStart + 1, closeBracePos)) {
+            endLine = -1;
+          }
         } else if (text[bodyStart] === '(') {
           // Expression body with parentheses
+          const closeParenPos = findMatchingCloseParenPos(text, bodyStart);
           startLine = charToLine(bodyStart);
-          endLine = findMatchingCloseParen(text, bodyStart, charToLine);
+          endLine = closeParenPos === -1 ? -1 : charToLine(closeParenPos);
+          if (closeParenPos !== -1 && !hasJsxInRange(text, bodyStart + 1, closeParenPos)) {
+            endLine = -1;
+          }
         } else {
           // Expression body without parentheses (single expression)
           startLine = charToLine(bodyStart);
           endLine = findExpressionEnd(text, bodyStart, charToLine);
+          if (!hasJsxInRange(text, bodyStart, lineEndIndex(text, bodyStart))) {
+            endLine = -1;
+          }
         }
 
         if (endLine !== -1 && endLine >= startLine) {
@@ -155,11 +176,16 @@ function detectReactComponents(document) {
       const exportFuncMatch = remaining.match(/^export\s+default\s+function\s+([A-Z][a-zA-Z0-9_]*)\s*\(/);
       if (exportFuncMatch) {
         const componentName = exportFuncMatch[1];
-        const openBracePos = findOpeningBrace(text, i + exportFuncMatch[0].length);
+        const openBracePos = findOpeningBrace(text, i + exportFuncMatch[0].length - 1);
         if (openBracePos !== -1) {
+          const closeBracePos = findMatchingCloseBracePos(text, openBracePos);
           const startLine = charToLine(openBracePos);
-          const endLine = findMatchingCloseBrace(text, openBracePos, charToLine);
-          if (endLine !== -1 && endLine > startLine) {
+          const endLine = closeBracePos === -1 ? -1 : charToLine(closeBracePos);
+          if (
+            closeBracePos !== -1
+            && endLine > startLine
+            && hasReturnedJsx(text, openBracePos + 1, closeBracePos)
+          ) {
             components.push({ startLine, endLine, name: componentName });
           }
         }
@@ -198,10 +224,7 @@ function findOpeningBrace(text, startPos) {
   return -1;
 }
 
-/**
- * Find the line number of the matching closing brace
- */
-function findMatchingCloseBrace(text, openBracePos, charToLine) {
+function findMatchingCloseBracePos(text, openBracePos) {
   let depth = 1;
   let i = openBracePos + 1;
   
@@ -235,7 +258,7 @@ function findMatchingCloseBrace(text, openBracePos, charToLine) {
     if (ch === '{') depth++;
     else if (ch === '}') depth--;
     
-    if (depth === 0) return charToLine(i);
+    if (depth === 0) return i;
     
     i++;
   }
@@ -243,10 +266,7 @@ function findMatchingCloseBrace(text, openBracePos, charToLine) {
   return -1;
 }
 
-/**
- * Find the line number of the matching closing parenthesis
- */
-function findMatchingCloseParen(text, openParenPos, charToLine) {
+function findMatchingCloseParenPos(text, openParenPos) {
   let depth = 1;
   let i = openParenPos + 1;
   
@@ -280,12 +300,93 @@ function findMatchingCloseParen(text, openParenPos, charToLine) {
     if (ch === '(') depth++;
     else if (ch === ')') depth--;
     
-    if (depth === 0) return charToLine(i);
+    if (depth === 0) return i;
     
     i++;
   }
   
   return -1;
+}
+
+function hasReturnedJsx(text, startPos, endPos) {
+  let i = startPos;
+  while (i < endPos) {
+    i = skipTriviaAndStrings(text, i, endPos);
+    if (i >= endPos) break;
+
+    if (text.startsWith('return', i) && isWordBoundary(text[i - 1]) && isWordBoundary(text[i + 6])) {
+      let exprStart = i + 6;
+      while (exprStart < endPos && /\s/.test(text[exprStart])) exprStart++;
+      if (text[exprStart] === '(') {
+        const closeParenPos = findMatchingCloseParenPos(text, exprStart);
+        if (closeParenPos !== -1 && hasJsxInRange(text, exprStart + 1, Math.min(closeParenPos, endPos))) {
+          return true;
+        }
+      } else if (hasJsxInRange(text, exprStart, Math.min(lineEndIndex(text, exprStart), endPos))) {
+        return true;
+      }
+    }
+
+    i++;
+  }
+
+  return false;
+}
+
+function hasJsxInRange(text, startPos, endPos) {
+  let i = startPos;
+  while (i < endPos) {
+    i = skipTriviaAndStrings(text, i, endPos);
+    if (i >= endPos) break;
+
+    if (text[i] === '<' && isLikelyJsxStart(text, i)) {
+      return true;
+    }
+
+    i++;
+  }
+
+  return false;
+}
+
+function isLikelyJsxStart(text, i) {
+  const next = text[i + 1];
+  if (next === '>' || /[A-Za-z]/.test(next || '')) return true;
+  return next === '/' && /[A-Za-z]/.test(text[i + 2] || '');
+}
+
+function skipTriviaAndStrings(text, i, endPos) {
+  if (text[i] === '/' && text[i + 1] === '/') {
+    while (i < endPos && text[i] !== '\n') i++;
+    return i;
+  }
+
+  if (text[i] === '/' && text[i + 1] === '*') {
+    i += 2;
+    while (i + 1 < endPos && !(text[i] === '*' && text[i + 1] === '/')) i++;
+    return Math.min(i + 2, endPos);
+  }
+
+  if (text[i] === '"' || text[i] === "'" || text[i] === '`') {
+    const quote = text[i];
+    i++;
+    while (i < endPos) {
+      if (text[i] === '\\') { i += 2; continue; }
+      if (text[i] === quote) { i++; break; }
+      i++;
+    }
+  }
+
+  return i;
+}
+
+function isWordBoundary(ch) {
+  return !ch || !/[A-Za-z0-9_$]/.test(ch);
+}
+
+function lineEndIndex(text, startPos) {
+  const end = text.indexOf('\n', startPos);
+  return end === -1 ? text.length : end;
 }
 
 /**

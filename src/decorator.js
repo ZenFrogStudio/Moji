@@ -5,23 +5,8 @@
 //   "overlay"  – keyword text is dimmed, emoji shown before it
 
 const vscode = require('vscode');
-const { KEYWORD_EMOJI_MAP } = require('./keywordMap');
-const { HTML_TAG_EMOJI_MAP, HTML_VOID_EMOJI_MAP, HTML_ATTR_EMOJI_MAP } = require('./htmlKeywordMap');
-const {
-  CSS_ATRULE_EMOJI_MAP,
-  CSS_LAYOUT_EMOJI_MAP,
-  CSS_BOX_EMOJI_MAP,
-  CSS_VISUAL_EMOJI_MAP,
-  CSS_PSEUDO_EMOJI_MAP,
-  CSS_VALUE_EMOJI_MAP,
-} = require('./cssKeywordMap');
-const { PYTHON_KEYWORD_EMOJI_MAP } = require('./pythonKeywordMap');
-const { C_KEYWORD_EMOJI_MAP } = require('./cKeywordMap');
-const { CPP_KEYWORD_EMOJI_MAP } = require('./cppKeywordMap');
-const { CSHARP_KEYWORD_EMOJI_MAP } = require('./csharpKeywordMap');
-const { SQL_KEYWORD_EMOJI_MAP } = require('./sqlKeywordMap');
-const { TYPESCRIPT_KEYWORD_EMOJI_MAP } = require('./typescriptKeywordMap');
-const { JAVA_KEYWORD_EMOJI_MAP } = require('./javaKeywordMap');
+const { DECORATION_CATEGORIES } = require('./decorationCategories');
+const settingsStore = require('./settingsStore');
 const { scanKeywords } = require('./scanner');
 const { scanHtmlTokens } = require('./htmlScanner');
 const { scanCssTokens } = require('./cssScanner');
@@ -55,26 +40,6 @@ const JSX_CODE_START_RE = /^\s*(import|export|const|let|var|function|class|retur
 const SUPPORTED_LANGUAGES = new Set([...JS_LANGUAGES, ...HTML_LANGUAGES, ...CSS_LANGUAGES, ...PYTHON_LANGUAGES, ...C_LANGUAGES, ...CPP_LANGUAGES, ...CSHARP_LANGUAGES, ...SQL_LANGUAGES, ...TS_LANGUAGES, ...JAVA_LANGUAGES]);
 
 // Shared category table — used by both _buildDecorationTypes and _refreshEnabledKeywords.
-const CATEGORY_CONFIG = [
-  { masterKey: 'javascriptKeywords', configNs: 'mojiPro.jsKeyword', map: KEYWORD_EMOJI_MAP, prefix: '' },
-  { masterKey: 'htmlTags', configNs: 'mojiPro.htmlTag', map: HTML_TAG_EMOJI_MAP, prefix: 'tag:' },
-  { masterKey: 'htmlVoidElements', configNs: 'mojiPro.htmlVoid', map: HTML_VOID_EMOJI_MAP, prefix: 'void:' },
-  { masterKey: 'htmlAttributes', configNs: 'mojiPro.htmlAttr', map: HTML_ATTR_EMOJI_MAP, prefix: 'attr:' },
-  { masterKey: 'cssAtRules', configNs: 'mojiPro.cssAtRule', map: CSS_ATRULE_EMOJI_MAP, prefix: 'cssAtRule:' },
-  { masterKey: 'cssLayout', configNs: 'mojiPro.cssLayout', map: CSS_LAYOUT_EMOJI_MAP, prefix: 'cssLayout:' },
-  { masterKey: 'cssBox', configNs: 'mojiPro.cssBox', map: CSS_BOX_EMOJI_MAP, prefix: 'cssBox:' },
-  { masterKey: 'cssVisual', configNs: 'mojiPro.cssVisual', map: CSS_VISUAL_EMOJI_MAP, prefix: 'cssVisual:' },
-  { masterKey: 'cssPseudo', configNs: 'mojiPro.cssPseudo', map: CSS_PSEUDO_EMOJI_MAP, prefix: 'cssPseudo:' },
-  { masterKey: 'cssValues', configNs: 'mojiPro.cssValue', map: CSS_VALUE_EMOJI_MAP, prefix: 'cssValue:' },
-  { masterKey: 'pythonKeywords', configNs: 'mojiPro.pyKeyword', map: PYTHON_KEYWORD_EMOJI_MAP, prefix: 'py:' },
-  { masterKey: 'cKeywords', configNs: 'mojiPro.cKeyword', map: C_KEYWORD_EMOJI_MAP, prefix: 'c:' },
-  { masterKey: 'cppKeywords', configNs: 'mojiPro.cppKeyword', map: CPP_KEYWORD_EMOJI_MAP, prefix: 'cpp:' },
-  { masterKey: 'csharpKeywords', configNs: 'mojiPro.csharpKeyword', map: CSHARP_KEYWORD_EMOJI_MAP, prefix: 'csharp:' },
-  { masterKey: 'sqlKeywords', configNs: 'mojiPro.sqlKeyword', map: SQL_KEYWORD_EMOJI_MAP, prefix: 'sql:' },
-  { masterKey: 'typescriptKeywords', configNs: 'mojiPro.tsKeyword', map: TYPESCRIPT_KEYWORD_EMOJI_MAP, prefix: 'ts:' },
-  { masterKey: 'javaKeywords', configNs: 'mojiPro.javaKeyword', map: JAVA_KEYWORD_EMOJI_MAP, prefix: 'java:' },
-];
-
 class KeywordDecorator {
   constructor() {
     /** @type {Map<string, vscode.TextEditorDecorationType>} */
@@ -102,7 +67,9 @@ class KeywordDecorator {
     const config          = vscode.workspace.getConfiguration('mojiPro');
     this._mode            = config.get('displayMode', 'overlay');
     this._opacity         = config.get('overlayOpacity', 1);
+    this._emojiSize       = config.get('emojiSize', 'large');
     this._editorFont      = vscode.workspace.getConfiguration('editor').get('fontSize', 14);
+    const sizeMultiplier  = this._emojiSize === 'small' ? 0.75 : 1;
     // Serialised signature used in reloadConfig to detect override changes without
     // a deep-equality check — emoji overrides are baked into contentText so any
     // change requires a full decoration-type rebuild.
@@ -118,15 +85,17 @@ class KeywordDecorator {
           textDecoration: 'none; font-size: 0',
           before: {
             contentText: emoji,
-            textDecoration: `none; font-size: ${this._editorFont}px`,
+            textDecoration: `none; font-size: ${Math.round(this._editorFont * sizeMultiplier)}px`,
           },
         };
       } else {
+        const overlayFontSize = Math.round(this._editorFont * sizeMultiplier);
         options = {
           opacity: String(this._opacity),
           before: {
             contentText: emoji,
             margin: '0 4px 0 0',
+            textDecoration: `none; font-size: ${overlayFontSize}px`,
           },
         };
       }
@@ -134,7 +103,7 @@ class KeywordDecorator {
       this.decorationTypes.set(key, vscode.window.createTextEditorDecorationType(options));
     };
 
-    for (const { map, prefix } of CATEGORY_CONFIG) {
+    for (const { map, prefix } of DECORATION_CATEGORIES) {
       for (const [key, defaultEmoji] of Object.entries(map)) {
         const overrideKey   = `${prefix}${key}`;
         // Apply per-keyword override if one exists; otherwise fall back to the map default.
@@ -151,11 +120,11 @@ class KeywordDecorator {
   _refreshEnabledKeywords() {
     this.enabledKeywords.clear();
     const config = vscode.workspace.getConfiguration('mojiPro');
-    for (const { masterKey, configNs, map, prefix } of CATEGORY_CONFIG) {
+    const disabledDecorations = settingsStore.getDisabledDecorations();
+    for (const { id, masterKey, map, prefix } of DECORATION_CATEGORIES) {
       if (config.get(masterKey, true)) {
-        const itemCfg = vscode.workspace.getConfiguration(configNs);
         for (const [key] of Object.entries(map)) {
-          if (itemCfg.get(key, true)) {
+          if (settingsStore.isDecorationEnabled(disabledDecorations, id, key)) {
             this.enabledKeywords.add(`${prefix}${key}`);
           }
         }
@@ -305,13 +274,14 @@ class KeywordDecorator {
     const config     = vscode.workspace.getConfiguration('mojiPro');
     const newMode    = config.get('displayMode', 'overlay');
     const newOpacity = config.get('overlayOpacity', 1);
+    const newSize    = config.get('emojiSize', 'large');
     const newFont    = vscode.workspace.getConfiguration('editor').get('fontSize', 14);
 
     const newOverridesSig = JSON.stringify(
       config.get('customEmojiOverrides', {})
     );
 
-    if (newMode !== this._mode || newOpacity !== this._opacity || newFont !== this._editorFont || newOverridesSig !== this._overridesSig) {
+    if (newMode !== this._mode || newOpacity !== this._opacity || newSize !== this._emojiSize || newFont !== this._editorFont || newOverridesSig !== this._overridesSig) {
       // Visual style or emoji overrides changed — must recreate decoration types since
       // the emoji character is baked into each type's contentText CSS property.
       this._buildDecorationTypes();
