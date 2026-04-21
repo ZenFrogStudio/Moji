@@ -156,7 +156,7 @@ class ComponentOutlineDecorator {
     const editor = vscode.window.activeTextEditor;
     if (editor) this.updateEditor(editor);
     vscode.window.showInformationMessage(
-      `Moji Pro: React Component Outlines ${this.enabled ? 'enabled' : 'disabled'}`
+      `Moji: React Component Outlines ${this.enabled ? 'enabled' : 'disabled'}`
     );
   }
 

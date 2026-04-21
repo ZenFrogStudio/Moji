@@ -1,4 +1,4 @@
-// Custom webview panel for configuring Moji Pro settings with a language-based tabbed interface.
+// Custom webview panel for configuring Moji settings with a language-based tabbed interface.
 // Uses server-side rendering - all interactions handled via postMessage, no client-side DOM manipulation.
 
 const vscode = require('vscode');
@@ -55,7 +55,6 @@ function rgbaToHex(colorStr) {
 }
 
 let currentPanel          = undefined;
-let currentLicenseManager = undefined; // Reference held for message handler access
 
 // Maps webview category names to their keyword map and VS Code config namespace.
 // Derived from shared category metadata to keep panel validation and rendering aligned.
@@ -162,18 +161,16 @@ function openHttpExternal(url) {
 }
 
 /**
- * Opens (or focuses) the Moji Pro settings panel.
+ * Opens (or focuses) the Moji settings panel.
  * Settings changes are accumulated in memory while the panel is open and
  * written to VS Code config in a single batch when the panel is closed.
  * This avoids race conditions between real-time writes, the debounce guard,
  * and the active-editor check in the onDidChangeConfiguration handler.
  * @param {vscode.ExtensionContext} context
- * @param {import('./licenseManager').LicenseManager} licenseManager
  * @param {() => void} onDisposeCallback  Called after all pending changes are
  *   written to config — use this to reload decorators and update open editors.
  */
-async function openSettingsPanel(context, licenseManager, onDisposeCallback) {
-  currentLicenseManager = licenseManager;
+async function openSettingsPanel(context, onDisposeCallback) {
 
   // Accumulate all setting changes made during this panel session. Written to
   // VS Code config in a single batch on panel close — avoids race conditions
@@ -195,11 +192,12 @@ async function openSettingsPanel(context, licenseManager, onDisposeCallback) {
   // Create new panel
   currentPanel = vscode.window.createWebviewPanel(
     'mojiProSettings',
-    'Moji Pro Settings',
+    'Moji Settings',
     column || vscode.ViewColumn.One,
     {
       enableScripts: true,
       retainContextWhenHidden: true,
+      localResourceRoots: [],
     }
   );
 
@@ -235,7 +233,7 @@ async function openSettingsPanel(context, licenseManager, onDisposeCallback) {
         await settingsStore.saveDisabledDecorations(disabledDecorationsToWrite);
       }
     } catch (err) {
-      vscode.window.showErrorMessage(`Moji Pro: Failed to save settings — ${err.message}`);
+      vscode.window.showErrorMessage(`Moji: Failed to save settings — ${err.message}`);
     }
     if (typeof onDisposeCallback === 'function') onDisposeCallback();
   }
@@ -259,19 +257,6 @@ async function openSettingsPanel(context, licenseManager, onDisposeCallback) {
           message.enabled
         );
         decorationChangesPending = true;
-      } else if (message.command === 'activateLicense') {
-        const result = await currentLicenseManager.activate(message.key);
-        if (result.success) {
-          const maskedKey = await currentLicenseManager.getMaskedKey();
-          currentPanel.webview.postMessage({ command: 'licenseActivated', maskedKey });
-          vscode.commands.executeCommand('mojiPro._refreshDecorator');
-        } else {
-          currentPanel.webview.postMessage({ command: 'licenseError', error: result.error });
-        }
-      } else if (message.command === 'deactivateLicense') {
-        await currentLicenseManager.deactivate();
-        currentPanel.webview.postMessage({ command: 'licenseDeactivated' });
-        vscode.commands.executeCommand('mojiPro._refreshDecorator');
       } else if (message.command === 'toggleDecorationCategory') {
         const category = getAllowedPanelCategory(message.category);
         if (!category || typeof message.enabled !== 'boolean') return;
@@ -307,7 +292,7 @@ async function openSettingsPanel(context, licenseManager, onDisposeCallback) {
             emoji: message.emoji,
           });
         } catch (err) {
-          vscode.window.showErrorMessage(`Moji Pro: Failed to save emoji customization — ${err.message}`);
+          vscode.window.showErrorMessage(`Moji: Failed to save emoji customization — ${err.message}`);
         }
       } else if (message.command === 'revertAllEmojis') {
         // Clear all custom overrides and notify the webview to restore default emoji buttons.
@@ -317,7 +302,7 @@ async function openSettingsPanel(context, licenseManager, onDisposeCallback) {
             .update('customEmojiOverrides', {}, vscode.ConfigurationTarget.Global);
           currentPanel.webview.postMessage({ command: 'allEmojisReverted' });
         } catch (err) {
-          vscode.window.showErrorMessage(`Moji Pro: Failed to revert emojis — ${err.message}`);
+          vscode.window.showErrorMessage(`Moji: Failed to revert emojis — ${err.message}`);
         }
       } else if (message.command === 'openUnicodeChart') {
         // Open the Unicode full emoji list anchored to the current emoji's code point.
@@ -431,9 +416,6 @@ function getCurrentSettings() {
 async function getWebviewContent() {
   const nonce    = getNonce();
   const settings = getCurrentSettings();
-
-  const licenseValid     = currentLicenseManager ? currentLicenseManager.isValid : false;
-  const licenseMaskedKey = currentLicenseManager ? (await currentLicenseManager.getMaskedKey()) : null;
 
   // Helper that resolves effective emoji and customized flag from the overrides map.
   // prefix must match DECORATION_CATEGORIES (e.g. '' for JS, 'py:' for Python).
@@ -549,7 +531,7 @@ async function getWebviewContent() {
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Moji Pro Settings</title>
+  <title>Moji Settings</title>
   <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'nonce-${nonce}';">
   <style>
     :root {
@@ -904,99 +886,10 @@ async function getWebviewContent() {
       cursor: pointer;
     }
 
-    /* ── License section ──────────────────────────────────────────────── */
-
-    .license-section {
-      border: 1px solid var(--border-color);
-      border-radius: 6px;
-      padding: 14px 18px;
-      margin-bottom: 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .license-header {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-
-    .license-badge {
-      font-weight: 600;
-      font-size: 0.9em;
-      padding: 3px 10px;
-      border-radius: 12px;
-    }
-
-    .license-badge.active {
-      background: rgba(50, 200, 100, 0.18);
-      color: #3dc57a;
-    }
-
-    .license-badge.inactive {
-      background: rgba(220, 80, 80, 0.15);
-      color: #e06060;
-    }
-
-    .license-key-display {
-      font-family: var(--vscode-editor-font-family), monospace;
-      font-size: 0.9em;
-      opacity: 0.7;
-    }
-
-    .license-input-row {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-    }
-
-    .license-input-row input[type="password"] {
-      flex: 1;
-      padding: 6px 10px;
-      background: var(--vscode-input-background, var(--tab-inactive-bg));
-      color: var(--vscode-input-foreground, var(--fg-color));
-      border: 1px solid var(--vscode-input-border, var(--border-color));
-      border-radius: 4px;
-      font-family: monospace;
-      font-size: 0.9em;
-    }
-
-    .license-error {
-      color: #e06060;
-      font-size: 0.85em;
-    }
   </style>
 </head>
 <body>
-  <h1>Moji Pro Settings</h1>
-
-  <!-- Active license state — shown when license is valid -->
-  <div id="license-active" class="license-section" style="${licenseValid ? '' : 'display:none'}">
-    <div class="license-header">
-      <span class="license-badge active">&#10003; Active</span>
-      <span class="license-key-display" id="license-key-display">${licenseMaskedKey ? escapeHtml(licenseMaskedKey) : ''}</span>
-    </div>
-    <div>
-      <button class="bulk-btn" type="button" id="btn-deactivate">Deactivate License</button>
-    </div>
-  </div>
-
-  <!-- Inactive license state — shown when no license is active -->
-  <div id="license-inactive" class="license-section" style="${licenseValid ? 'display:none' : ''}">
-    <div class="license-header">
-      <span class="license-badge inactive">&#10007; Not activated</span>
-    </div>
-    <div class="license-input-row" id="license-input-row" style="display:none">
-      <input type="password" id="license-key-input" placeholder="Enter license key" autocomplete="off" spellcheck="false">
-      <button class="bulk-btn" type="button" id="btn-submit-key">Submit</button>
-      <button class="bulk-btn" type="button" id="btn-cancel-key">Cancel</button>
-    </div>
-    <div>
-      <button class="bulk-btn" type="button" id="btn-activate">Activate License</button>
-    </div>
-    <div class="license-error" id="license-error" style="display:none"></div>
-  </div>
+  <h1>Moji Settings</h1>
 
   <div class="tabs">
     <button class="tab active" data-tab="general" type="button">
@@ -1032,9 +925,6 @@ async function getWebviewContent() {
     <button class="tab" data-tab="java" type="button">
       Java <span class="count">(${javaCount})</span>
     </button>
-    <button class="tab" data-tab="codeblocks" type="button">
-      Code Blocks
-    </button>
   </div>
 
   <!-- General Tab -->
@@ -1052,6 +942,64 @@ async function getWebviewContent() {
         <input type="radio" name="emojiSize" value="small" data-setting-key="mojiPro.emojiSize" ${settings.emojiSize === 'small' ? 'checked' : ''}>
         <span>Small (75%)</span>
       </label>
+    </div>
+
+    <h3 style="margin-top: 24px;">Code Block Highlighting</h3>
+    <div class="master-toggle">
+      <input type="checkbox" id="master-codeblocks" data-setting-key="mojiPro.codeBlocks.enabled" ${settings.codeBlocks.enabled ? 'checked' : ''}>
+      <label for="master-codeblocks">Enable code block highlighting</label>
+    </div>
+    <div class="block-colors">
+      <p class="block-colors-description">Customize the background tint for each block type. Accepts any valid CSS color string (e.g. rgba(86,156,214,0.08)).</p>
+      <div class="block-color-row">
+        <input type="color" class="block-color-picker" data-color-key="mojiPro.codeBlocks.functionColor" value="${rgbaToHex(settings.codeBlocks.functionColor)}">
+        <span class="block-color-label">Function / Method / Class</span>
+        <input class="block-color-input" type="text" data-color-key="mojiPro.codeBlocks.functionColor" value="${escapeHtml(settings.codeBlocks.functionColor)}">
+      </div>
+      <div class="block-color-row">
+        <input type="color" class="block-color-picker" data-color-key="mojiPro.codeBlocks.loopColor" value="${rgbaToHex(settings.codeBlocks.loopColor)}">
+        <span class="block-color-label">Loop (for, while, do)</span>
+        <input class="block-color-input" type="text" data-color-key="mojiPro.codeBlocks.loopColor" value="${escapeHtml(settings.codeBlocks.loopColor)}">
+      </div>
+      <div class="block-color-row">
+        <input type="color" class="block-color-picker" data-color-key="mojiPro.codeBlocks.controlColor" value="${rgbaToHex(settings.codeBlocks.controlColor)}">
+        <span class="block-color-label">Control Flow (if, else, switch, try)</span>
+        <input class="block-color-input" type="text" data-color-key="mojiPro.codeBlocks.controlColor" value="${escapeHtml(settings.codeBlocks.controlColor)}">
+      </div>
+      <div class="block-color-row">
+        <input type="color" class="block-color-picker" data-color-key="mojiPro.codeBlocks.objectColor" value="${rgbaToHex(settings.codeBlocks.objectColor)}">
+        <span class="block-color-label">Object / Data Block</span>
+        <input class="block-color-input" type="text" data-color-key="mojiPro.codeBlocks.objectColor" value="${escapeHtml(settings.codeBlocks.objectColor)}">
+      </div>
+      <div class="bulk-actions" style="margin-top:12px;">
+        <button class="bulk-btn" id="btn-reset-block-colors" type="button">Reset Colors to Default</button>
+      </div>
+    </div>
+
+    <h3 style="margin-top: 24px;">React Component Outlines</h3>
+    <div class="master-toggle">
+      <input type="checkbox" id="master-reactcomponents" data-setting-key="mojiPro.reactComponentOutlines.enabled" ${settings.reactComponentOutlines && settings.reactComponentOutlines.enabled ? 'checked' : ''}>
+      <label for="master-reactcomponents">Enable React component outlines</label>
+    </div>
+    <div class="block-colors">
+      <p class="block-colors-description">Customize the visual outline around React components in JSX/TSX files. Outlines help identify component boundaries and improve code architecture understanding.</p>
+      <div class="block-color-row">
+        <input type="color" class="block-color-picker" data-color-key="mojiPro.reactComponentOutlines.color" value="${rgbaToHex(settings.reactComponentOutlines ? settings.reactComponentOutlines.color : 'rgba(207,130,58,1)')}">
+        <span class="block-color-label">Outline Color</span>
+        <input class="block-color-input" type="text" data-color-key="mojiPro.reactComponentOutlines.color" value="${escapeHtml(settings.reactComponentOutlines ? settings.reactComponentOutlines.color : 'rgba(207,130,58,1)')}">
+      </div>
+      <div class="block-color-row">
+        <span class="block-color-label">Border Width (1-3 px)</span>
+        <input class="block-color-input" type="number" data-setting-key="mojiPro.reactComponentOutlines.width" value="${settings.reactComponentOutlines ? settings.reactComponentOutlines.width : 1}" min="1" max="3" style="width:60px;">
+      </div>
+      <div class="block-color-row">
+        <span class="block-color-label">Border Style</span>
+        <select data-setting-key="mojiPro.reactComponentOutlines.style" style="padding:4px 8px; background:var(--vscode-input-background); color:var(--vscode-input-foreground); border:1px solid var(--vscode-input-border, var(--border-color)); border-radius:3px;">
+          <option value="solid" ${(!settings.reactComponentOutlines || settings.reactComponentOutlines.style === 'solid') ? 'selected' : ''}>Solid</option>
+          <option value="dashed" ${settings.reactComponentOutlines && settings.reactComponentOutlines.style === 'dashed' ? 'selected' : ''}>Dashed</option>
+          <option value="dotted" ${settings.reactComponentOutlines && settings.reactComponentOutlines.style === 'dotted' ? 'selected' : ''}>Dotted</option>
+        </select>
+      </div>
     </div>
   </div>
 
@@ -1289,69 +1237,6 @@ async function getWebviewContent() {
       <button class="bulk-btn" data-toggle-all="java" data-toggle-value="false" type="button">Deselect All</button>
     </div>
     <div class="emoji-grid">${javaItems}</div>
-  </div>
-
-  <!-- Code Blocks Tab -->
-  <div id="codeblocks" class="tab-content">
-    <div class="master-toggle">
-      <input type="checkbox" id="master-codeblocks" data-setting-key="mojiPro.codeBlocks.enabled" ${settings.codeBlocks.enabled ? 'checked' : ''}>
-      <label for="master-codeblocks">Enable code block highlighting</label>
-    </div>
-    <div class="block-colors">
-      <p class="block-colors-description">Customize the background tint for each block type. Accepts any valid CSS color string (e.g. rgba(86,156,214,0.08)).</p>
-      <div class="block-color-row">
-        <input type="color" class="block-color-picker" data-color-key="mojiPro.codeBlocks.functionColor" value="${rgbaToHex(settings.codeBlocks.functionColor)}">
-        <span class="block-color-label">Function / Method / Class</span>
-        <input class="block-color-input" type="text" data-color-key="mojiPro.codeBlocks.functionColor" value="${escapeHtml(settings.codeBlocks.functionColor)}">
-      </div>
-      <div class="block-color-row">
-        <input type="color" class="block-color-picker" data-color-key="mojiPro.codeBlocks.loopColor" value="${rgbaToHex(settings.codeBlocks.loopColor)}">
-        <span class="block-color-label">Loop (for, while, do)</span>
-        <input class="block-color-input" type="text" data-color-key="mojiPro.codeBlocks.loopColor" value="${escapeHtml(settings.codeBlocks.loopColor)}">
-      </div>
-      <div class="block-color-row">
-        <input type="color" class="block-color-picker" data-color-key="mojiPro.codeBlocks.controlColor" value="${rgbaToHex(settings.codeBlocks.controlColor)}">
-        <span class="block-color-label">Control Flow (if, else, switch, try)</span>
-        <input class="block-color-input" type="text" data-color-key="mojiPro.codeBlocks.controlColor" value="${escapeHtml(settings.codeBlocks.controlColor)}">
-      </div>
-      <div class="block-color-row">
-        <input type="color" class="block-color-picker" data-color-key="mojiPro.codeBlocks.objectColor" value="${rgbaToHex(settings.codeBlocks.objectColor)}">
-        <span class="block-color-label">Object / Data Block</span>
-        <input class="block-color-input" type="text" data-color-key="mojiPro.codeBlocks.objectColor" value="${escapeHtml(settings.codeBlocks.objectColor)}">
-      </div>
-      <div class="bulk-actions" style="margin-top:12px;">
-        <button class="bulk-btn" id="btn-reset-block-colors" type="button">Reset Colors to Default</button>
-      </div>
-    </div>
-
-    <!-- React Component Outlines (merged into Code Blocks tab) -->
-    <div class="section" style="margin-top:20px;">
-      <div class="section-title">React Component Outlines</div>
-      <div class="master-toggle">
-        <input type="checkbox" id="master-reactcomponents" data-setting-key="mojiPro.reactComponentOutlines.enabled" ${settings.reactComponentOutlines && settings.reactComponentOutlines.enabled ? 'checked' : ''}>
-        <label for="master-reactcomponents">Enable React component outlines</label>
-      </div>
-      <div class="block-colors">
-        <p class="block-colors-description">Customize the visual outline around React components in JSX/TSX files. Outlines help identify component boundaries and improve code architecture understanding.</p>
-        <div class="block-color-row">
-          <input type="color" class="block-color-picker" data-color-key="mojiPro.reactComponentOutlines.color" value="${rgbaToHex(settings.reactComponentOutlines ? settings.reactComponentOutlines.color : 'rgba(207,130,58,1)')}">
-          <span class="block-color-label">Outline Color</span>
-          <input class="block-color-input" type="text" data-color-key="mojiPro.reactComponentOutlines.color" value="${escapeHtml(settings.reactComponentOutlines ? settings.reactComponentOutlines.color : 'rgba(207,130,58,1)')}">
-        </div>
-        <div class="block-color-row">
-          <span class="block-color-label">Border Width (1-3 px)</span>
-          <input class="block-color-input" type="number" data-setting-key="mojiPro.reactComponentOutlines.width" value="${settings.reactComponentOutlines ? settings.reactComponentOutlines.width : 1}" min="1" max="3" style="width:60px;">
-        </div>
-        <div class="block-color-row">
-          <span class="block-color-label">Border Style</span>
-          <select data-setting-key="mojiPro.reactComponentOutlines.style" style="padding:4px 8px; background:var(--vscode-input-background); color:var(--vscode-input-foreground); border:1px solid var(--vscode-input-border, var(--border-color)); border-radius:3px;">
-            <option value="solid" ${(!settings.reactComponentOutlines || settings.reactComponentOutlines.style === 'solid') ? 'selected' : ''}>Solid</option>
-            <option value="dashed" ${settings.reactComponentOutlines && settings.reactComponentOutlines.style === 'dashed' ? 'selected' : ''}>Dashed</option>
-            <option value="dotted" ${settings.reactComponentOutlines && settings.reactComponentOutlines.style === 'dotted' ? 'selected' : ''}>Dotted</option>
-          </select>
-        </div>
-      </div>
-    </div>
   </div>
 
   <div class="apply-bar">
@@ -1679,79 +1564,7 @@ async function getWebviewContent() {
       }
     });
 
-    // ── License section interactions ────────────────────────────────────
     (function() {
-      var btnActivate = document.getElementById('btn-activate');
-      var btnDeactivate = document.getElementById('btn-deactivate');
-      var btnSubmit = document.getElementById('btn-submit-key');
-      var btnCancel = document.getElementById('btn-cancel-key');
-      var inputRow = document.getElementById('license-input-row');
-      var keyInput = document.getElementById('license-key-input');
-      var errorDiv = document.getElementById('license-error');
-
-      if (btnActivate) {
-        btnActivate.addEventListener('click', function() {
-          btnActivate.style.display = 'none';
-          inputRow.style.display = 'flex';
-          keyInput.focus();
-        });
-      }
-      if (btnCancel) {
-        btnCancel.addEventListener('click', function() {
-          inputRow.style.display = 'none';
-          btnActivate.style.display = '';
-          errorDiv.style.display = 'none';
-          keyInput.value = '';
-        });
-      }
-      if (btnSubmit) {
-        btnSubmit.addEventListener('click', function() {
-          var key = keyInput.value.trim();
-          if (!key) {
-            errorDiv.textContent = 'Please enter a license key.';
-            errorDiv.style.display = '';
-            return;
-          }
-          btnSubmit.disabled = true;
-          btnSubmit.textContent = 'Activating\u2026';
-          vscode.postMessage({ command: 'activateLicense', key: key });
-        });
-      }
-      if (btnDeactivate) {
-        btnDeactivate.addEventListener('click', function() {
-          vscode.postMessage({ command: 'deactivateLicense' });
-        });
-      }
-
-      // Handle messages sent back from the extension host
-      window.addEventListener('message', function(event) {
-        var msg = event.data;
-        if (msg.command === 'licenseError') {
-          if (errorDiv) {
-            errorDiv.textContent = msg.error;
-            errorDiv.style.display = '';
-          }
-          if (btnSubmit) {
-            btnSubmit.disabled = false;
-            btnSubmit.textContent = 'Submit';
-          }
-        } else if (msg.command === 'licenseActivated') {
-          document.getElementById('license-active').style.display = '';
-          document.getElementById('license-inactive').style.display = 'none';
-          if (msg.maskedKey) {
-            document.getElementById('license-key-display').textContent = msg.maskedKey;
-          }
-        } else if (msg.command === 'licenseDeactivated') {
-          document.getElementById('license-active').style.display = 'none';
-          document.getElementById('license-inactive').style.display = '';
-          // Reset the activation form to its initial state
-          if (inputRow) { inputRow.style.display = 'none'; }
-          if (btnActivate) { btnActivate.style.display = ''; }
-          if (errorDiv) { errorDiv.style.display = 'none'; }
-          if (keyInput) { keyInput.value = ''; }
-        }
-      });
-
       // Apply Settings button — flushes all pending changes immediately without
       // requiring the user to close the panel.
       var btnApply = document.getElementById('btn-apply-settings');

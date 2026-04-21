@@ -7,17 +7,21 @@ node_modules/
 test/
 docs/
 landing/
+emoji-test/
+supabase/
 *.vsix
 nul
 curl
 desktop.ini
 package-lock.json
 *.md
-!readme.md
-!changelog.md
+!README.md
+!CHANGELOG.md
 
 # Exclude large source image files (keep only the final icon)
+src/img/Others/
 src/img/*.clip
+src/img/*.ico
 src/img/MojiPro.png
 src/img/Emoticon_Smile_Face.png
 src/img/Emoticon_Smile_Face_v4.png

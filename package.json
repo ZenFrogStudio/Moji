@@ -1,10 +1,10 @@
 {
   "name": "moji-pro",
-  "displayName": "Moji Pro",
+  "displayName": "Moji",
   "description": "Read code the easy way.",
-  "version": "1.4.8",
-  "publisher": "Lucidian",
-  "license": "SEE LICENSE IN LICENSE",
+  "version": "1.4.13",
+  "publisher": "",
+  "license": "MIT",
   "icon": "src/img/icon.png",
   "repository": {
     "type": "git",
@@ -69,35 +69,19 @@
     "commands": [
       {
         "command": "mojiPro.toggle",
-        "title": "Moji Pro: Toggle"
+        "title": "Moji: Toggle"
       },
       {
         "command": "mojiPro.openSettings",
-        "title": "Moji Pro: Customize Settings"
-      },
-      {
-        "command": "mojiPro.activateLicense",
-        "title": "Moji Pro: Activate License"
-      },
-      {
-        "command": "mojiPro.deactivateLicense",
-        "title": "Moji Pro: Deactivate License"
-      },
-      {
-        "command": "mojiPro.licenseStatus",
-        "title": "Moji Pro: License Status"
-      },
-      {
-        "command": "mojiPro.purchaseLicense",
-        "title": "Moji Pro: Purchase License"
+        "title": "Moji: Customize Settings"
       },
       {
         "command": "mojiPro.toggleCodeBlocks",
-        "title": "Moji Pro: Toggle Code Block Highlighting"
+        "title": "Moji: Toggle Code Block Highlighting"
       },
       {
         "command": "mojiPro.toggleReactComponentOutlines",
-        "title": "Moji Pro: Toggle React Component Outlines"
+        "title": "Moji: Toggle React Component Outlines"
       }
     ],
     "menus": {
@@ -120,7 +104,7 @@
           "type": "object",
           "scope": "application",
           "default": {},
-          "description": "Per-keyword emoji overrides. Keys use the internal category-prefixed format (e.g. 'await', 'py:for', 'tag:div'). Managed by the Moji Pro settings panel — use the panel rather than editing this directly.",
+          "description": "Per-keyword emoji overrides. Keys use the internal category-prefixed format (e.g. 'await', 'py:for', 'tag:div'). Managed by the Moji settings panel — use the panel rather than editing this directly.",
           "additionalProperties": {
             "type": "string"
           }
@@ -129,7 +113,7 @@
           "type": "object",
           "scope": "application",
           "default": {},
-          "description": "Disabled decorations by category. Managed by the Moji Pro settings panel.",
+          "description": "Disabled decorations by category. Managed by the Moji settings panel.",
           "additionalProperties": {
             "type": "array",
             "items": {
@@ -4472,7 +4456,6 @@
     }
   },
   "devDependencies": {
-    "@vscode/vsce": "^3.7.1",
-    "supabase": "^2.77.0"
+    "@vscode/vsce": "^3.7.1"
   }
 }

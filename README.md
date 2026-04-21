@@ -5,27 +5,16 @@
 ---
 ## Settings
 
-Settings for each language can be toggled under > Customize Settings.
+Settings for each language can be toggled from `Moji: Customize Settings`.
 ---
 
-## Moji Pro
+## Moji
 
-Moji includes a free tier with select languages. Upgrade to **Moji Pro** to unlock all programming languages.
+Moji is free to use. All supported programming languages are available immediately after installation, with no purchase or activation step.
 
 **What you get:**
-- All current and future programming languages
-- Lifetime license — pay once, own forever
-- Use on up to 5 devices at the same time
-- All future updates included
-
-**How to activate:**
-1. Run `Moji Pro: Purchase License` from the Command Palette
-2. Copy your license key from the confirmation page after purchase
-3. Run `Moji Pro: Activate License` from the Command Palette and paste your key
-
-**Other commands:**
-- `Moji Pro: License Status` — check your current license and device count
-- `Moji Pro: Deactivate License` — free up a device slot
+- All currently supported programming languages
+- No purchase, activation, account, or subscription requirement
 
 ---
 
@@ -77,7 +66,7 @@ Moji uses VS Code's decoration APIs to render emojis alongside code keywords:
 
 1. Open VS Code
 2. Go to **Extensions** (`Cmd+Shift+X` / `Ctrl+Shift+X`)
-3. Search for **"Moji Pro"**
+3. Search for **"Moji"**
 4. Click **Install**
 
 ---
@@ -88,19 +77,19 @@ Once installed, emojis appear automatically in supported language files.
 
 **Toggle the extension:**
 - Open Command Palette (`Cmd+Shift+P` / `Ctrl+Shift+P`)
-- Type: `Moji Pro: Toggle`
+- Type: `Moji: Toggle`
 
 **Toggle code block highlighting:**
 - Open Command Palette
-- Type: `Moji Pro: Toggle Code Block Highlighting`
+- Type: `Moji: Toggle Code Block Highlighting`
 
 **Configure emojis and code block settings:**
 - Open Command Palette
-- Type: `Moji Pro: Settings`
+- Type: `Moji: Customize Settings`
 - Use the visual settings panel to enable/disable individual emojis or adjust code block options
 
 **Customize an emoji:**
-- Open the Settings panel (`Moji Pro: Settings`)
+- Open the Settings panel (`Moji: Customize Settings`)
 - Click any emoji in the list — an inline editor opens in place
 - Type a unicode code point (e.g. `U+1F680`) or paste an emoji directly, then click ✓
 - Use the ↗ button to browse the full Unicode emoji chart in your browser
@@ -128,14 +117,6 @@ Once installed, emojis appear automatically in supported language files.
 | HTML | 60+ elements |
 | CSS | 32 properties |
 
-### Coming Soon
-
-**Stage 1:** Go, PHP, Rust, Kotlin, Swift, Dart, Ruby
-
-**Stage 2:** R, Scala, Perl, Objective-C, Elixir, Haskell, MATLAB
-
----
-
 ## FAQ
 
 **Does this change my code?**
@@ -145,7 +126,7 @@ No. The extension only affects how you *see* code in VS Code. Your files remain 
 Only if they also have the extension installed. Source files are unaffected.
 
 **Can I disable specific emojis?**
-Yes. Open the Settings panel (`Moji Pro: Settings`) to toggle individual emojis on/off.
+Yes. Open the Settings panel (`Moji: Customize Settings`) to toggle individual emojis on/off.
 
 **Can I change what emoji is used for a keyword?**
 Yes. Click any emoji in the Settings panel to open an inline editor. Enter a unicode code point (`U+XXXX`) or paste an emoji, then save. Changes apply immediately and persist across sessions. Use **Revert All Emojis** in the settings panel to restore all defaults at once.
@@ -159,8 +140,8 @@ Open an issue on [GitHub](https://github.com/lucidiancreative/moji-pro/issues).
 
 ## License
 
-Moji Pro is proprietary software licensed under the Moji Pro End User License Agreement. See the LICENSE file for details.
+Moji is open source software released under the MIT License. See the LICENSE file for details.
 
 ---
 
-© 2026 Lucidian Creative. All rights reserved.
+© 2026 Lucidian Creative.

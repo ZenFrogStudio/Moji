@@ -1,6 +1,45 @@
 # Changelog
 
-All notable changes to Moji Pro will be documented in this file.
+All notable changes to Moji will be documented in this file.
+
+## [1.4.13] - 2026-04-20
+
+### Fixed
+- Tightened VSIX packaging exclusions so local test fixtures, Supabase temp files, and unused source artwork are not published.
+- Restored `CHANGELOG.md` inclusion in the packaged extension.
+- Packaged the extension with the updated PNG icon asset.
+- Removed forward-looking roadmap and update promises from the README for the final release.
+- Made Toggle commands persist their setting changes and repaint all visible editors.
+- Restricted the settings webview from loading local extension resources it does not need.
+
+## [1.4.12] - 2026-04-20
+
+### Changed
+- Moved code block highlighting and React component outline controls into the General settings tab.
+
+### Removed
+- Removed the standalone Code Blocks settings tab.
+
+## [1.4.11] - 2026-04-20
+
+### Changed
+- Changed the project license to the MIT License.
+- Updated package metadata and README license wording for the open source release.
+
+## [1.4.10] - 2026-04-20
+
+### Changed
+- Renamed the extension from Moji Pro to Moji across user-facing commands, settings UI, docs, and package metadata.
+- Kept the existing `mojiPro.*` command IDs and settings namespace for backward compatibility.
+
+## [1.4.9] - 2026-04-20
+
+### Removed
+- Removed the commercial activation system, purchase commands, settings-panel activation UI, and Supabase purchase/activation backend artifacts.
+
+### Changed
+- Made all supported language decorations available immediately after installation.
+- Removed the unused Supabase CLI development dependency.
 
 ## [1.4.8] - 2026-04-20
 
@@ -31,19 +70,14 @@ All notable changes to Moji Pro will be documented in this file.
 ## [1.4.3] - 2026-04-19
 
 ### Fixed
-- Refreshed all visible editors after license state changes so settings-panel activation/deactivation applies immediately.
 - Fixed React component outline settings reloads during editor-switch/configuration debounce handling.
 - Reduced React outline false positives by requiring detected components to return JSX.
 - Hardened settings-panel message handling with explicit setting allowlists, typed value validation, safe external URL opening, and escaped keyword row rendering.
-- Added an atomic license activation RPC to prevent concurrent device activations from bypassing the device limit.
 
 ## [1.4.2] - 2026-04-19
 
 ### Fixed
-- Fixed license API rate limiting by aligning the Edge Function RPC parameters with the database function signature.
-- Fixed post-purchase license lookup after the Stripe migration by querying `stripe_checkout_session_id`.
-- Disabled the legacy Paddle webhook endpoint to avoid writes to the removed Paddle transaction column and prevent license keys from being logged.
-- Hardened license API request validation for malformed JSON, license keys, device fingerprints, and checkout session IDs.
+- Fixed commercial activation backend issues that were later removed in 1.4.9.
 
 ## [1.4.0] - 2026-04-18
 
@@ -79,8 +113,8 @@ All notable changes to Moji Pro will be documented in this file.
 
 ### Added
 - **Code Block Highlighting** — draws a thin connected outline (top, left, and bottom border sides) around each multi-line `{}` block in JS, TS, Java, C, C++, C#, CSS/SCSS/Less, and around indented blocks in Python, with a subtle background tint to visually separate nested scopes
-- Toggle command `Moji Pro: Toggle Code Block Highlighting` to enable/disable the feature without opening settings
-- New **Code Blocks** tab in the Moji Pro Settings panel with a master on/off toggle
+- Toggle command `Moji: Toggle Code Block Highlighting` to enable/disable the feature without opening settings
+- New **Code Blocks** tab in the Moji Settings panel with a master on/off toggle
 - Four new settings under `mojiPro.codeBlocks.*`: `enabled`, `borderColor`, `backgroundColor`, `borderWidth`
 - Code block highlighting is enabled by default
 
@@ -94,9 +128,8 @@ All notable changes to Moji Pro will be documented in this file.
 ## [1.0.0] - 2026-03-04
 
 ### Changed
-- Rebranded extension from MojiCode Pro to Moji Pro
+- Rebranded extension from MojiCode Pro to Moji
 - Renamed VS Code command and configuration namespace from `mojiCode.*` to `mojiPro.*`
-- Renamed license storage keys (`mojicode_*` → `moji_*`) — existing activations require re-entry
 
 ## [1.0.0-rc.1] - 2026-02-19
 

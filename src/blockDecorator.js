@@ -342,7 +342,7 @@ class BlockDecorator {
     const editor = vscode.window.activeTextEditor;
     if (editor) this.updateEditor(editor);
     vscode.window.showInformationMessage(
-      `Moji Pro: Code Block Highlighting ${this.enabled ? 'enabled' : 'disabled'}`
+      `Moji: Code Block Highlighting ${this.enabled ? 'enabled' : 'disabled'}`
     );
   }
 

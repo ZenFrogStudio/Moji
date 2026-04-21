@@ -5,7 +5,6 @@ const { KeywordDecorator } = require('./decorator');
 const { BlockDecorator }   = require('./blockDecorator');
 const { ComponentOutlineDecorator } = require('./componentOutlineDecorator');
 const { openSettingsPanel } = require('./settingsPanel');
-const { LicenseManager }   = require('./licenseManager');
 const { DECORATION_CATEGORIES } = require('./decorationCategories');
 const settingsStore = require('./settingsStore');
 
@@ -17,17 +16,6 @@ let blockDecorator;
 
 /** @type {ComponentOutlineDecorator | undefined} */
 let componentOutlineDecorator;
-
-/** @type {LicenseManager | undefined} */
-let licenseManager;
-
-const PURCHASE_URL = 'https://lucidiancreative.com/moji-checkout.html';
-
-function openHttpExternal(url) {
-  const uri = vscode.Uri.parse(url);
-  if (uri.scheme !== 'https' && uri.scheme !== 'http') return;
-  vscode.env.openExternal(uri);
-}
 
 async function migrateLegacyDecorationSettings(context) {
   const MIGRATION_KEY = 'settingsMigration.compactDecorations.v1';
@@ -71,7 +59,7 @@ async function migrateLegacyDecorationSettings(context) {
 
     await context.globalState.update(MIGRATION_KEY, true);
   } catch (err) {
-    vscode.window.showWarningMessage(`Moji Pro: Could not migrate legacy decoration settings - ${err.message}`);
+    vscode.window.showWarningMessage(`Moji: Could not migrate legacy decoration settings - ${err.message}`);
   }
 }
 
@@ -81,22 +69,6 @@ async function activate(context) {
 
 
 
-
-  // ── License check ──────────────────────────────────────────────────────
-
-  licenseManager = new LicenseManager(context.secrets, context.globalState);
-  const isLicensed = await licenseManager.initialize();
-
-  if (!isLicensed) {
-    vscode.window.showInformationMessage(
-      'Moji Pro: JS, HTML, and CSS emojis are free. Activate a license to unlock all languages.',
-      'Activate License'
-    ).then(selection => {
-      if (selection === 'Activate License') {
-        vscode.commands.executeCommand('mojiPro.activateLicense');
-      }
-    });
-  }
 
   await migrateLegacyDecorationSettings(context);
 
@@ -112,7 +84,6 @@ async function activate(context) {
 
   decorator          = new KeywordDecorator();
   decorator.enabled  = enabled;
-  decorator.licensed = isLicensed;
 
   // Block highlighting is opt-in — reads its own enabled flag from settings.
   blockDecorator         = new BlockDecorator();
@@ -161,14 +132,18 @@ async function activate(context) {
     }
   }
 
-  function refreshDecoratorLicenseState() {
-    decorator.licensed = licenseManager.isValid;
-    decorator.enabled = vscode.workspace
-      .getConfiguration('mojiPro')
-      .get('enabled', true);
-    repaintEditors();
-  }
+  async function toggleBooleanSetting(section, key, fallback, label) {
+    const config = vscode.workspace.getConfiguration(section);
+    const enabled = !config.get(key, fallback);
 
+    await config.update(key, enabled, vscode.ConfigurationTarget.Global);
+    reloadDecoratorConfig();
+    repaintEditors();
+
+    vscode.window.showInformationMessage(
+      `Moji: ${label} ${enabled ? 'enabled' : 'disabled'}`
+    );
+  }
 
 
 
@@ -177,26 +152,26 @@ async function activate(context) {
   // ── Commands ───────────────────────────────────────────────────────────
 
   context.subscriptions.push(
-    vscode.commands.registerCommand('mojiPro.toggle', () => {
-      decorator.toggle();
+    vscode.commands.registerCommand('mojiPro.toggle', async () => {
+      await toggleBooleanSetting('mojiPro', 'enabled', true, 'Emoji decorations');
     })
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand('mojiPro.toggleCodeBlocks', () => {
-      blockDecorator.toggle();
+    vscode.commands.registerCommand('mojiPro.toggleCodeBlocks', async () => {
+      await toggleBooleanSetting('mojiPro.codeBlocks', 'enabled', true, 'Code Block Highlighting');
     })
   );
 
   context.subscriptions.push(
-    vscode.commands.registerCommand('mojiPro.toggleReactComponentOutlines', () => {
-      componentOutlineDecorator.toggle();
+    vscode.commands.registerCommand('mojiPro.toggleReactComponentOutlines', async () => {
+      await toggleBooleanSetting('mojiPro.reactComponentOutlines', 'enabled', false, 'React Component Outlines');
     })
   );
 
   context.subscriptions.push(
     vscode.commands.registerCommand('mojiPro.openSettings', () => {
-      openSettingsPanel(context, licenseManager, () => {
+      openSettingsPanel(context, () => {
         // Reload all decorator configs and repaint every visible editor once
         // the settings panel has written its pending changes to VS Code config.
         // visibleTextEditors is used because activeTextEditor is undefined while
@@ -205,99 +180,6 @@ async function activate(context) {
         reloadDecoratorConfig();
         repaintEditors();
       });
-    })
-  );
-
-  context.subscriptions.push(
-    vscode.commands.registerCommand('mojiPro.purchaseLicense', () => {
-      openHttpExternal(PURCHASE_URL);
-    })
-  );
-
-  context.subscriptions.push(
-    vscode.commands.registerCommand('mojiPro.activateLicense', async () => {
-      // If not yet licensed, prompt the user to buy or enter their key.
-      if (!licenseManager.isValid) {
-        const choice = await vscode.window.showInformationMessage(
-          'Moji Pro: Unlock all languages with a Pro license.',
-          'I have a key',
-          'Buy Moji Pro'
-        );
-        if (choice === 'Buy Moji Pro') {
-          openHttpExternal(PURCHASE_URL);
-          return;
-        }
-        if (choice !== 'I have a key') return; // dismissed
-      }
-
-      const key = await vscode.window.showInputBox({
-        prompt:         'Enter your Moji Pro license key',
-        placeHolder:    'MOJI-XXXX-XXXX-XXXX-XXXX',
-        password:       true,
-        ignoreFocusOut: true,
-      });
-
-      if (!key) return; // user pressed Escape
-
-      const result = await licenseManager.activate(key.trim());
-
-      if (result.success) {
-        vscode.window.showInformationMessage(
-          'Moji Pro: License activated successfully! Enjoy your emojis.'
-        );
-        refreshDecoratorLicenseState();
-      } else {
-        vscode.window.showErrorMessage(
-          `Moji Pro: Activation failed — ${result.error}`
-        );
-      }
-    })
-  );
-
-  context.subscriptions.push(
-    vscode.commands.registerCommand('mojiPro.licenseStatus', () => {
-      const { isPremium, activeDevices, maxDevices } = licenseManager.getLicenseStatus();
-      if (isPremium) {
-        vscode.window.showInformationMessage(
-          `Moji Pro: Premium active — ${activeDevices} of ${maxDevices} device slots in use.`
-        );
-      } else {
-        vscode.window.showInformationMessage(
-          'Moji Pro: Free tier — JS, HTML, and CSS emojis are active. Activate a license to unlock all languages.',
-          'Activate License'
-        ).then(selection => {
-          if (selection === 'Activate License') {
-            vscode.commands.executeCommand('mojiPro.activateLicense');
-          }
-        });
-      }
-    })
-  );
-
-  context.subscriptions.push(
-    vscode.commands.registerCommand('mojiPro.deactivateLicense', async () => {
-      const confirm = await vscode.window.showWarningMessage(
-        'Deactivate your Moji Pro license on this machine?',
-        { modal: true },
-        'Deactivate'
-      );
-      if (confirm !== 'Deactivate') return;
-
-      await licenseManager.deactivate();
-
-      refreshDecoratorLicenseState();
-
-      vscode.window.showInformationMessage(
-        'Moji Pro: License deactivated. JS, HTML, and CSS emojis remain active.'
-      );
-    })
-  );
-
-  // Internal command used by the settings panel to re-apply or clear decorations
-  // after license state changes without directly coupling settingsPanel to decorator.
-  context.subscriptions.push(
-    vscode.commands.registerCommand('mojiPro._refreshDecorator', () => {
-      refreshDecoratorLicenseState();
     })
   );
 
