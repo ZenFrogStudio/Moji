@@ -2,29 +2,6 @@
 
 All notable changes to Moji will be documented in this file.
 
-## [1.4.26] - 2026-05-19
-
-### Fixed
-- Excluded temporary `.tmp-*` inspection artifacts from the VSIX package so release builds only contain extension files.
-- Updated the package script to build with `--no-dependencies`, avoiding the Windows `vsce` dependency-scan `spawn EPERM` failure for this dependency-free extension.
-
-## [1.4.25] - 2026-05-19
-
-### Fixed
-- Removed README screenshot embeds that were rendering as broken images in VS Code extension details because packaging rewrote them to GitHub-hosted URLs that were not yet publicly available.
-- Relaxed the README image validation test so screenshots remain optional, while any future image references are still checked for valid local files or tracked GitHub raw targets.
-
-## [1.4.24] - 2026-05-19
-
-### Fixed
-- Added a README screenshot validation test so GitHub-hosted image URLs cannot ship if they still point at untracked local files.
-- Updated the packaging script to run the test suite before building a VSIX, preventing another release with broken extension-detail screenshots.
-
-## [1.4.23] - 2026-05-19
-
-### Fixed
-- Switched README screenshots to absolute GitHub-hosted image URLs because package-relative screenshot paths were still not rendering reliably in the extension details view.
-
 ## [1.4.22] - 2026-05-19
 
 ### Changed

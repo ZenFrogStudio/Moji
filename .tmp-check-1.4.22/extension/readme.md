@@ -44,17 +44,21 @@ Moji adds visual markers to code without changing your files. It works immediate
 
 Once installed, Moji starts decorating supported files automatically.
 
+![Moji in the editor with emoji decorations and highlighted code blocks](https://github.com/ZenFrogStudio/Moji/raw/HEAD/src/img/Others/Clipboard_05-19-2026_03.png)
+
 **Open settings**
 - Run `Moji: Customize Settings`.
 - Use the settings panel to manage emoji groups, individual keywords, code block highlighting, and React component outlines.
-- The panel includes per-language toggles, code block outline controls, and React component outline settings.
+
+![Moji settings panel with code block highlighting and React component outline controls](https://github.com/ZenFrogStudio/Moji/raw/HEAD/src/img/Others/Clipboard_05-19-2026_01.png)
 
 **Customize emojis**
 - Click an emoji in the settings panel.
 - Enter a Unicode code point such as `U+1F680`, or paste an emoji directly.
 - Save to apply the change immediately.
 - Use **Revert All Emojis** to restore defaults.
-- Unicode edits apply immediately to open editors and persist across sessions.
+
+![Moji inline Unicode emoji customization editor](https://github.com/ZenFrogStudio/Moji/raw/HEAD/src/img/Others/Clipboard_05-19-2026_02.png)
 
 **Optional visual aids**
 - Run `Moji: Toggle Code Block Highlighting` to turn block outlines on or off.

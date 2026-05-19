@@ -350,32 +350,41 @@ test('settings store normalizes and merges valid compact settings', () => {
   });
 });
 
-test('README GitHub-hosted screenshots point to tracked files', () => {
+test('README image references are valid when present', () => {
   const repoRoot = path.join(__dirname, '..');
   const readme = fs.readFileSync(path.join(repoRoot, 'README.md'), 'utf8');
-  const screenshotUrls = Array.from(
-    readme.matchAll(
-      /!\[[^\]]*]\(https:\/\/raw\.githubusercontent\.com\/ZenFrogStudio\/Moji\/main\/([^)]+)\)/g
-    ),
+  const imageRefs = Array.from(
+    readme.matchAll(/!\[[^\]]*]\(([^)]+)\)/g),
     match => match[1]
   );
 
-  assert.ok(screenshotUrls.length > 0, 'Expected README to include at least one GitHub-hosted screenshot.');
+  for (const imageRef of imageRefs) {
+    if (/^https:\/\/raw\.githubusercontent\.com\/ZenFrogStudio\/Moji\/main\//.test(imageRef)) {
+      const repoPath = imageRef.replace('https://raw.githubusercontent.com/ZenFrogStudio/Moji/main/', '');
+      const localPath = path.join(repoRoot, ...repoPath.split('/'));
 
-  for (const repoPath of screenshotUrls) {
-    const localPath = path.join(repoRoot, ...repoPath.split('/'));
-    assert.ok(fs.existsSync(localPath), `README screenshot is missing locally: ${repoPath}`);
+      assert.ok(fs.existsSync(localPath), `README image is missing locally: ${repoPath}`);
 
-    try {
-      execFileSync('git', ['ls-files', '--error-unmatch', repoPath], {
-        cwd: repoRoot,
-        stdio: 'ignore',
-      });
-    } catch (error) {
-      assert.fail(
-        `README screenshot URL points at an untracked file. Because the README uses GitHub raw URLs on the main branch, VS Code will not load this image until it is tracked and pushed there: ${repoPath}`
-      );
+      try {
+        execFileSync('git', ['ls-files', '--error-unmatch', repoPath], {
+          cwd: repoRoot,
+          stdio: 'ignore',
+        });
+      } catch (error) {
+        assert.fail(
+          `README image URL points at an untracked file. Because the README uses GitHub raw URLs on the main branch, VS Code will not load this image until it is tracked and pushed there: ${repoPath}`
+        );
+      }
+      continue;
     }
+
+    if (/^(https?:\/\/|data:)/.test(imageRef)) {
+      continue;
+    }
+
+    const relativePath = imageRef.replace(/^\.\//, '');
+    const localPath = path.join(repoRoot, ...relativePath.split('/'));
+    assert.ok(fs.existsSync(localPath), `README image relative path is missing locally: ${imageRef}`);
   }
 });
 

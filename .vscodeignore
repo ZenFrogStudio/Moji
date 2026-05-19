@@ -9,6 +9,8 @@ docs/
 landing/
 emoji-test/
 *.vsix
+.tmp-*/
+.tmp-*.zip
 nul
 curl
 desktop.ini

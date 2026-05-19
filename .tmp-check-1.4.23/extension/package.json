@@ -2,7 +2,7 @@
   "name": "moji-pro",
   "displayName": "Moji Pro",
   "description": "Read code fast and easy.",
-  "version": "1.4.26",
+  "version": "1.4.23",
   "publisher": "Lucidian",
   "license": "SEE LICENSE IN LICENSE",
   "icon": "src/img/icon.png",
@@ -67,7 +67,7 @@
   ],
   "scripts": {
     "test": "node test/run-tests.js",
-    "package": "npm test && vsce package --no-dependencies",
+    "package": "vsce package",
     "publish": "vsce publish"
   },
   "main": "./src/extension.js",

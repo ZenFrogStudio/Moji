@@ -1,0 +1,26 @@
+Moji - Proprietary Freeware License
+
+Copyright (c) 2026 Zen Frog. All rights reserved.
+
+This software is provided free of charge for personal and commercial use.
+
+You MAY:
+- Use this software for any purpose, personal or commercial
+- Install this software on any number of devices
+- Share the original, unmodified distribution package
+
+You MAY NOT:
+- Modify, adapt, or create derivative works of this software
+- Reverse engineer, decompile, or disassemble this software
+- Remove or alter any proprietary notices or labels
+- Redistribute modified versions of this software
+- Sell, sublicense, or commercially distribute this software
+- Include this software in other software packages or distributions
+
+THIS SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THIS SOFTWARE.
