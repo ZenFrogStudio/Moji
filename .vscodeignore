@@ -8,7 +8,6 @@ test/
 docs/
 landing/
 emoji-test/
-supabase/
 *.vsix
 nul
 curl
@@ -20,6 +19,9 @@ package-lock.json
 
 # Exclude large source image files (keep only the final icon)
 src/img/Others/
+!src/img/Others/Clipboard_05-19-2026_01.png
+!src/img/Others/Clipboard_05-19-2026_02.png
+!src/img/Others/Clipboard_05-19-2026_03.png
 src/img/*.clip
 src/img/*.ico
 src/img/MojiPro.png

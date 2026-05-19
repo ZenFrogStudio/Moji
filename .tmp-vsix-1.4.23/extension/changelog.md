@@ -2,12 +2,6 @@
 
 All notable changes to Moji will be documented in this file.
 
-## [1.4.24] - 2026-05-19
-
-### Fixed
-- Added a README screenshot validation test so GitHub-hosted image URLs cannot ship if they still point at untracked local files.
-- Updated the packaging script to run the test suite before building a VSIX, preventing another release with broken extension-detail screenshots.
-
 ## [1.4.23] - 2026-05-19
 
 ### Fixed

@@ -4,5 +4,4 @@ emoji-test/
 *.vsix
 nul
 desktop.ini
-supabase/.temp/
 curl

@@ -1,7 +1,10 @@
 'use strict';
 
 const assert = require('assert');
+const fs = require('fs');
 const Module = require('module');
+const path = require('path');
+const { execFileSync } = require('child_process');
 
 const vscodeMockState = {
   decorationOptions: [],
@@ -345,6 +348,35 @@ test('settings store normalizes and merges valid compact settings', () => {
     htmlTag: ['div'],
     javascript: ['await', 'return'],
   });
+});
+
+test('README GitHub-hosted screenshots point to tracked files', () => {
+  const repoRoot = path.join(__dirname, '..');
+  const readme = fs.readFileSync(path.join(repoRoot, 'README.md'), 'utf8');
+  const screenshotUrls = Array.from(
+    readme.matchAll(
+      /!\[[^\]]*]\(https:\/\/raw\.githubusercontent\.com\/ZenFrogStudio\/Moji\/main\/([^)]+)\)/g
+    ),
+    match => match[1]
+  );
+
+  assert.ok(screenshotUrls.length > 0, 'Expected README to include at least one GitHub-hosted screenshot.');
+
+  for (const repoPath of screenshotUrls) {
+    const localPath = path.join(repoRoot, ...repoPath.split('/'));
+    assert.ok(fs.existsSync(localPath), `README screenshot is missing locally: ${repoPath}`);
+
+    try {
+      execFileSync('git', ['ls-files', '--error-unmatch', repoPath], {
+        cwd: repoRoot,
+        stdio: 'ignore',
+      });
+    } catch (error) {
+      assert.fail(
+        `README screenshot URL points at an untracked file. Because the README uses GitHub raw URLs on the main branch, VS Code will not load this image until it is tracked and pushed there: ${repoPath}`
+      );
+    }
+  }
 });
 
 let failed = 0;
