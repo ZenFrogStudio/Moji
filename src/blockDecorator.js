@@ -8,6 +8,7 @@
 //   indent-based   – Python  (indentation level as depth proxy)
 
 const vscode = require('vscode');
+const appSettingsStore = require('./appSettingsStore');
 
 const BRACKET_BLOCK_LANGUAGES = new Set([
   'javascript', 'javascriptreact',
@@ -60,9 +61,8 @@ class BlockDecorator {
   _buildDecorationTypes() {
     this._disposeDecorationTypes();
 
-    const cfg = vscode.workspace.getConfiguration('mojiPro.codeBlocks');
     for (const blockType of BLOCK_TYPES) {
-      const color = cfg.get(`${blockType}Color`, DEFAULT_COLORS[blockType]);
+      const color = appSettingsStore.get(`codeBlocks.${blockType}Color`, DEFAULT_COLORS[blockType]);
       this._cfgColors[blockType] = color;
 
       this._decTypes.set(blockType, vscode.window.createTextEditorDecorationType({
@@ -352,19 +352,17 @@ class BlockDecorator {
    * the enabled flag to avoid a dispose/recreate flash.
    */
   reloadConfig() {
-    const cfg = vscode.workspace.getConfiguration('mojiPro.codeBlocks');
-
     // Rebuild only if any block type color actually changed — avoids a visible
     // decoration flash when unrelated settings change in the same config event.
     const anyColorChanged = BLOCK_TYPES.some(blockType =>
-      cfg.get(`${blockType}Color`, DEFAULT_COLORS[blockType]) !== this._cfgColors[blockType]
+      appSettingsStore.get(`codeBlocks.${blockType}Color`, DEFAULT_COLORS[blockType]) !== this._cfgColors[blockType]
     );
 
     if (anyColorChanged) {
       this._buildDecorationTypes();
     }
 
-    this.enabled = cfg.get('enabled', false);
+    this.enabled = appSettingsStore.get('codeBlocks.enabled', false);
     this._blockCache.clear();
   }
 

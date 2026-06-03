@@ -1,22 +1,12 @@
 # Moji
 
-## Migration Notice
-
-This Marketplace listing is being retired and will be unpublished.
-
-Moji will continue under the **ZenFrog** publisher account as a replacement extension. Once that new listing is available, install it and remove this legacy listing.
-
-Migration updates will be posted here:
-- GitHub: https://github.com/ZenFrogStudio/Moji
-- Contact: info@zenfrogstudio.com
-
 > Visual cues for faster code comprehension - supplement code keywords with emojis and optional visual outlines.
 
 ---
 
 ## Overview
 
-Moji adds visual markers to code without changing your files. It works immediately after installation and supports all included languages with no account, purchase, or activation step.
+Moji adds visual markers to code without changing your files. It works immediately after installation and supports all included languages out of the box.
 
 ## Features
 
@@ -103,7 +93,7 @@ Open an issue on [GitHub](https://github.com/ZenFrogStudio/Moji/issues) or email
 
 ## License
 
-Moji is proprietary freeware by Zen Frog. Free to use for personal and commercial purposes. See the LICENSE file for details.
+Moji is freeware by Zen Frog. See the LICENSE file for usage terms.
 
 ---
 

@@ -3,12 +3,15 @@
 const assert = require('assert');
 const fs = require('fs');
 const Module = require('module');
+const os = require('os');
 const path = require('path');
 const { execFileSync } = require('child_process');
 
 const vscodeMockState = {
   decorationOptions: [],
   configuration: {},
+  configurationUpdates: [],
+  warningMessages: [],
 };
 
 class Position {
@@ -33,6 +36,77 @@ class Range {
 function resetVscodeMock(configuration = {}) {
   vscodeMockState.decorationOptions = [];
   vscodeMockState.configuration = configuration;
+  vscodeMockState.configurationUpdates = [];
+  vscodeMockState.warningMessages = [];
+
+  try {
+    require('../src/appSettingsStore').__resetForTests();
+  } catch (error) {
+    // Ignore before the module is loaded.
+  }
+}
+
+function getScopedConfiguration(section) {
+  if (
+    section &&
+    Object.prototype.hasOwnProperty.call(vscodeMockState.configuration, section) &&
+    vscodeMockState.configuration[section] &&
+    typeof vscodeMockState.configuration[section] === 'object' &&
+    !Array.isArray(vscodeMockState.configuration[section])
+  ) {
+    return vscodeMockState.configuration[section];
+  }
+
+  return {};
+}
+
+function getConfigurationValue(section, key) {
+  const scoped = getScopedConfiguration(section);
+  if (Object.prototype.hasOwnProperty.call(scoped, key)) {
+    return scoped[key];
+  }
+
+  if (!section && Object.prototype.hasOwnProperty.call(vscodeMockState.configuration, key)) {
+    return vscodeMockState.configuration[key];
+  }
+
+  return undefined;
+}
+
+function setConfigurationValue(section, key, value) {
+  if (!section) {
+    if (typeof value === 'undefined') {
+      delete vscodeMockState.configuration[key];
+    } else {
+      vscodeMockState.configuration[key] = value;
+    }
+    return;
+  }
+
+  if (!Object.prototype.hasOwnProperty.call(vscodeMockState.configuration, section) || typeof vscodeMockState.configuration[section] !== 'object' || Array.isArray(vscodeMockState.configuration[section])) {
+    vscodeMockState.configuration[section] = {};
+  }
+
+  if (typeof value === 'undefined') {
+    delete vscodeMockState.configuration[section][key];
+  } else {
+    vscodeMockState.configuration[section][key] = value;
+  }
+}
+
+function createGlobalState(initialValues = {}) {
+  const store = { ...initialValues };
+  return {
+    get(key) {
+      return store[key];
+    },
+    async update(key, value) {
+      store[key] = value;
+    },
+    dump() {
+      return { ...store };
+    },
+  };
 }
 
 const originalLoad = Module._load;
@@ -41,13 +115,25 @@ Module._load = function loadWithVscodeMock(request, parent, isMain) {
     return {
       Position,
       Range,
+      ConfigurationTarget: {
+        Global: 'Global',
+      },
       workspace: {
-        getConfiguration() {
+        getConfiguration(section = '') {
           return {
             get(key, fallback) {
-              return Object.prototype.hasOwnProperty.call(vscodeMockState.configuration, key)
-                ? vscodeMockState.configuration[key]
-                : fallback;
+              const value = getConfigurationValue(section, key);
+              return typeof value === 'undefined' ? fallback : value;
+            },
+            inspect(key) {
+              return {
+                globalValue: getConfigurationValue(section, key),
+              };
+            },
+            update(key, value) {
+              setConfigurationValue(section, key, value);
+              vscodeMockState.configurationUpdates.push({ section, key, value });
+              return Promise.resolve();
             },
           };
         },
@@ -64,6 +150,12 @@ Module._load = function loadWithVscodeMock(request, parent, isMain) {
           return decorationType;
         },
         showInformationMessage() {},
+        showWarningMessage(message) {
+          vscodeMockState.warningMessages.push(message);
+        },
+        showErrorMessage(message) {
+          vscodeMockState.warningMessages.push(message);
+        },
       },
     };
   }
@@ -75,6 +167,7 @@ const { scanHtmlTokens } = require('../src/htmlScanner');
 const { scanCssTokens } = require('../src/cssScanner');
 const { detectReactComponents } = require('../src/reactComponentDetector');
 const { ComponentOutlineDecorator } = require('../src/componentOutlineDecorator');
+const appSettingsStore = require('../src/appSettingsStore');
 const settingsStore = require('../src/settingsStore');
 
 const tests = [];
@@ -218,6 +311,29 @@ class PlainClass {
   );
 });
 
+test('react detector supports typed arrow components and export default functions', () => {
+  const source = `
+interface Props {
+  title: string;
+}
+
+const Card: React.FC<Props> = ({ title }) => {
+  return <section>{title}</section>;
+};
+
+export default function ExportedComponent() {
+  return <main />;
+}
+`;
+
+  const matches = detectReactComponents(createDocument('typescriptreact', source));
+
+  assert.deepStrictEqual(
+    matches.map(component => component.name),
+    ['Card', 'ExportedComponent']
+  );
+});
+
 test('react detector ignores non JSX languages', () => {
   const source = 'function RealComponent() { return <div />; }';
   const matches = detectReactComponents(createDocument('typescript', source));
@@ -350,6 +466,90 @@ test('settings store normalizes and merges valid compact settings', () => {
   });
 });
 
+test('app settings store normalizes invalid values to defaults', () => {
+  const normalized = appSettingsStore.normalizeSettings({
+    enabled: false,
+    displayMode: 'nope',
+    overlayOpacity: 2,
+    emojiSize: 'small',
+    customEmojiOverrides: {
+      await: '🎯',
+      bogus: 'x',
+    },
+    disabledDecorations: {
+      javascript: ['await', 'not-a-key'],
+    },
+    codeBlocks: {
+      enabled: true,
+      functionColor: 123,
+    },
+    reactComponentOutlines: {
+      enabled: true,
+      width: 4,
+      style: 'dashed',
+    },
+  });
+
+  assert.strictEqual(normalized.enabled, false);
+  assert.strictEqual(normalized.displayMode, 'overlay');
+  assert.strictEqual(normalized.overlayOpacity, 1);
+  assert.strictEqual(normalized.emojiSize, 'small');
+  assert.deepStrictEqual(normalized.customEmojiOverrides, { await: '🎯' });
+  assert.deepStrictEqual(normalized.disabledDecorations, { javascript: ['await'] });
+  assert.strictEqual(normalized.codeBlocks.enabled, true);
+  assert.strictEqual(normalized.codeBlocks.functionColor, 'rgba(86,156,214,0.08)');
+  assert.strictEqual(normalized.reactComponentOutlines.enabled, true);
+  assert.strictEqual(normalized.reactComponentOutlines.width, 1);
+  assert.strictEqual(normalized.reactComponentOutlines.style, 'dashed');
+});
+
+test('app settings store migrates VS Code config into an app-owned file', async () => {
+  resetVscodeMock({
+    mojiPro: {
+      enabled: false,
+      customEmojiOverrides: {
+        await: '🎯',
+      },
+    },
+    'mojiPro.codeBlocks': {
+      enabled: true,
+    },
+    'mojiPro.jsKeyword': {
+      await: false,
+    },
+  });
+
+  const storageDir = fs.mkdtempSync(path.join(os.tmpdir(), 'moji-settings-'));
+  const globalState = createGlobalState();
+
+  try {
+    await appSettingsStore.initialize({
+      globalStorageUri: { fsPath: storageDir },
+      globalState,
+    });
+
+    const storedFilePath = appSettingsStore.getSettingsFilePath();
+    assert.ok(fs.existsSync(storedFilePath), 'expected settings file to be created');
+
+    const storedPayload = JSON.parse(fs.readFileSync(storedFilePath, 'utf8'));
+    assert.strictEqual(storedPayload.schemaVersion, 1);
+    assert.strictEqual(storedPayload.settings.enabled, false);
+    assert.strictEqual(storedPayload.settings.codeBlocks.enabled, true);
+    assert.deepStrictEqual(storedPayload.settings.customEmojiOverrides, { await: '🎯' });
+    assert.deepStrictEqual(storedPayload.settings.disabledDecorations, { javascript: ['await'] });
+
+    assert.strictEqual(appSettingsStore.get('enabled', true), false);
+    assert.deepStrictEqual(settingsStore.getDisabledDecorations(), { javascript: ['await'] });
+    assert.strictEqual(globalState.dump()['settingsMigration.appOwned.v1'], true);
+
+    assert.strictEqual(vscodeMockState.configuration.mojiPro.enabled, undefined);
+    assert.strictEqual(vscodeMockState.configuration['mojiPro.codeBlocks'].enabled, undefined);
+    assert.strictEqual(vscodeMockState.configuration['mojiPro.jsKeyword'].await, undefined);
+  } finally {
+    fs.rmSync(storageDir, { recursive: true, force: true });
+  }
+});
+
 test('README image references are valid when present', () => {
   const repoRoot = path.join(__dirname, '..');
   const readme = fs.readFileSync(path.join(repoRoot, 'README.md'), 'utf8');
@@ -388,20 +588,22 @@ test('README image references are valid when present', () => {
   }
 });
 
-let failed = 0;
-for (const { name, fn } of tests) {
-  try {
-    fn();
-    console.log(`ok - ${name}`);
-  } catch (err) {
-    failed++;
-    console.error(`not ok - ${name}`);
-    console.error(err.stack || err.message);
+(async () => {
+  let failed = 0;
+  for (const { name, fn } of tests) {
+    try {
+      await fn();
+      console.log(`ok - ${name}`);
+    } catch (err) {
+      failed++;
+      console.error(`not ok - ${name}`);
+      console.error(err.stack || err.message);
+    }
   }
-}
 
-if (failed > 0) {
-  process.exitCode = 1;
-} else {
-  console.log(`${tests.length} tests passed`);
-}
+  if (failed > 0) {
+    process.exitCode = 1;
+  } else {
+    console.log(`${tests.length} tests passed`);
+  }
+})();

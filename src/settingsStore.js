@@ -1,6 +1,5 @@
 'use strict';
 
-const vscode = require('vscode');
 const { CATEGORY_BY_ID } = require('./decorationCategories');
 
 function uniqueSortedStrings(values, allowedKeys) {
@@ -112,18 +111,16 @@ function mergeDisabledDecorations(base, incoming) {
 }
 
 function getDisabledDecorations() {
+  const appSettingsStore = require('./appSettingsStore');
   return normalizeDisabledDecorations(
-    vscode.workspace.getConfiguration('mojiPro').get('disabledDecorations', {})
+    appSettingsStore.get('disabledDecorations', {})
   );
 }
 
 async function saveDisabledDecorations(disabled) {
+  const appSettingsStore = require('./appSettingsStore');
   const normalized = normalizeDisabledDecorations(disabled);
-  const value = Object.keys(normalized).length > 0 ? normalized : undefined;
-
-  await vscode.workspace
-    .getConfiguration('mojiPro')
-    .update('disabledDecorations', value, vscode.ConfigurationTarget.Global);
+  await appSettingsStore.update('disabledDecorations', normalized);
 }
 
 module.exports = {

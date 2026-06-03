@@ -1,6 +1,11 @@
 node_modules/
 emoji-test/
 .claude/
+.fallow/
+.vscode-test/
+.tmp-*/
+.tmp-*.zip
+Modelfile
 *.vsix
 nul
 desktop.ini

@@ -4,10 +4,12 @@
 .git/
 .gitignore
 node_modules/
+.fallow/
 test/
 docs/
 landing/
 emoji-test/
+.vscode-test/
 *.vsix
 .tmp-*/
 .tmp-*.zip
@@ -15,17 +17,12 @@ nul
 curl
 desktop.ini
 package-lock.json
+Modelfile
 *.md
 !README.md
 !CHANGELOG.md
 
 # Exclude large source image files (keep only the final icon)
 src/img/Others/
-!src/img/Others/Clipboard_05-19-2026_01.png
-!src/img/Others/Clipboard_05-19-2026_02.png
-!src/img/Others/Clipboard_05-19-2026_03.png
 src/img/*.clip
 src/img/*.ico
-src/img/MojiPro.png
-src/img/Emoticon_Smile_Face.png
-src/img/Emoticon_Smile_Face_v4.png

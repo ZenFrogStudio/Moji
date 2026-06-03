@@ -1,12 +1,11 @@
 // Extension entry point – wires up activation, commands, and event listeners.
 
 const vscode = require('vscode');
+const appSettingsStore = require('./appSettingsStore');
 const { KeywordDecorator } = require('./decorator');
 const { BlockDecorator }   = require('./blockDecorator');
 const { ComponentOutlineDecorator } = require('./componentOutlineDecorator');
 const { openSettingsPanel } = require('./settingsPanel');
-const { DECORATION_CATEGORIES } = require('./decorationCategories');
-const settingsStore = require('./settingsStore');
 
 /** @type {KeywordDecorator | undefined} */
 let decorator;
@@ -17,85 +16,23 @@ let blockDecorator;
 /** @type {ComponentOutlineDecorator | undefined} */
 let componentOutlineDecorator;
 
-async function migrateLegacyDecorationSettings(context) {
-  const MIGRATION_KEY = 'settingsMigration.compactDecorations.v1';
-  if (context.globalState.get(MIGRATION_KEY)) return;
-
-  let nextDisabledDecorations = settingsStore.getDisabledDecorations();
-  const legacyKeysToRemove = [];
-
-  for (const { id, legacyConfigNs, map } of DECORATION_CATEGORIES) {
-    const legacyConfig = vscode.workspace.getConfiguration(legacyConfigNs);
-
-    for (const key of Object.keys(map)) {
-      const inspected = legacyConfig.inspect(key);
-      if (!inspected || typeof inspected.globalValue === 'undefined') continue;
-
-      if (inspected.globalValue === false) {
-        nextDisabledDecorations = settingsStore.setDecorationEnabled(
-          nextDisabledDecorations,
-          id,
-          key,
-          false
-        );
-      }
-
-      if (inspected.globalValue === true || inspected.globalValue === false) {
-        legacyKeysToRemove.push({ legacyConfigNs, key });
-      }
-    }
-  }
-
-  try {
-    if (legacyKeysToRemove.length > 0) {
-      await settingsStore.saveDisabledDecorations(nextDisabledDecorations);
-
-      for (const { legacyConfigNs, key } of legacyKeysToRemove) {
-        await vscode.workspace
-          .getConfiguration(legacyConfigNs)
-          .update(key, undefined, vscode.ConfigurationTarget.Global);
-      }
-    }
-
-    await context.globalState.update(MIGRATION_KEY, true);
-  } catch (err) {
-    vscode.window.showWarningMessage(`Moji: Could not migrate legacy decoration settings - ${err.message}`);
-  }
-}
-
 async function activate(context) {
-
-
-
-
-
-
-  await migrateLegacyDecorationSettings(context);
-
-
-
-
-
+  await appSettingsStore.initialize(context);
 
   // ── Decorator setup ────────────────────────────────────────────────────
 
-  const config  = vscode.workspace.getConfiguration('mojiPro');
-  const enabled = config.get('enabled', true);
+  const enabled = appSettingsStore.get('enabled', true);
 
   decorator          = new KeywordDecorator();
   decorator.enabled  = enabled;
 
   // Block highlighting is opt-in — reads its own enabled flag from settings.
   blockDecorator         = new BlockDecorator();
-  blockDecorator.enabled = vscode.workspace
-    .getConfiguration('mojiPro.codeBlocks')
-    .get('enabled', false);
+  blockDecorator.enabled = appSettingsStore.get('codeBlocks.enabled', false);
 
   // React component outlines are opt-in — reads its own enabled flag from settings.
   componentOutlineDecorator         = new ComponentOutlineDecorator();
-  componentOutlineDecorator.enabled = vscode.workspace
-    .getConfiguration('mojiPro.reactComponentOutlines')
-    .get('enabled', false);
+  componentOutlineDecorator.enabled = appSettingsStore.get('reactComponentOutlines.enabled', false);
 
   if (vscode.window.activeTextEditor) {
     decorator.updateEditor(vscode.window.activeTextEditor);
@@ -105,19 +42,13 @@ async function activate(context) {
 
   function reloadDecoratorConfig() {
     decorator.reloadConfig();
-    decorator.enabled = vscode.workspace
-      .getConfiguration('mojiPro')
-      .get('enabled', true);
+    decorator.enabled = appSettingsStore.get('enabled', true);
 
     blockDecorator.reloadConfig();
-    blockDecorator.enabled = vscode.workspace
-      .getConfiguration('mojiPro.codeBlocks')
-      .get('enabled', false);
+    blockDecorator.enabled = appSettingsStore.get('codeBlocks.enabled', false);
 
     componentOutlineDecorator.reloadConfig();
-    componentOutlineDecorator.enabled = vscode.workspace
-      .getConfiguration('mojiPro.reactComponentOutlines')
-      .get('enabled', false);
+    componentOutlineDecorator.enabled = appSettingsStore.get('reactComponentOutlines.enabled', false);
   }
 
   function repaintEditors() {
@@ -132,13 +63,9 @@ async function activate(context) {
     }
   }
 
-  async function toggleBooleanSetting(section, key, fallback, label) {
-    const config = vscode.workspace.getConfiguration(section);
-    const enabled = !config.get(key, fallback);
-
-    await config.update(key, enabled, vscode.ConfigurationTarget.Global);
-    reloadDecoratorConfig();
-    repaintEditors();
+  async function toggleBooleanSetting(settingPath, fallback, label) {
+    const enabled = !appSettingsStore.get(settingPath, fallback);
+    await appSettingsStore.update(settingPath, enabled);
 
     vscode.window.showInformationMessage(
       `Moji: ${label} ${enabled ? 'enabled' : 'disabled'}`
@@ -153,19 +80,19 @@ async function activate(context) {
 
   context.subscriptions.push(
     vscode.commands.registerCommand('mojiPro.toggle', async () => {
-      await toggleBooleanSetting('mojiPro', 'enabled', true, 'Emoji decorations');
+      await toggleBooleanSetting('enabled', true, 'Emoji decorations');
     })
   );
 
   context.subscriptions.push(
     vscode.commands.registerCommand('mojiPro.toggleCodeBlocks', async () => {
-      await toggleBooleanSetting('mojiPro.codeBlocks', 'enabled', true, 'Code Block Highlighting');
+      await toggleBooleanSetting('codeBlocks.enabled', false, 'Code Block Highlighting');
     })
   );
 
   context.subscriptions.push(
     vscode.commands.registerCommand('mojiPro.toggleReactComponentOutlines', async () => {
-      await toggleBooleanSetting('mojiPro.reactComponentOutlines', 'enabled', false, 'React Component Outlines');
+      await toggleBooleanSetting('reactComponentOutlines.enabled', false, 'React Component Outlines');
     })
   );
 
@@ -173,7 +100,7 @@ async function activate(context) {
     vscode.commands.registerCommand('mojiPro.openSettings', () => {
       openSettingsPanel(context, () => {
         // Reload all decorator configs and repaint every visible editor once
-        // the settings panel has written its pending changes to VS Code config.
+        // the settings panel has written its pending changes to the app settings file.
         // visibleTextEditors is used because activeTextEditor is undefined while
         // the webview panel has focus, and remains undefined until an editor tab
         // is explicitly clicked after the panel closes.
@@ -194,19 +121,27 @@ async function activate(context) {
   // Used to suppress redundant reloads from delayed onDidChangeConfiguration
   // events that arrive after the editor switch has already handled the refresh.
   let lastEditorSwitchRefresh = 0;
+  let refreshTimer;
+
+  function scheduleSettingsRefresh() {
+    clearTimeout(refreshTimer);
+    refreshTimer = setTimeout(() => {
+      if (Date.now() - lastEditorSwitchRefresh < 500) return;
+      reloadDecoratorConfig();
+      repaintEditors();
+    }, 100);
+  }
 
   context.subscriptions.push(
     vscode.window.onDidChangeActiveTextEditor((editor) => {
       if (editor) {
-        // Flush any pending config debounce immediately so the editor renders
+        // Flush any pending settings refresh immediately so the editor renders
         // with the latest settings on first paint rather than flickering.
-        if (configTimer) {
-          clearTimeout(configTimer);
-          configTimer = undefined;
+        if (refreshTimer) {
+          clearTimeout(refreshTimer);
+          refreshTimer = undefined;
           decorator.reloadConfig();
-          decorator.enabled = vscode.workspace
-            .getConfiguration('mojiPro')
-            .get('enabled', true);
+          decorator.enabled = appSettingsStore.get('enabled', true);
           blockDecorator.reloadConfig();
           componentOutlineDecorator.reloadConfig();
           lastEditorSwitchRefresh = Date.now();
@@ -251,13 +186,14 @@ async function activate(context) {
 
   // ── Configuration changes ──────────────────────────────────────────────
 
+  // App-owned Moji settings now refresh through the store event; only editor
+  // settings remain on VS Code's configuration change event.
   let configTimer;
   context.subscriptions.push(
     vscode.workspace.onDidChangeConfiguration((event) => {
       if (
-        event.affectsConfiguration('mojiPro') ||
         event.affectsConfiguration('editor.fontSize') ||
-        event.affectsConfiguration('mojiPro.codeBlocks')
+        event.affectsConfiguration('editor.tabSize')
       ) {
         // Debounce to batch rapid config changes (e.g., "Select All" updates 30+ settings)
         clearTimeout(configTimer);
@@ -278,6 +214,12 @@ async function activate(context) {
     })
   );
 
+  context.subscriptions.push(
+    appSettingsStore.onDidChange(() => {
+      scheduleSettingsRefresh();
+    })
+  );
+
 
 
 
@@ -290,7 +232,7 @@ async function activate(context) {
   context.subscriptions.push({ dispose: () => componentOutlineDecorator.dispose() });
   // Clear any in-flight debounce timers so their callbacks don't fire against
   // disposed decorator objects after the extension is deactivated.
-  context.subscriptions.push({ dispose: () => { clearTimeout(updateTimer); clearTimeout(configTimer); } });
+  context.subscriptions.push({ dispose: () => { clearTimeout(updateTimer); clearTimeout(configTimer); clearTimeout(refreshTimer); } });
 }
 
 function deactivate() {

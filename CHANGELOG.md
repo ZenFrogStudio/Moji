@@ -2,6 +2,40 @@
 
 All notable changes to Moji will be documented in this file.
 
+## [1.4.31] - 2026-06-03
+
+### Changed
+- Removed the legacy `contributes.configuration` surface from the extension manifest now that Moji settings are stored in the extension-owned app settings file, preventing VS Code from showing dead `mojiPro.*` settings entries.
+- Trimmed obsolete VSIX packaging exceptions for deleted artwork and old branding assets so the published package matches the current source tree more closely.
+
+## [1.4.30] - 2026-06-03
+
+### Changed
+- Switched the extension Marketplace identity to `ZenFrog.moji` by updating the manifest `name` to `moji` and the publisher ID to `ZenFrog`.
+- Cleaned the repository of stale packaged builds and temporary VSIX inspection artifacts, and tightened ignore rules so those files no longer ship or linger in the repo.
+
+## [1.4.29] - 2026-06-03
+
+### Changed
+- Finalized the public branding as `Moji` across the display name, local debug configuration, and shipped documentation while keeping the legacy internal extension ID for compatibility.
+- Removed the README migration notice and simplified the license wording to freeware terminology so the extension no longer references the retired paid or transitional release state.
+- Renamed the extension-owned app settings file to `moji-settings.json` and added compatibility migration from the previous `moji-pro-settings.json` filename.
+
+## [1.4.28] - 2026-06-03
+
+### Changed
+- Migrated Moji-owned settings from VS Code user settings into an extension-managed app settings file stored under the extension's global storage directory.
+- Added first-run migration that imports existing `mojiPro.*` settings and legacy per-keyword decoration toggles, writes them into the app settings file, and clears the migrated values from VS Code settings.
+- Switched runtime settings reads, settings-panel writes, and decorator refreshes over to the new app settings store so Moji now updates from its own persisted settings source.
+
+## [1.4.27] - 2026-06-02
+
+### Changed
+- Removed obsolete manual sample fixtures from `test/` so the repository no longer carries unreferenced demo files or broken sample HTML asset links.
+- Pruned the unused category exports in `src/decorationCategories.js` to reduce the extension's maintenance surface.
+- Refactored repeated webview checkbox-list generation in `src/settingsPanel.js` into shared helpers without changing the rendered settings UI.
+- Refactored `src/reactComponentDetector.js` to share component-range parsing paths and added regression coverage for typed arrow components and exported default function components.
+
 ## [1.4.26] - 2026-05-19
 
 ### Fixed

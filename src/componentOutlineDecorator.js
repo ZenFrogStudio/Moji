@@ -8,6 +8,7 @@
 // which applies cleanly to the full-line overlay container used by isWholeLine.
 
 const vscode = require('vscode');
+const appSettingsStore = require('./appSettingsStore');
 const { detectReactComponents } = require('./reactComponentDetector');
 
 const SUPPORTED_LANGUAGES = new Set(['javascriptreact', 'typescriptreact']);
@@ -44,10 +45,9 @@ class ComponentOutlineDecorator {
   _buildDecorationTypes() {
     this._disposeDecorationTypes();
 
-    const cfg   = vscode.workspace.getConfiguration('mojiPro.reactComponentOutlines');
-    const color = cfg.get('color', DEFAULT_COLOR);
-    const width = cfg.get('width', DEFAULT_WIDTH);
-    const style = cfg.get('style', DEFAULT_STYLE);
+    const color = appSettingsStore.get('reactComponentOutlines.color', DEFAULT_COLOR);
+    const width = appSettingsStore.get('reactComponentOutlines.width', DEFAULT_WIDTH);
+    const style = appSettingsStore.get('reactComponentOutlines.style', DEFAULT_STYLE);
 
     this._cfgColor = color;
     this._cfgWidth = width;
@@ -161,11 +161,9 @@ class ComponentOutlineDecorator {
   }
 
   reloadConfig() {
-    const cfg = vscode.workspace.getConfiguration('mojiPro.reactComponentOutlines');
-
-    const newColor = cfg.get('color', DEFAULT_COLOR);
-    const newWidth = cfg.get('width', DEFAULT_WIDTH);
-    const newStyle = cfg.get('style', DEFAULT_STYLE);
+    const newColor = appSettingsStore.get('reactComponentOutlines.color', DEFAULT_COLOR);
+    const newWidth = appSettingsStore.get('reactComponentOutlines.width', DEFAULT_WIDTH);
+    const newStyle = appSettingsStore.get('reactComponentOutlines.style', DEFAULT_STYLE);
 
     const styleChanged = newColor !== this._cfgColor ||
                          newWidth !== this._cfgWidth ||
@@ -173,7 +171,7 @@ class ComponentOutlineDecorator {
 
     if (styleChanged) this._buildDecorationTypes();
 
-    this.enabled = cfg.get('enabled', false);
+    this.enabled = appSettingsStore.get('reactComponentOutlines.enabled', false);
     this._componentCache.clear();
   }
 

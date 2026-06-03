@@ -5,6 +5,7 @@
 //   "overlay"  – keyword text is dimmed, emoji shown before it
 
 const vscode = require('vscode');
+const appSettingsStore = require('./appSettingsStore');
 const { DECORATION_CATEGORIES } = require('./decorationCategories');
 const settingsStore = require('./settingsStore');
 const { scanKeywords } = require('./scanner');
@@ -61,16 +62,15 @@ class KeywordDecorator {
   _buildDecorationTypes() {
     this._disposeDecorationTypes();
 
-    const config          = vscode.workspace.getConfiguration('mojiPro');
-    this._mode            = config.get('displayMode', 'overlay');
-    this._opacity         = config.get('overlayOpacity', 1);
-    this._emojiSize       = config.get('emojiSize', 'large');
+    this._mode            = appSettingsStore.get('displayMode', 'overlay');
+    this._opacity         = appSettingsStore.get('overlayOpacity', 1);
+    this._emojiSize       = appSettingsStore.get('emojiSize', 'large');
     this._editorFont      = vscode.workspace.getConfiguration('editor').get('fontSize', 14);
     const sizeMultiplier  = this._emojiSize === 'small' ? 0.75 : 1;
     // Serialised signature used in reloadConfig to detect override changes without
     // a deep-equality check — emoji overrides are baked into contentText so any
     // change requires a full decoration-type rebuild.
-    const customOverrides = config.get('customEmojiOverrides', {});
+    const customOverrides = appSettingsStore.get('customEmojiOverrides', {});
     this._overridesSig    = JSON.stringify(customOverrides);
 
     const addDecoration = (key, emoji) => {
@@ -116,10 +116,9 @@ class KeywordDecorator {
   // Does NOT touch decoration types — no visual disruption.
   _refreshEnabledKeywords() {
     this.enabledKeywords.clear();
-    const config = vscode.workspace.getConfiguration('mojiPro');
     const disabledDecorations = settingsStore.getDisabledDecorations();
     for (const { id, masterKey, map, prefix } of DECORATION_CATEGORIES) {
-      if (config.get(masterKey, true)) {
+      if (appSettingsStore.get(masterKey, true)) {
         for (const [key] of Object.entries(map)) {
           if (settingsStore.isDecorationEnabled(disabledDecorations, id, key)) {
             this.enabledKeywords.add(`${prefix}${key}`);
@@ -262,14 +261,13 @@ class KeywordDecorator {
   /** Update state after a configuration change. */
   reloadConfig() {
     const wasEnabled = this.enabled;
-    const config     = vscode.workspace.getConfiguration('mojiPro');
-    const newMode    = config.get('displayMode', 'overlay');
-    const newOpacity = config.get('overlayOpacity', 1);
-    const newSize    = config.get('emojiSize', 'large');
+    const newMode    = appSettingsStore.get('displayMode', 'overlay');
+    const newOpacity = appSettingsStore.get('overlayOpacity', 1);
+    const newSize    = appSettingsStore.get('emojiSize', 'large');
     const newFont    = vscode.workspace.getConfiguration('editor').get('fontSize', 14);
 
     const newOverridesSig = JSON.stringify(
-      config.get('customEmojiOverrides', {})
+      appSettingsStore.get('customEmojiOverrides', {})
     );
 
     if (newMode !== this._mode || newOpacity !== this._opacity || newSize !== this._emojiSize || newFont !== this._editorFont || newOverridesSig !== this._overridesSig) {

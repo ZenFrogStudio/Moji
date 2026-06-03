@@ -6,6 +6,11 @@ const vscode = require('vscode');
 
 // Languages that support JSX/React
 const JSX_LANGUAGES = new Set(['javascriptreact', 'typescriptreact']);
+const COMPONENT_START_CHARS = new Set(['f', 'c', 'C', 'e']);
+const FUNCTION_COMPONENT_RE = /^function\s+([A-Z][a-zA-Z0-9_]*)\s*\(/;
+const CLASS_COMPONENT_RE = /^class\s+([A-Z][a-zA-Z0-9_]*)\s+extends\b/;
+const ARROW_COMPONENT_RE = /^const\s+([A-Z][a-zA-Z0-9_]*)(?:\s*:[^=]+)?\s*=\s*(\([^)]*\)|[a-zA-Z_$][a-zA-Z0-9_$]*)\s*=>/;
+const EXPORT_DEFAULT_FUNCTION_COMPONENT_RE = /^export\s+default\s+function\s+([A-Z][a-zA-Z0-9_]*)\s*\(/;
 
 /**
  * Detects React components in a document.
@@ -37,88 +42,43 @@ function detectReactComponents(document) {
 
   let i = 0;
   while (i < text.length) {
+    const skipped = skipTriviaAndStrings(text, i, text.length, true);
+    if (skipped !== i) {
+      i = skipped;
+      continue;
+    }
+
     const ch = text[i];
 
-    // Skip single-line comments
-    if (ch === '/' && text[i + 1] === '/') {
-      while (i < text.length && text[i] !== '\n') i++;
-      continue;
-    }
-
-    // Skip block comments
-    if (ch === '/' && text[i + 1] === '*') {
-      i += 2;
-      while (i + 1 < text.length && !(text[i] === '*' && text[i + 1] === '/')) i++;
-      i += 2;
-      continue;
-    }
-
-    // Skip string literals
-    if (ch === '"' || ch === "'" || ch === '`') {
-      const quote = ch;
-      i++;
-      while (i < text.length) {
-        if (text[i] === '\\') { i += 2; continue; }
-        if (text[i] === quote) { i++; break; }
-        // Skip template literal expressions
-        if (quote === '`' && text[i] === '$' && text[i + 1] === '{') {
-          i += 2;
-          let nestLevel = 1;
-          while (i < text.length && nestLevel > 0) {
-            if (text[i] === '{') nestLevel++;
-            else if (text[i] === '}') nestLevel--;
-            i++;
-          }
-          continue;
-        }
-        i++;
-      }
-      continue;
-    }
-
     // Check for component patterns
-    if (ch === 'f' || ch === 'c' || ch === 'C' || ch === 'k' || ch === 'e') {
+    if (COMPONENT_START_CHARS.has(ch)) {
       // Potential component start: function, class, const, export
       const remaining = text.substring(i);
-      
+
       // Function component: function ComponentName(...)
-      const funcMatch = remaining.match(/^function\s+([A-Z][a-zA-Z0-9_]*)\s*\(/);
+      const funcMatch = remaining.match(FUNCTION_COMPONENT_RE);
       if (funcMatch) {
-        const componentName = funcMatch[1];
-        const openBracePos = findOpeningBrace(text, i + funcMatch[0].length - 1);
-        if (openBracePos !== -1) {
-          const closeBracePos = findMatchingCloseBracePos(text, openBracePos);
-          const startLine = charToLine(openBracePos);
-          const endLine = closeBracePos === -1 ? -1 : charToLine(closeBracePos);
-          if (
-            closeBracePos !== -1
-            && endLine > startLine
-            && hasReturnedJsx(text, openBracePos + 1, closeBracePos)
-          ) {
-            components.push({ startLine, endLine, name: componentName });
-          }
-        }
+        maybeAddBraceWrappedComponent(
+          components,
+          funcMatch[1],
+          text,
+          i + funcMatch[0].length - 1,
+          charToLine
+        );
         i += funcMatch[0].length;
         continue;
       }
 
       // Class component: class ComponentName extends ...
-      const classMatch = remaining.match(/^class\s+([A-Z][a-zA-Z0-9_]*)\s+extends\b/);
+      const classMatch = remaining.match(CLASS_COMPONENT_RE);
       if (classMatch) {
-        const componentName = classMatch[1];
-        const openBracePos = findOpeningBrace(text, i + classMatch[0].length);
-        if (openBracePos !== -1) {
-          const closeBracePos = findMatchingCloseBracePos(text, openBracePos);
-          const startLine = charToLine(openBracePos);
-          const endLine = closeBracePos === -1 ? -1 : charToLine(closeBracePos);
-          if (
-            closeBracePos !== -1
-            && endLine > startLine
-            && hasReturnedJsx(text, openBracePos + 1, closeBracePos)
-          ) {
-            components.push({ startLine, endLine, name: componentName });
-          }
-        }
+        maybeAddBraceWrappedComponent(
+          components,
+          classMatch[1],
+          text,
+          i + classMatch[0].length,
+          charToLine
+        );
         i += classMatch[0].length;
         continue;
       }
@@ -126,69 +86,27 @@ function detectReactComponents(document) {
       // Arrow function component: const ComponentName = (...) => { ... }
       // or: const ComponentName = () => ( <JSX> )
       // Optional (?:\s*:[^=]+)? handles TypeScript type annotations (e.g. const Card: React.FC<Props> = ...)
-      const constMatch = remaining.match(/^const\s+([A-Z][a-zA-Z0-9_]*)(?:\s*:[^=]+)?\s*=\s*(\([^)]*\)|[a-zA-Z_$][a-zA-Z0-9_$]*)\s*=>/);
+      const constMatch = remaining.match(ARROW_COMPONENT_RE);
       if (constMatch) {
-        const componentName = constMatch[1];
-        const arrowEnd = i + constMatch[0].length;
-        
-        // Find the body - could be block { ... } or expression ( ... )
-        let bodyStart = arrowEnd;
-        while (bodyStart < text.length && (text[bodyStart] === ' ' || text[bodyStart] === '\t')) {
-          bodyStart++;
+        const range = findArrowComponentRange(text, i + constMatch[0].length, charToLine);
+        if (range) {
+          components.push({ ...range, name: constMatch[1] });
         }
 
-        let startLine, endLine;
-        
-        if (text[bodyStart] === '{') {
-          // Block body
-          const closeBracePos = findMatchingCloseBracePos(text, bodyStart);
-          startLine = charToLine(bodyStart);
-          endLine = closeBracePos === -1 ? -1 : charToLine(closeBracePos);
-          if (closeBracePos !== -1 && !hasReturnedJsx(text, bodyStart + 1, closeBracePos)) {
-            endLine = -1;
-          }
-        } else if (text[bodyStart] === '(') {
-          // Expression body with parentheses
-          const closeParenPos = findMatchingCloseParenPos(text, bodyStart);
-          startLine = charToLine(bodyStart);
-          endLine = closeParenPos === -1 ? -1 : charToLine(closeParenPos);
-          if (closeParenPos !== -1 && !hasJsxInRange(text, bodyStart + 1, closeParenPos)) {
-            endLine = -1;
-          }
-        } else {
-          // Expression body without parentheses (single expression)
-          startLine = charToLine(bodyStart);
-          endLine = findExpressionEnd(text, bodyStart, charToLine);
-          if (!hasJsxInRange(text, bodyStart, lineEndIndex(text, bodyStart))) {
-            endLine = -1;
-          }
-        }
-
-        if (endLine !== -1 && endLine >= startLine) {
-          components.push({ startLine, endLine, name: componentName });
-        }
-        
         i += constMatch[0].length;
         continue;
       }
 
       // Export default function component
-      const exportFuncMatch = remaining.match(/^export\s+default\s+function\s+([A-Z][a-zA-Z0-9_]*)\s*\(/);
+      const exportFuncMatch = remaining.match(EXPORT_DEFAULT_FUNCTION_COMPONENT_RE);
       if (exportFuncMatch) {
-        const componentName = exportFuncMatch[1];
-        const openBracePos = findOpeningBrace(text, i + exportFuncMatch[0].length - 1);
-        if (openBracePos !== -1) {
-          const closeBracePos = findMatchingCloseBracePos(text, openBracePos);
-          const startLine = charToLine(openBracePos);
-          const endLine = closeBracePos === -1 ? -1 : charToLine(closeBracePos);
-          if (
-            closeBracePos !== -1
-            && endLine > startLine
-            && hasReturnedJsx(text, openBracePos + 1, closeBracePos)
-          ) {
-            components.push({ startLine, endLine, name: componentName });
-          }
-        }
+        maybeAddBraceWrappedComponent(
+          components,
+          exportFuncMatch[1],
+          text,
+          i + exportFuncMatch[0].length - 1,
+          charToLine
+        );
         i += exportFuncMatch[0].length;
         continue;
       }
@@ -198,6 +116,77 @@ function detectReactComponents(document) {
   }
 
   return components;
+}
+
+function maybeAddBraceWrappedComponent(components, name, text, searchPos, charToLine) {
+  const range = findBraceWrappedComponentRange(text, searchPos, charToLine);
+  if (range) {
+    components.push({ ...range, name });
+  }
+}
+
+function findBraceWrappedComponentRange(text, searchPos, charToLine) {
+  const openBracePos = findOpeningBrace(text, searchPos);
+  if (openBracePos === -1) {
+    return null;
+  }
+
+  const closeBracePos = findMatchingCloseBracePos(text, openBracePos);
+  if (closeBracePos === -1) {
+    return null;
+  }
+
+  const startLine = charToLine(openBracePos);
+  const endLine = charToLine(closeBracePos);
+  if (endLine <= startLine || !hasReturnedJsx(text, openBracePos + 1, closeBracePos)) {
+    return null;
+  }
+
+  return { startLine, endLine };
+}
+
+function findArrowComponentRange(text, arrowEnd, charToLine) {
+  let bodyStart = arrowEnd;
+  while (bodyStart < text.length && /\s/.test(text[bodyStart])) {
+    bodyStart++;
+  }
+
+  if (bodyStart >= text.length) {
+    return null;
+  }
+
+  if (text[bodyStart] === '{') {
+    const closeBracePos = findMatchingCloseBracePos(text, bodyStart);
+    if (closeBracePos === -1 || !hasReturnedJsx(text, bodyStart + 1, closeBracePos)) {
+      return null;
+    }
+
+    return {
+      startLine: charToLine(bodyStart),
+      endLine: charToLine(closeBracePos),
+    };
+  }
+
+  if (text[bodyStart] === '(') {
+    const closeParenPos = findMatchingCloseParenPos(text, bodyStart);
+    if (closeParenPos === -1 || !hasJsxInRange(text, bodyStart + 1, closeParenPos)) {
+      return null;
+    }
+
+    return {
+      startLine: charToLine(bodyStart),
+      endLine: charToLine(closeParenPos),
+    };
+  }
+
+  if (!hasJsxInRange(text, bodyStart, lineEndIndex(text, bodyStart))) {
+    return null;
+  }
+
+  return {
+    startLine: charToLine(bodyStart),
+    endLine: findExpressionEnd(text, bodyStart, charToLine),
+  };
 }
 
 /**
@@ -225,86 +214,33 @@ function findOpeningBrace(text, startPos) {
 }
 
 function findMatchingCloseBracePos(text, openBracePos) {
-  let depth = 1;
-  let i = openBracePos + 1;
-  
-  while (i < text.length && depth > 0) {
-    const ch = text[i];
-    
-    // Skip strings
-    if (ch === '"' || ch === "'" || ch === '`') {
-      const quote = ch;
-      i++;
-      while (i < text.length) {
-        if (text[i] === '\\') { i += 2; continue; }
-        if (text[i] === quote) { i++; break; }
-        i++;
-      }
-      continue;
-    }
-    
-    // Skip comments
-    if (ch === '/' && text[i + 1] === '/') {
-      while (i < text.length && text[i] !== '\n') i++;
-      continue;
-    }
-    if (ch === '/' && text[i + 1] === '*') {
-      i += 2;
-      while (i + 1 < text.length && !(text[i] === '*' && text[i + 1] === '/')) i++;
-      i += 2;
-      continue;
-    }
-    
-    if (ch === '{') depth++;
-    else if (ch === '}') depth--;
-    
-    if (depth === 0) return i;
-    
-    i++;
-  }
-  
-  return -1;
+  return findMatchingClose(text, openBracePos, '{', '}');
 }
 
 function findMatchingCloseParenPos(text, openParenPos) {
+  return findMatchingClose(text, openParenPos, '(', ')');
+}
+
+function findMatchingClose(text, openPos, openChar, closeChar) {
   let depth = 1;
-  let i = openParenPos + 1;
-  
+  let i = openPos + 1;
+
   while (i < text.length && depth > 0) {
+    const skipped = skipTriviaAndStrings(text, i, text.length, true);
+    if (skipped !== i) {
+      i = skipped;
+      continue;
+    }
+
     const ch = text[i];
-    
-    // Skip strings
-    if (ch === '"' || ch === "'" || ch === '`') {
-      const quote = ch;
-      i++;
-      while (i < text.length) {
-        if (text[i] === '\\') { i += 2; continue; }
-        if (text[i] === quote) { i++; break; }
-        i++;
-      }
-      continue;
-    }
-    
-    // Skip comments
-    if (ch === '/' && text[i + 1] === '/') {
-      while (i < text.length && text[i] !== '\n') i++;
-      continue;
-    }
-    if (ch === '/' && text[i + 1] === '*') {
-      i += 2;
-      while (i + 1 < text.length && !(text[i] === '*' && text[i + 1] === '/')) i++;
-      i += 2;
-      continue;
-    }
-    
-    if (ch === '(') depth++;
-    else if (ch === ')') depth--;
-    
+    if (ch === openChar) depth++;
+    else if (ch === closeChar) depth--;
+
     if (depth === 0) return i;
-    
+
     i++;
   }
-  
+
   return -1;
 }
 
@@ -355,7 +291,7 @@ function isLikelyJsxStart(text, i) {
   return next === '/' && /[A-Za-z]/.test(text[i + 2] || '');
 }
 
-function skipTriviaAndStrings(text, i, endPos) {
+function skipTriviaAndStrings(text, i, endPos, trackTemplateExpressions = false) {
   if (text[i] === '/' && text[i + 1] === '/') {
     while (i < endPos && text[i] !== '\n') i++;
     return i;
@@ -373,8 +309,30 @@ function skipTriviaAndStrings(text, i, endPos) {
     while (i < endPos) {
       if (text[i] === '\\') { i += 2; continue; }
       if (text[i] === quote) { i++; break; }
+      if (trackTemplateExpressions && quote === '`' && text[i] === '$' && text[i + 1] === '{') {
+        i = skipTemplateExpression(text, i + 2, endPos);
+        continue;
+      }
       i++;
     }
+  }
+
+  return i;
+}
+
+function skipTemplateExpression(text, i, endPos) {
+  let depth = 1;
+
+  while (i < endPos && depth > 0) {
+    const skipped = skipTriviaAndStrings(text, i, endPos, true);
+    if (skipped !== i) {
+      i = skipped;
+      continue;
+    }
+
+    if (text[i] === '{') depth++;
+    else if (text[i] === '}') depth--;
+    i++;
   }
 
   return i;

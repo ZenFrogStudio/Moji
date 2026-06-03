@@ -40,11 +40,6 @@ const DECORATION_CATEGORIES = [
 
 const CATEGORY_BY_ID = new Map(DECORATION_CATEGORIES.map(category => [category.id, category]));
 const CATEGORY_BY_PANEL_ID = new Map(DECORATION_CATEGORIES.map(category => [category.panelId, category]));
-const CATEGORY_BY_PREFIX = new Map(DECORATION_CATEGORIES.map(category => [category.prefix, category]));
-
-function getCategoryById(id) {
-  return CATEGORY_BY_ID.get(id);
-}
 
 function getCategoryByPanelId(panelId) {
   return CATEGORY_BY_PANEL_ID.get(panelId);
@@ -53,8 +48,5 @@ function getCategoryByPanelId(panelId) {
 module.exports = {
   DECORATION_CATEGORIES,
   CATEGORY_BY_ID,
-  CATEGORY_BY_PANEL_ID,
-  CATEGORY_BY_PREFIX,
-  getCategoryById,
   getCategoryByPanelId,
 };
