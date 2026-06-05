@@ -1,4 +1,4 @@
-// Single source of truth for HTML token → emoji mappings.
+// Acts as a single source of truth for HTML token → emoji mappings.
 // Three categories: tag names, void elements, and attribute names.
 // Each emoji is chosen to represent the token's semantic purpose.
 
