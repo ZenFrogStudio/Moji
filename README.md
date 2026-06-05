@@ -34,6 +34,37 @@ Moji adds visual markers to code without changing your files. It works immediate
 
 Once installed, Moji starts decorating supported files automatically.
 
+**What it looks like**
+
+These examples show the decorated editor view. Moji adds visual markers in VS Code without modifying the underlying source text.
+
+```javascript
+🚀 async function loadUser(id) {
+  ❓ if (!id) {
+    💥 throw new Error("Missing id");
+  }
+
+  ⏳ await fetchUser(id);
+  🔙 return id;
+}
+```
+
+```python
+⚡ def calculate_total(items):
+    ❓ if not items:
+        🔙 return 0
+
+    🔁 for item in items:
+        pass
+```
+
+```sql
+🔍 SELECT name, status
+📂 FROM users
+🔎 WHERE active = ✅ TRUE
+📶 ORDER 📌 BY created_at ⬇️ DESC;
+```
+
 **Open settings**
 - Run `Moji: Customize Settings`.
 - Use the settings panel to manage emoji groups, individual keywords, code block highlighting, and React component outlines.
