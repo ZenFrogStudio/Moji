@@ -1,12 +1,12 @@
 # Moji
 
-> Visual cues for faster code comprehension - supplement code keywords with emojis and optional visual outlines.
+> Supplement code keywords with emojis and optional visual outlines for faster code comprehension.
 
 ---
 
 ## Overview
 
-Moji adds visual markers to code without changing your files. It works immediately after installation and supports all included languages out of the box.
+Moji adds visual markers to code without changing your files. 
 
 ## Features
 
@@ -78,11 +78,7 @@ These examples show the decorated editor view. Moji adds visual markers in VS Co
 - Unicode edits apply immediately to open editors and persist across sessions.
 
 **Optional visual aids**
-- Run `Moji: Toggle Code Block Highlighting` to turn block outlines on or off.
-- Run `Moji: Toggle React Component Outlines` to turn React component outlines on or off.
-
-**Toggle all emoji decorations**
-- Run `Moji: Toggle` to enable or disable the main emoji overlay system.
+Optinal code block highlighting helps quickly identify the data type of a code block. 
 
 ---
 
@@ -109,8 +105,8 @@ No. The extension only affects how you see code in VS Code. Your files remain un
 **Can collaborators see the emojis?**  
 Only if they also have the extension installed. Source files are unaffected.
 
-**Can I disable specific emojis?**  
-Yes. Open the settings panel with `Moji: Customize Settings` to toggle individual emojis on or off.
+**Can I change specific emojis?**  
+Yes. Open the settings panel with `Moji: Customize Settings` to toggle individual emojis on or off, and change them individually using Unicode emoji specs.
 
 **Can I change what emoji is used for a keyword?**  
 Yes. Click any emoji in the settings panel to open the inline editor. Enter a Unicode code point (`U+XXXX`) or paste an emoji, then save. Changes apply immediately and persist across sessions. Use **Revert All Emojis** to restore all defaults at once.
